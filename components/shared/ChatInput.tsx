@@ -37,7 +37,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
                 onChange={handleInputChange} // Call handleInputChange function on input change
             />
 
-            <Link  href={`/search/${searchQuery}`} className='h-full'>
+            <Link  href={`/search/${searchQuery}/${initialText}`} className='h-full'>
             <Button type="submit" className="bg-[#FF58A8] hover:bg-pink-600 font-bold rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]">
                 <IoIosArrowForward className='h-2/3'/>
             </Button>

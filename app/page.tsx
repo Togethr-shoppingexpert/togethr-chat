@@ -60,7 +60,7 @@ export default function Home() {
     setSelectedText(text);
   };
 
-  const squery = selectedText + guestID;
+  const userId = guestID;
 
 
   return (
@@ -74,7 +74,7 @@ export default function Home() {
           </div>
           
           <div className='w-full flex justify-center mx-18 px-[15px]'>
-            <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={squery} />
+            <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} />
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3  my-6 gap-2">
