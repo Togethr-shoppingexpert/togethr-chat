@@ -3,15 +3,14 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IoIosArrowForward } from "react-icons/io";
-import Link from 'next/link';
+// import Link from 'next/link';
 
-interface ChatInputProps {
+interface ChatAiInputProps {
     initialText: string; // Define initialText prop
     onInputChange: (newValue: string) => void; // Define onInputChange prop
-    searchQuery : string;
 }
 
-export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInputProps) {
+export function ChatAiInput({ initialText, onInputChange }: ChatAiInputProps) {
     // Define a state to manage the input value
     const [inputValue, setInputValue] = useState(initialText);
     const [disable , isDisabled] = useState(false);
@@ -37,11 +36,11 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
                 onChange={handleInputChange} // Call handleInputChange function on input change
             />
 
-            <Link  href={`/search/${searchQuery}`} className='h-full'>
+            
             <Button type="submit" className="bg-[#FF58A8] hover:bg-pink-600 font-bold rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]">
                 <IoIosArrowForward className='h-2/3'/>
             </Button>
-            </Link>
+           
         </div>
     );
 }

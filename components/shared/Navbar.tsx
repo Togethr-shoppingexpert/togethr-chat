@@ -27,7 +27,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Website Logo */}
           <Link href="/" className="flex items-center py-4 px-2">
-            <Image src={logo1} alt="togethr" width={40} height={40}/>
+            <Image src={logo1} alt="togethr" width={50} height={50}/>
             <span className="font-bold text-[#2D29F8] rounded-md p-2 text-lg md:text-xl lg:text-2xl">Togethr</span>
           </Link>
 
