@@ -26,7 +26,7 @@ export default function Home() {
 
   const fetchGuestAuthSignup = async () => {
     try {
-      const response = await fetch('http://43.205.216.141/api/guest-auth/signup');
+      const response = await fetch('https://govoyr.com/api/guest-auth/signup');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

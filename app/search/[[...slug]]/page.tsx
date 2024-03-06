@@ -51,7 +51,7 @@ export default function Page({ params }: { params: Params }) {
     setUserMessage("");
 
     try {
-      const response = await fetch('http://43.205.216.141/api/WebChatbot/message', {
+      const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
