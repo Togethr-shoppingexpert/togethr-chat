@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useRef } from 'react';
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
@@ -29,11 +29,17 @@ export default function Page({ params }: { params: Params }) {
 
   const router = useRouter();
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+
   useEffect(() => {
     if (searchQuery) {
       setUserMessage(decodeURIComponent(searchQuery)); // Decode the query and set it in the input field
     }
   }, [searchQuery]);
+
+
+  
 
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
@@ -97,6 +103,11 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []);
 
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <main className="bg-[#F4F7FE]">
       <Navbar/>
@@ -137,6 +148,8 @@ export default function Page({ params }: { params: Params }) {
               )}
             </div>
           ))}
+          <div ref={messagesEndRef} />
+
         </div>
       </section>
 

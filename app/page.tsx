@@ -48,12 +48,12 @@ export default function Home() {
   };
 
   const buttons = [
-    "Best Performance laptop?",
-    "Best headphones in 2024?",
-    "Compare iphone 14 and Iphone 15",
-    "Electronics",
-    "Fashion",
-    "Sports gears"
+    "bluetooth earbuds for running",
+    "phones with great camera",
+    "massager for neck pain",
+    "air purifier to combat pollution",
+    "ergonomic chair for home office",
+    "bicycle for city rides"
   ];
 
   const handleBadgeClick = (text: string) => {
