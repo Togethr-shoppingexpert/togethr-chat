@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoIosArrowForward } from "react-icons/io";
 import ReactMarkdown from 'react-markdown';
+// import { remarkParse } from 'react-markdown/remark-parse';
+import remarkParse from 'remark-parse';
+
 
 import Loader from "@/components/shared/Loader";
 
@@ -86,20 +89,31 @@ export default function Page({ params }: { params: Params }) {
     <main className="bg-[#F4F7FE]">
       <Navbar />
 
-      <section className="flex justify-center h-full mb-16 bp-0 ">
+<section className="flex justify-center h-full mb-16 bp-0 ">
   <div className="md:max-w-2xl max-w-sm mt-5 mb-10 h-full p-0 ">
     {/* {isLoading && <Loader />} */}
     {messages.map((message, index) => (
       <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
         {message.sender === 'AI' ? (
           <>
-             <Avatar className="shadow-md z-10">
-      <AvatarImage src="/ai.png" />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
-    <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm bg-[#FFFFFF]">
-      <ReactMarkdown className="text-[#94A3B8]">{message.content}</ReactMarkdown>
-    </div>
+            <Avatar className="shadow-md z-10">
+              <AvatarImage src="/ai.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#94A3B8] bg-[#FFFFFF]">
+              {message.content.split('\n').map((paragraph, i) => (
+                <div key={i}>
+                  {paragraph.split('\n').map((line, idx) => {
+                    // Check if line starts with a number followed by a dot
+                    if (/^\d+\./.test(line.trim())) {
+                      return <span key={idx}>{line.trim()}<br /></span>;
+                    } else {
+                      return <span key={idx}>{line.trim()}</span>;
+                    }
+                  })}
+                </div>
+              ))}
+            </div>
           </>
         ) : (
           <>
@@ -116,6 +130,7 @@ export default function Page({ params }: { params: Params }) {
     ))}
   </div>
 </section>
+
 
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#F4F7FE]">
