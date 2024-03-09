@@ -141,7 +141,7 @@ export default function Page({ params }: { params: Params }) {
                     {message.content}
                   </div>
                   <Avatar className="shadow-lg z-10">
-                    <AvatarImage src="https://github.com/shadcn.png" className='z-10' />
+                    <AvatarImage src="/human.png" className='z-10' />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </>

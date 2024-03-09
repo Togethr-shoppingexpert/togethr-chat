@@ -70,7 +70,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center my-28 ">
           <div className='w-full md:w-2/3 flex justify-start md:justify-center mb-4 px-4'>
             
-          <h1 className="font-semibold text-[35px] md:text-3xl lg:text-4xl text-[#1B2559]">Lets Shop Togethr</h1>
+          <h1 className="font-semibold text-[35px] md:text-3xl lg:text-4xl text-[#1B2559]">Let's Shop Togethr</h1>
           </div>
           
           <div className='w-full flex justify-center mx-18 px-[15px]'>
