@@ -78,6 +78,7 @@ export default function Home() {
           <div className='w-full md:w-2/3 flex justify-start md:justify-center mb-4 px-4'>
             
           <h1 className="font-semibold text-[35px] md:text-3xl lg:text-4xl text-white">Let's Shop Togethr</h1>
+          <span className='text-white'>preview</span>
           </div>
           
           <div className='w-full flex justify-center mx-18 px-[15px]'>
