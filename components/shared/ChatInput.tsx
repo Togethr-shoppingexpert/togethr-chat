@@ -45,18 +45,18 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
     }, [initialText, searchQuery]); // Add initialText and searchQuery as dependencies
 
     return (
-        <div className="flex w-full max-w-2xl h-[58px] items-center space-x-2">
+        <div className="flex w-full max-w-2xl h-[64px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
             <Input
                 type="email"
                 placeholder="Find your product"
-                className="transition border-pink-500 focus:border-pink-600 shadow-lg shadow-pink-200 rounded-xl h-full"
+                className="transition border-[#141414] bg-black shadow-lg rounded-xl text-white h-full"
                 value={initialText} // Bind input value to state
                 onChange={handleInputChange} // Call handleInputChange function on input change
             />
 
             <Button
                 type="button"
-                className="bg-[#FF58A8] hover:bg-pink-600 font-bold rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]"
+                className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-bold rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]"
                 onClick={handleClick}
             >
                 <IoIosArrowForward className='h-2/3'/>
