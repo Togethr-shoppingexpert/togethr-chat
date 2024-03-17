@@ -117,8 +117,8 @@ export default function Page({ params }: { params: Params }) {
 
       <section className="flex justify-center h-full mb-16 bp-0">
          
-
-        <div className="md:max-w-2xl max-w-sm mt-5 mb-10 h-full p-0  overflow-hidden min-w-[672px]">
+{/* max-w-sm md:min-w-[42rem] */}
+        <div className="md:max-w-2xl md:min-w-[42rem] min-w-[398px] mt-5 mb-10 h-full p-0 overflow-hidden ">
           {messages.map((message, index) => (
             <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
               {message.sender === 'AI' ? (

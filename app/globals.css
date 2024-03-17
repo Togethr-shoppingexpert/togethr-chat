@@ -75,3 +75,6 @@
   }
 }
 
+.min-w-max-w-2xl {
+  min-width: 42rem; /* Assuming max-w-2xl is equivalent to 42rem */
+}
