@@ -113,8 +113,12 @@ export default function Page({ params }: { params: Params }) {
   return (
     <main className="bg-[#111111]">
       <Navbar/>
-      <section className="flex justify-center h-full mb-16 bp-0 ">
-        <div className="md:max-w-2xl max-w-sm mt-5 mb-10 h-full p-0 ">
+
+
+      <section className="flex justify-center h-full mb-16 bp-0">
+         
+
+        <div className="md:max-w-2xl max-w-sm mt-5 mb-10 h-full p-0  overflow-hidden min-w-[672px]">
           {messages.map((message, index) => (
             <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
               {message.sender === 'AI' ? (
@@ -123,22 +127,6 @@ export default function Page({ params }: { params: Params }) {
                     <AvatarImage src="/ai2.png" />
                     <AvatarFallback>bot</AvatarFallback>
                   </Avatar>
-                  {/*  */}
-                  {/* {isLoading ? <Loader/> : (<div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-                    {message.content.split('\n').map((paragraph, i) => (
-                      <div key={i}>
-                        {paragraph.split('\n').map((line, idx) => {
-                          if (/^\d+\./.test(line.trim())){
-                            return <span key={idx}>{line.trim()}<br /></span>;
-                          } else {
-                            return <span key={idx}>{line.trim()}</span>;
-                          }
-                        })}
-                      </div>
-                    ))}
-                  </div>)} */}
-
-{/*  */}
                   <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
                     {message.content.split('\n').map((paragraph, i) => (
                       <div key={i}>
@@ -169,7 +157,7 @@ export default function Page({ params }: { params: Params }) {
             </div>
           ))}
           {isLoading && (
-               <div className="flex items-center space-x-4 mx-1 md:mx-6">
+            <div className="flex items-center space-x-4 mx-1 md:mx-6">
                <Avatar className="shadow-md z-10">
                            <AvatarImage src="/ai2.png" />
                            <AvatarFallback>CN</AvatarFallback>
@@ -181,9 +169,10 @@ export default function Page({ params }: { params: Params }) {
                   </div>
               </div>
          
-          )}
+         )}
           <div ref={messagesEndRef} />
 
+       
         </div>
       </section>
 
