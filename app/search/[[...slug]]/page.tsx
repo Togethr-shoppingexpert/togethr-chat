@@ -166,6 +166,7 @@ export default function Page({ params }: { params: Params }) {
             type="submit"
             className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-bold rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
             onClick={() => sendMessage(userMessage)} // Pass userMessage to sendMessage function
+            disabled={!userMessage.trim()}
           >
             <IoIosArrowForward className='h-2/3'/>
           </Button>

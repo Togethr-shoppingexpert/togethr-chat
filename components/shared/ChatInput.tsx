@@ -52,12 +52,14 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
                 className="transition border-[#141414] bg-black shadow-lg rounded-xl text-white h-full"
                 value={initialText} // Bind input value to state
                 onChange={handleInputChange} // Call handleInputChange function on input change
+                
             />
 
             <Button
                 type="button"
                 className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-bold rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]"
                 onClick={handleClick}
+                disabled={!initialText.trim()}
             >
                 <IoIosArrowForward className='h-2/3'/>
             </Button>
