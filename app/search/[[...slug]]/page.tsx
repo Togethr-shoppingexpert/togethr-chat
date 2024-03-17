@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from 'next/navigation';
+import { Skeleton } from "@/components/ui/skeleton"
 
-// import Loader from "@/components/shared/Loader";
+
+import Loader from "@/components/shared/Loader";
 
 interface Params {
   slug: string[];
@@ -119,8 +121,24 @@ export default function Page({ params }: { params: Params }) {
                 <>
                   <Avatar className="shadow-md z-10">
                     <AvatarImage src="/ai2.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>bot</AvatarFallback>
                   </Avatar>
+                  {/*  */}
+                  {/* {isLoading ? <Loader/> : (<div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                    {message.content.split('\n').map((paragraph, i) => (
+                      <div key={i}>
+                        {paragraph.split('\n').map((line, idx) => {
+                          if (/^\d+\./.test(line.trim())){
+                            return <span key={idx}>{line.trim()}<br /></span>;
+                          } else {
+                            return <span key={idx}>{line.trim()}</span>;
+                          }
+                        })}
+                      </div>
+                    ))}
+                  </div>)} */}
+
+{/*  */}
                   <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
                     {message.content.split('\n').map((paragraph, i) => (
                       <div key={i}>
@@ -134,6 +152,8 @@ export default function Page({ params }: { params: Params }) {
                       </div>
                     ))}
                   </div>
+                  {/*  */}
+
                 </>
               ) : (
                 <>
@@ -148,6 +168,20 @@ export default function Page({ params }: { params: Params }) {
               )}
             </div>
           ))}
+          {isLoading && (
+               <div className="flex items-center space-x-4 mx-1 md:mx-6">
+               <Avatar className="shadow-md z-10">
+                           <AvatarImage src="/ai2.png" />
+                           <AvatarFallback>CN</AvatarFallback>
+                         </Avatar>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px] md:w-[300px] bg-[#323232]" />
+                  <Skeleton className="h-4 w-[250px] md:w-[265px] bg-[#323232]" />                  
+                  <Skeleton className="h-4 w-[240px] md:w-[250px] bg-[#323232]" />                
+                  </div>
+              </div>
+         
+          )}
           <div ref={messagesEndRef} />
 
         </div>
