@@ -34,6 +34,21 @@ export default function Page({ params }: { params: Params }) {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageSentRef = useRef<boolean>(false);
+  const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+
+// fetch authtoken from localstorage. 
+useEffect(() => {
+  const fetchAuthToken = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      authTokenRef.current = token;
+    } else {
+      console.log("token not found");
+    }
+  };
+fetchAuthToken();
+}, []);
+
 
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
@@ -59,11 +74,20 @@ export default function Page({ params }: { params: Params }) {
     setUserMessage("");
 
     try {
+
+      //
+    //   let authToken = localStorage.getItem('token');
+    // if (!authToken) {
+    //   throw new Error('Authentication token not found.');
+    // }
+  
+
       const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
+          // Authorization: `Bearer ${authToken}`,
+          'Authorization': `Bearer ${authTokenRef.current}`,
         },
         body: JSON.stringify({
           userMessage: message,
@@ -124,14 +148,14 @@ export default function Page({ params }: { params: Params }) {
   //   };
   // }, [userMessage]); // Add userMessage as dependency
 
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  // const [authToken, setAuthToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setAuthToken(token);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     setAuthToken(token);
+  //   }
+  // }, []);
 
 
   //
