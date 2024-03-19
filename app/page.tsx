@@ -74,7 +74,7 @@ export default function Home() {
     <>
       <main className="bg-[#111111]">
         <Navbar />
-        <div className="flex flex-col items-center justify-center my-28 ">
+        <div className="flex flex-col items-center justify-center my-28">
           <div className='w-full md:w-2/3 flex justify-start md:justify-center mb-4 px-4'>
             
           <h1 className="font-semibold text-[35px] md:text-3xl lg:text-4xl text-white">Let's Shop Togethr</h1>
@@ -85,11 +85,11 @@ export default function Home() {
             <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3  my-6 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3  md:w-1/2  my-6 gap-2">
             {buttons.map((text, index) => (
               <Badge
                 key={index}
-                className="text-[10px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1 flex items-center justify-center transition ease-in-out shadow-sm"
+                className="text-[10px] sm:text-[10px] md:text-[12px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1 flex items-center justify-center transition ease-in-out shadow-sm"
                 onClick={() => handleBadgeClick(text)}
               >
                 {text}

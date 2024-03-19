@@ -24,6 +24,7 @@ export default function Page({ params }: { params: Params }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [messageSent, setMessageSent] =  useState(false);
 
   const { slug } = params;
   const userId = slug[0];
@@ -32,13 +33,17 @@ export default function Page({ params }: { params: Params }) {
   const router = useRouter();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageSentRef = useRef<boolean>(false);
 
 
+  // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
-    if (searchQuery) {
-      setUserMessage(decodeURIComponent(searchQuery)); // Decode the query and set it in the input field
+    if (searchQuery && !messageSentRef.current) {
+      sendMessage(decodeURIComponent(searchQuery));
+      messageSentRef.current = true; // Update the flag
     }
-  }, [searchQuery]);
+  }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
+  
 
 
   
@@ -82,19 +87,42 @@ export default function Page({ params }: { params: Params }) {
     }
   };
 
+
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && userMessage.trim() !== "") {
         sendMessage(userMessage);
+        // setMessageSent(true);
       }
     };
-
+  
     document.addEventListener("keydown", handleKeyDown);
-
+  
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [userMessage]); // Add userMessage as dependency
+  }, [userMessage]); // Include messageSent in the dependency array
+  
+
+
+
+
+  //
+
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (event.key === "Enter") {
+  //       sendMessage(userMessage);
+  //     }
+  //   };
+
+  //   document.addEventListener("keydown", handleKeyDown);
+
+  //   return () => {
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [userMessage]); // Add userMessage as dependency
 
   const [authToken, setAuthToken] = useState<string | null>(null);
 
@@ -106,6 +134,8 @@ export default function Page({ params }: { params: Params }) {
   }, []);
 
 
+  //
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -115,10 +145,11 @@ export default function Page({ params }: { params: Params }) {
       <Navbar/>
 
 
-      <section className="flex justify-center h-full mb-16 bp-0">
+      <section className="flex justify-center h-full mb-16 bp-0  ">
          
 {/* max-w-sm md:min-w-[42rem] */}
-        <div className="md:max-w-2xl md:min-w-[42rem] min-w-[398px] mt-5 mb-10 h-full p-0 overflow-hidden ">
+{/* min-w-[398px] -- for mobiles , breaking at some points */}
+        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
           {messages.map((message, index) => (
             <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
               {message.sender === 'AI' ? (
@@ -127,7 +158,7 @@ export default function Page({ params }: { params: Params }) {
                     <AvatarImage src="/ai2.png" />
                     <AvatarFallback>bot</AvatarFallback>
                   </Avatar>
-                  <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                  <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
                     {message.content.split('\n').map((paragraph, i) => (
                       <div key={i}>
                         {paragraph.split('\n').map((line, idx) => {
