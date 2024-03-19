@@ -174,7 +174,7 @@ fetchAuthToken();
 {/* max-w-sm md:min-w-[42rem] */}
 {/* min-w-[398px] -- for mobiles , breaking at some points */}
         <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
-          {messages.map((message, index) => (
+          { messages.map((message, index) => (
             <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
               {message.sender === 'AI' ? (
                 <>
@@ -183,7 +183,7 @@ fetchAuthToken();
                     <AvatarFallback>bot</AvatarFallback>
                   </Avatar>
                   <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-                    {message.content.split('\n').map((paragraph, i) => (
+                    {/* {message.content.split('\n').map((paragraph, i) => (
                       <div key={i}>
                         {paragraph.split('\n').map((line, idx) => {
                           if (/^\d+\./.test(line.trim())){
@@ -193,7 +193,22 @@ fetchAuthToken();
                           }
                         })}
                       </div>
-                    ))}
+                    ))} */}
+                    {typeof message.content === 'string' ? (
+  message.content.split('\n').map((paragraph, i) => (
+    <div key={i}>
+      {paragraph.split('\n').map((line, idx) => {
+        if (/^\d+\./.test(line.trim())){
+          return <span key={idx}>{line.trim()}<br /></span>;
+        } else {
+          return <span key={idx}>{line.trim()}</span>;
+        }
+      })}
+    </div>
+  ))
+) : (
+  <div>{message.content}</div> // Render the content as is if it's not a string
+)}
                   </div>
                   {/*  */}
 
