@@ -99,8 +99,8 @@ fetchAuthToken();
         const data = await response.json();
         const aiResponse = data.AI_Response;
         console.log(data);
-        let aiContent = typeof aiResponse === 'string' ? aiResponse : ''; // Check if aiResponse is a string
-        const newAiMessage: Message = { sender: 'AI', content: aiContent };
+        // let aiContent = typeof aiResponse === 'string' ? aiResponse : ''; // Check if aiResponse is a string
+        const newAiMessage: Message = { sender: 'AI', content: aiResponse };
         setMessages(prevMessages => [...prevMessages, newAiMessage]);
       } else {
         console.error('Failed to send message:', response.statusText);
