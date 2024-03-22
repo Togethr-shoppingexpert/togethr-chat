@@ -7,7 +7,79 @@ import { Input } from '@/components/ui/input';
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from 'next/navigation';
 import { Skeleton } from "@/components/ui/skeleton"
+import ResearchLoader from "@/components/shared/ResearchLoader"
+import ProductCard from "@/components/ProductCard"
+import ProductCarousel from "@/components/ProductCarousel"
+import Image from 'next/image';
+import Link from 'next/link';
 
+
+
+
+
+const products = [
+  {
+    name: 'Product 1',
+    image: '/pdt.jpeg',
+    rating: 4.5,
+    reviews: 100,
+    price: 1250.99
+  },
+  {
+    name: 'Product 2',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+  {
+    name: 'Product 3',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+  {
+    name: 'Product 4',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+
+  {
+    name: 'Product 5',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+
+  {
+    name: 'Product 6',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+
+  {
+    name: 'Product 7',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+
+  {
+    name: 'Product 8',
+    image: '/pdt.jpeg',
+    rating: 4.2,
+    reviews: 80,
+    price: 999.99
+  },
+  // Add more products as needed
+];
 
 import Loader from "@/components/shared/Loader";
 
@@ -25,6 +97,10 @@ export default function Page({ params }: { params: Params }) {
   const [userMessage, setUserMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messageSent, setMessageSent] =  useState(false);
+  // const [conversationId, setConversationId] = useState(""); // State to hold conversation ID
+  const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
+
+
 
   const { slug } = params;
   const userId = slug[0];
@@ -50,12 +126,44 @@ fetchAuthToken();
 }, []);
 
 
+//to get conversation ID 
+useEffect(() => {
+  const getSessionId = async () => {
+    try {
+      const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authTokenRef.current}`,
+        },
+        body: JSON.stringify({
+          platform: "web",
+        })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const newConversationId = data.ConversationId;
+        localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+      }else {
+        console.error('Failed to fetch conversation ID:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching conversation ID:', error);
+    }
+  }
+
+  getSessionId();
+}, []);
+
+const conversationId = localStorage.getItem('conversationId');
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
     if (searchQuery && !messageSentRef.current) {
       sendMessage(decodeURIComponent(searchQuery));
+      // setUserMessage(decodeURIComponent(searchQuery));
       messageSentRef.current = true; // Update the flag
+
     }
   }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
   
@@ -67,21 +175,24 @@ fetchAuthToken();
     setUserMessage(newValue);
   };
 
+  // const conversationId = localStorage.getItem('conversationId');
+
+
   const sendMessage = async (message: string) => {
     setIsLoading(true);
+
+    const conversationId = localStorage.getItem('conversationId');
+    if (!conversationId) {
+      console.error('Conversation ID not found in local storage.');
+      setIsLoading(false);
+      return;
+    }
+
     const newMessage: Message = { sender: 'user', content: message };
     setMessages(prevMessages => [...prevMessages, newMessage]);
     setUserMessage("");
 
     try {
-
-      //
-    //   let authToken = localStorage.getItem('token');
-    // if (!authToken) {
-    //   throw new Error('Authentication token not found.');
-    // }
-  
-
       const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
         method: 'POST',
         headers: {
@@ -91,7 +202,8 @@ fetchAuthToken();
         },
         body: JSON.stringify({
           userMessage: message,
-          id: userId
+          id: conversationId
+          // id: "41a71743-5d89-4c02-9022-6d89de9e3473"
         })
       });
 
@@ -130,38 +242,7 @@ fetchAuthToken();
   }, [userMessage]); // Include messageSent in the dependency array
   
 
-
-
-
-  //
-
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (event.key === "Enter") {
-  //       sendMessage(userMessage);
-  //     }
-  //   };
-
-  //   document.addEventListener("keydown", handleKeyDown);
-
-  //   return () => {
-  //     document.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [userMessage]); // Add userMessage as dependency
-
-  // const [authToken, setAuthToken] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     setAuthToken(token);
-  //   }
-  // }, []);
-
-
-  //
-
-  useEffect(() => {
+useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -175,7 +256,7 @@ fetchAuthToken();
 {/* max-w-sm md:min-w-[42rem] */}
 {/* min-w-[398px] -- for mobiles , breaking at some points */}
         <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
-          { messages.map((message, index) => (
+          {  messages.map((message, index) => (
             <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
               {message.sender === 'AI' ? (
                 <>
@@ -227,7 +308,12 @@ fetchAuthToken();
               )}
             </div>
           ))}
-          {isLoading && (
+
+
+{/* <ResearchLoader/> */}
+{/* <ProductCarousel products={products}/> */}
+
+        {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
                <Avatar className="shadow-md z-10">
                            <AvatarImage src="/ai2.png" />
