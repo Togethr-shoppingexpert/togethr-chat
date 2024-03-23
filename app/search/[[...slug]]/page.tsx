@@ -99,6 +99,9 @@ export default function Page({ params }: { params: Params }) {
   const [messageSent, setMessageSent] =  useState(false);
   // const [conversationId, setConversationId] = useState(""); // State to hold conversation ID
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
+  // const [sessionID, setSessionID] = useState(""); // State to hold session ID
+
+  const [convnId, setConversationId] = useState("");
 
 
 
@@ -127,35 +130,34 @@ fetchAuthToken();
 
 
 //to get conversation ID 
-useEffect(() => {
-  const getSessionId = async () => {
-    try {
-      const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authTokenRef.current}`,
-        },
-        body: JSON.stringify({
-          platform: "web",
-        })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const newConversationId = data.ConversationId;
-        localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
-      }else {
-        console.error('Failed to fetch conversation ID:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching conversation ID:', error);
-    }
-  }
+// useEffect(() => {
+//   const getSessionId = async () => {
+//     try {
+//       const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${authTokenRef.current}`,
+//         },
+//         body: JSON.stringify({
+//           platform: "web",
+//         })
+//       });
+//       if (response.ok) {
+//         const data = await response.json();
+//         const newConversationId = data.ConversationId;
+//         localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+//       }else {
+//         console.error('Failed to fetch conversation ID:', response.statusText);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching conversation ID:', error);
+//     }
+//   }
 
-  getSessionId();
-}, []);
+//   getSessionId();
+// }, []);
 
-const conversationId = localStorage.getItem('conversationId');
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
@@ -169,19 +171,57 @@ const conversationId = localStorage.getItem('conversationId');
   
 
 
+  //session id logic , to be replaced with conversation id logic
+  useEffect(() => {
+    const fetchSessionId = async () => {
+      try {
+        const storedConversationId = sessionStorage.getItem('conversationId');
+
+        // Fetch new session ID only if it doesn't exist in session storage or if the page is refreshed
+        if (!storedConversationId || window.performance.navigation.type === 1) {
+          const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authTokenRef.current}`,
+            },
+            body: JSON.stringify({
+              platform: "web",
+            })
+          });
+          if (response.ok) {
+            const data = await response.json();
+            const newConversationId = data.ConversationId;
+            sessionStorage.setItem('conversationId', newConversationId);
+            setConversationId(newConversationId);
+          } else {
+            console.error('Failed to fetch conversation ID:', response.statusText);
+          }
+        } else {
+          setConversationId(storedConversationId);
+        }
+      } catch (error) {
+        console.error('Error fetching conversation ID:', error);
+      }
+    };
+
+    fetchSessionId();
+  }, []);
+
+
   
 
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
   };
 
-  // const conversationId = localStorage.getItem('conversationId');
+  // const conversationId = sessionStorage.getItem('conversationId');
 
 
   const sendMessage = async (message: string) => {
     setIsLoading(true);
 
-    const conversationId = localStorage.getItem('conversationId');
+    const conversationId = sessionStorage.getItem('conversationId');
     if (!conversationId) {
       console.error('Conversation ID not found in local storage.');
       setIsLoading(false);
@@ -203,6 +243,7 @@ const conversationId = localStorage.getItem('conversationId');
         body: JSON.stringify({
           userMessage: message,
           id: conversationId
+          // id: convnId
           // id: "41a71743-5d89-4c02-9022-6d89de9e3473"
         })
       });

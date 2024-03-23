@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useRef } from 'react';
 import Navbar from "../components/shared/Navbar";
 import { ChatInput } from "@/components/shared/ChatInput";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,9 @@ export default function Home() {
   const [selectedText, setSelectedText] = useState("");
   const [guestID, setGuestID] = useState("");
   const [token, setToken] = useState("");
+  const [sessionID, setSessionID] = useState(""); // State to hold session ID
+  const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+
 
 
   // guestsignup and localstorage logic
@@ -48,11 +51,56 @@ export default function Home() {
     }
   };
 
-
-
   const handleInputChange = (newValue: string) => {
     setSelectedText(newValue);
   };
+
+
+
+// fetch authtoken from localstorage. 
+useEffect(() => {
+  const fetchAuthToken = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      authTokenRef.current = token;
+    } else {
+      console.log("token not found");
+    }
+  };
+fetchAuthToken();
+}, []);
+
+
+
+//session id logic
+//to get conversation ID 
+useEffect(() => {
+  const getSessionId = async () => {
+    try {
+      const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authTokenRef.current}`,
+        },
+        body: JSON.stringify({
+          platform: "web",
+        })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const newConversationId = data.ConversationId;
+        sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+      }else {
+        console.error('Failed to fetch conversation ID:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching conversation ID:', error);
+    }
+  }
+
+  getSessionId();
+}, []);
 
   const buttons = [
     "bluetooth earbuds for running",
