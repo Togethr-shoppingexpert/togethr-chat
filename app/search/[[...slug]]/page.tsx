@@ -17,69 +17,69 @@ import Link from 'next/link';
 
 
 
-const products = [
-  {
-    name: 'Product 1',
-    image: '/pdt.jpeg',
-    rating: 4.5,
-    reviews: 100,
-    price: 1250.99
-  },
-  {
-    name: 'Product 2',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
-  {
-    name: 'Product 3',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
-  {
-    name: 'Product 4',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
+// const products = [
+//   {
+//     name: 'Product 1',
+//     image: '/pdt.jpeg',
+//     rating: 4.5,
+//     reviews: 100,
+//     price: 1250.99
+//   },
+//   {
+//     name: 'Product 2',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
+//   {
+//     name: 'Product 3',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
+//   {
+//     name: 'Product 4',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
 
-  {
-    name: 'Product 5',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
+//   {
+//     name: 'Product 5',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
 
-  {
-    name: 'Product 6',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
+//   {
+//     name: 'Product 6',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
 
-  {
-    name: 'Product 7',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
+//   {
+//     name: 'Product 7',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
 
-  {
-    name: 'Product 8',
-    image: '/pdt.jpeg',
-    rating: 4.2,
-    reviews: 80,
-    price: 999.99
-  },
-  // Add more products as needed
-];
+//   {
+//     name: 'Product 8',
+//     image: '/pdt.jpeg',
+//     rating: 4.2,
+//     reviews: 80,
+//     price: 999.99
+//   },
+//   // Add more products as needed
+// ];
 
 import Loader from "@/components/shared/Loader";
 
@@ -102,6 +102,7 @@ export default function Page({ params }: { params: Params }) {
   // const [sessionID, setSessionID] = useState(""); // State to hold session ID
 
   const [convnId, setConversationId] = useState("");
+  const [productArray, setProductArray] = useState<any[]>([]);
 
 
 
@@ -218,43 +219,121 @@ fetchAuthToken();
   // const conversationId = sessionStorage.getItem('conversationId');
 
 
+  // const sendMessage = async (message: string) => {
+  //   setIsLoading(true);
+
+  //   const conversationId = sessionStorage.getItem('conversationId');
+  //   if (!conversationId) {
+  //     console.error('Conversation ID not found in local storage.');
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   const newMessage: Message = { sender: 'user', content: message };
+  //   setMessages(prevMessages => [...prevMessages, newMessage]);
+  //   setUserMessage("");
+
+  //   try {
+  //     const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         // Authorization: `Bearer ${authToken}`,
+  //         'Authorization': `Bearer ${authTokenRef.current}`,
+  //       },
+  //       body: JSON.stringify({
+  //         userMessage: message,
+  //         id: conversationId
+  //         // id: convnId
+  //         // id: "41a71743-5d89-4c02-9022-6d89de9e3473"
+  //       })
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const aiResponse = data.AI_Response;
+  //       console.log(data);
+  //       // let aiContent = typeof aiResponse === 'string' ? aiResponse : ''; // Check if aiResponse is a string
+  //       const newAiMessage: Message = { sender: 'AI', content: aiResponse };
+  //       setMessages(prevMessages => [...prevMessages, newAiMessage]);
+  //     } else {
+  //       console.error('Failed to send message:', response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sending message:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const sendMessage = async (message: string) => {
     setIsLoading(true);
-
+  
     const conversationId = sessionStorage.getItem('conversationId');
     if (!conversationId) {
       console.error('Conversation ID not found in local storage.');
       setIsLoading(false);
       return;
     }
-
+  
     const newMessage: Message = { sender: 'user', content: message };
     setMessages(prevMessages => [...prevMessages, newMessage]);
     setUserMessage("");
-
+  
     try {
       const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: `Bearer ${authToken}`,
           'Authorization': `Bearer ${authTokenRef.current}`,
         },
         body: JSON.stringify({
           userMessage: message,
           id: conversationId
-          // id: convnId
-          // id: "41a71743-5d89-4c02-9022-6d89de9e3473"
         })
       });
-
+  
       if (response.ok) {
         const data = await response.json();
+        console.log('Response from backend:', data);
+  
         const aiResponse = data.AI_Response;
-        console.log(data);
-        // let aiContent = typeof aiResponse === 'string' ? aiResponse : ''; // Check if aiResponse is a string
+        console.log('AI Response:', aiResponse);
+  
+        const isCurationRequired = data.curration; // Corrected spelling
+  
+        console.log('Is Curation Required:', isCurationRequired);
+  
         const newAiMessage: Message = { sender: 'AI', content: aiResponse };
         setMessages(prevMessages => [...prevMessages, newAiMessage]);
+  
+        if (isCurationRequired) {
+       
+          const productResponse = await fetch('https://govoyr.com/api/WebChatbot/product', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authTokenRef.current}`,
+            },
+            body: JSON.stringify({
+              "MessageId": data.MessageId
+            })
+          });
+  
+          if (productResponse.ok) {
+            const productData = await productResponse.json();
+            // Handle the product data received from the external API 
+            console.log('Product Data:', productData);
+       
+
+              setProductArray(productData);
+        
+            console.log('Products data:' , productArray);
+
+          } else {
+            console.error('Failed to fetch products:', productResponse.statusText);
+          }
+        }
       } else {
         console.error('Failed to send message:', response.statusText);
       }
@@ -264,7 +343,9 @@ fetchAuthToken();
       setIsLoading(false);
     }
   };
-
+  
+  
+  
 
 
   useEffect(() => {
@@ -352,7 +433,7 @@ useEffect(() => {
 
 
 {/* <ResearchLoader/> */}
-{/* <ProductCarousel products={products}/> */}
+{productArray.length > 0 && <ProductCarousel products={productArray} />}
 
         {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
