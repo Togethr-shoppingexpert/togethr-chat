@@ -1,21 +1,17 @@
-'use client'
-import { useState, useEffect , useRef } from 'react';
+"use client";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { IoIosArrowForward } from "react-icons/io";
-import { useRouter } from 'next/navigation';
-import { Skeleton } from "@/components/ui/skeleton"
-import ResearchLoader from "@/components/shared/ResearchLoader"
-import ProductCard from "@/components/ProductCard"
-import ProductCarousel from "@/components/ProductCarousel"
-import Image from 'next/image';
-import Link from 'next/link';
-
-
-
-
+import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import ResearchLoader from "@/components/shared/ResearchLoader";
+import ProductCard from "@/components/ProductCard";
+import ProductCarousel from "@/components/ProductCarousel";
+import Image from "next/image";
+import Link from "next/link";
 
 // const products = [
 //   {
@@ -96,15 +92,13 @@ export default function Page({ params }: { params: Params }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [messageSent, setMessageSent] =  useState(false);
+  const [messageSent, setMessageSent] = useState(false);
   // const [conversationId, setConversationId] = useState(""); // State to hold conversation ID
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
   // const [sessionID, setSessionID] = useState(""); // State to hold session ID
 
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
-
-
 
   const { slug } = params;
   const userId = slug[0];
@@ -116,49 +110,47 @@ export default function Page({ params }: { params: Params }) {
   const messageSentRef = useRef<boolean>(false);
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
 
-// fetch authtoken from localstorage. 
-useEffect(() => {
-  const fetchAuthToken = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      authTokenRef.current = token;
-    } else {
-      console.log("token not found");
-    }
-  };
-fetchAuthToken();
-}, []);
+  // fetch authtoken from localstorage.
+  useEffect(() => {
+    const fetchAuthToken = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        authTokenRef.current = token;
+      } else {
+        console.log("token not found");
+      }
+    };
+    fetchAuthToken();
+  }, []);
 
+  //to get conversation ID
+  // useEffect(() => {
+  //   const getSessionId = async () => {
+  //     try {
+  //       const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${authTokenRef.current}`,
+  //         },
+  //         body: JSON.stringify({
+  //           platform: "web",
+  //         })
+  //       });
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         const newConversationId = data.ConversationId;
+  //         localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+  //       }else {
+  //         console.error('Failed to fetch conversation ID:', response.statusText);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching conversation ID:', error);
+  //     }
+  //   }
 
-//to get conversation ID 
-// useEffect(() => {
-//   const getSessionId = async () => {
-//     try {
-//       const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${authTokenRef.current}`,
-//         },
-//         body: JSON.stringify({
-//           platform: "web",
-//         })
-//       });
-//       if (response.ok) {
-//         const data = await response.json();
-//         const newConversationId = data.ConversationId;
-//         localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
-//       }else {
-//         console.error('Failed to fetch conversation ID:', response.statusText);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching conversation ID:', error);
-//     }
-//   }
-
-//   getSessionId();
-// }, []);
-
+  //   getSessionId();
+  // }, []);
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
@@ -166,58 +158,57 @@ fetchAuthToken();
       sendMessage(decodeURIComponent(searchQuery));
       // setUserMessage(decodeURIComponent(searchQuery));
       messageSentRef.current = true; // Update the flag
-
     }
   }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
-  
-
 
   //session id logic , to be replaced with conversation id logic
   useEffect(() => {
     const fetchSessionId = async () => {
       try {
-        const storedConversationId = sessionStorage.getItem('conversationId');
+        const storedConversationId = sessionStorage.getItem("conversationId");
 
         // Fetch new session ID only if it doesn't exist in session storage or if the page is refreshed
         if (!storedConversationId || window.performance.navigation.type === 1) {
-          const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${authTokenRef.current}`,
-            },
-            body: JSON.stringify({
-              platform: "web",
-            })
-          });
+          const response = await fetch(
+            "https://govoyr.com/api/WebChatbot/conversationId",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+              body: JSON.stringify({
+                platform: "web",
+              }),
+            }
+          );
           if (response.ok) {
             const data = await response.json();
             const newConversationId = data.ConversationId;
-            sessionStorage.setItem('conversationId', newConversationId);
+            sessionStorage.setItem("conversationId", newConversationId);
             setConversationId(newConversationId);
           } else {
-            console.error('Failed to fetch conversation ID:', response.statusText);
+            console.error(
+              "Failed to fetch conversation ID:",
+              response.statusText
+            );
           }
         } else {
           setConversationId(storedConversationId);
         }
       } catch (error) {
-        console.error('Error fetching conversation ID:', error);
+        console.error("Error fetching conversation ID:", error);
       }
     };
 
     fetchSessionId();
   }, []);
 
-
-  
-
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
   };
 
   // const conversationId = sessionStorage.getItem('conversationId');
-
 
   // const sendMessage = async (message: string) => {
   //   setIsLoading(true);
@@ -268,85 +259,99 @@ fetchAuthToken();
 
   const sendMessage = async (message: string) => {
     setIsLoading(true);
-  
-    const conversationId = sessionStorage.getItem('conversationId');
+
+    const conversationId = sessionStorage.getItem("conversationId");
     if (!conversationId) {
-      console.error('Conversation ID not found in local storage.');
+      console.error("Conversation ID not found in local storage.");
       setIsLoading(false);
       return;
     }
-  
-    const newMessage: Message = { sender: 'user', content: message };
-    setMessages(prevMessages => [...prevMessages, newMessage]);
+
+    const newMessage: Message = { sender: "user", content: message };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
-  
+
     try {
-      const response = await fetch('https://govoyr.com/api/WebChatbot/message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authTokenRef.current}`,
-        },
-        body: JSON.stringify({
-          userMessage: message,
-          id: conversationId
-        })
-      });
-  
+      const response = await fetch(
+        "https://govoyr.com/api/WebChatbot/message",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokenRef.current}`,
+          },
+          body: JSON.stringify({
+            userMessage: message,
+            id: conversationId,
+          }),
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
-        console.log('Response from backend:', data);
-  
+        console.log("Response from backend:", data);
+
         const aiResponse = data.AI_Response;
-        console.log('AI Response:', aiResponse);
-  
+        console.log("AI Response:", aiResponse);
+
         const isCurationRequired = data.curration; // Corrected spelling
-  
-        console.log('Is Curation Required:', isCurationRequired);
-  
-        const newAiMessage: Message = { sender: 'AI', content: aiResponse };
-        setMessages(prevMessages => [...prevMessages, newAiMessage]);
-  
+
+        console.log("Is Curation Required:", isCurationRequired);
+
+        const newAiMessage: Message = { sender: "AI", content: aiResponse };
+        setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+
         if (isCurationRequired) {
-       
-          const productResponse = await fetch('https://govoyr.com/api/WebChatbot/product', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${authTokenRef.current}`,
-            },
-            body: JSON.stringify({
-              "MessageId": data.MessageId
-            })
-          });
-  
+          const productResponse = await fetch(
+            "https://govoyr.com/api/WebChatbot/product",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+              body: JSON.stringify({
+                MessageId: data.MessageId,
+              }),
+            }
+          );
+
           if (productResponse.ok) {
             const productData = await productResponse.json();
-            // Handle the product data received from the external API 
-            console.log('Product Data:', productData);
-       
+            // // Handle the product data received from the external API
+            console.log("Product Data:", productData);
 
-              setProductArray(productData);
-        
-            console.log('Products data:' , productArray);
+            setProductArray(productData);
 
+            // console.log("Products data:", productArray);
+            // const productData = await productResponse.json();
+            // // Handle the product data received from the external API
+            // console.log("Product Data:", productData);
+            // setProductArray(productData);
+            // // Create an AI message containing the product data directly
+            // const productAiMessage: Message = {
+            //   sender: "AI",
+            //   content: productData, // Set productData directly as content
+            // };
+    
+            // Add the product AI message to messages
+            // setMessages((prevMessages) => [...prevMessages, productAiMessage]);
           } else {
-            console.error('Failed to fetch products:', productResponse.statusText);
+            console.error(
+              "Failed to fetch products:",
+              productResponse.statusText
+            );
           }
         }
       } else {
-        console.error('Failed to send message:', response.statusText);
+        console.error("Failed to send message:", response.statusText);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
     } finally {
       setIsLoading(false);
     }
   };
-  
-  
-  
-
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -355,103 +360,115 @@ fetchAuthToken();
         // setMessageSent(true);
       }
     };
-  
+
     document.addEventListener("keydown", handleKeyDown);
-  
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [userMessage]); // Include messageSent in the dependency array
-  
 
-useEffect(() => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
     <main className="bg-[#111111]">
-      <Navbar/>
-
+      <Navbar />
 
       <section className="flex justify-center h-full mb-16 bp-0  ">
-         
-{/* max-w-sm md:min-w-[42rem] */}
-{/* min-w-[398px] -- for mobiles , breaking at some points */}
-        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
-          {  messages.map((message, index) => (
-            <div key={index} className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${message.sender === 'AI' ? 'justify-start' : 'justify-end'}`}>
-              {message.sender === 'AI' ? (
-                <>
-                  <Avatar className="shadow-md z-10">
-                    <AvatarImage src="/ai2.png" />
-                    <AvatarFallback>bot</AvatarFallback>
-                  </Avatar>
-                  <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-                    {/* {message.content.split('\n').map((paragraph, i) => (
-                      <div key={i}>
-                        {paragraph.split('\n').map((line, idx) => {
-                          if (/^\d+\./.test(line.trim())){
-                            return <span key={idx}>{line.trim()}<br /></span>;
-                          } else {
-                            return <span key={idx}>{line.trim()}</span>;
-                          }
-                        })}
-                      </div>
-                    ))} */}
-                    {typeof message.content === 'string' ? (
-  message.content.split('\n').map((paragraph, i) => (
-    <div key={i}>
-      {paragraph.split('\n').map((line, idx) => {
-        if (/^\d+\./.test(line.trim())){
-          return <span key={idx}>{line.trim()}<br /></span>;
-        } else {
-          return <span key={idx}>{line.trim()}</span>;
-        }
-      })}
-    </div>
-  ))
-) : (
-  <div>{message.content}</div> // Render the content as is if it's not a string
-)}
-                  </div>
-                  {/*  */}
+        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 border-2 border-green-200 overflow-hidden ">
+          {messages.map((message, index) => (
+            <>
+              <div
+                key={index}
+                className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 border-2  ${
+                  message.sender === "AI" ? "justify-start" : "justify-end"
+                }`}
+              >
+                {message.sender === "AI" ? (
+                  <>
+                    <Avatar className="shadow-md z-10">
+                      <AvatarImage src="/ai2.png" />
+                      <AvatarFallback>bot</AvatarFallback>
+                    </Avatar>
+                    <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                      {typeof message.content === "string" ? (
+                        message.content.split("\n").map((paragraph, i) => (
+                          <div key={i}>
+                            {paragraph.split("\n").map((line, idx) => {
+                              if (/^\d+\./.test(line.trim())) {
+                                return (
+                                  <span key={idx}>
+                                    {line.trim()}
+                                    <br />
+                                  </span>
+                                );
+                              } else {
+                                return <span key={idx}>{line.trim()}</span>;
+                              }
+                            })}
+                          </div>
+                        ))
+                      ) : (
+                        // {productArray.length > 0 && <ProductCarousel products={productArray} />}
 
-                </>
-              ) : (
-                <>
-                  <div className="flex w-max max-w-[75%] flex-col font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
-                    {message.content}
-                  </div>
-                  <Avatar className="shadow-lg z-10">
-                    <AvatarImage src="/human.png" className='z-10' />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </>
-              )}
-            </div>
+                        <div>{message.content}</div> // Render the content as is if it's not a string
+                      )}
+                    </div>
+                    {/*  */}
+                    {/* {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />} */}
+                  {/* {message.content.length > 0 && <ProductCarousel products={productArray} />} */}
+                  </>
+                ) : (
+                  // {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />}
+                  //  {productArray.length > 0 && <ProductCarousel products={productArray} />}
+                  <>
+                    <div className="flex w-max max-w-[75%] flex-col font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
+                      {message.content}
+                    </div>
+                    <Avatar className="shadow-lg z-10">
+                      <AvatarImage src="/human.png" className="z-10" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </>
+                )}
+{/* {message.sender==='AI' && productArray.length > 0 && 
+      <ProductCarousel products={productArray} />
+} */}
+{/* {message.sender === 'AI' && Array.isArray(productArray) && productArray.length > 0 && (
+  <ProductCarousel products={productArray} />
+)} */}
+
+
+              </div>
+              {/* {message.sender === 'AI' && productArray.length > 0 && (
+              <div className="flex justify-center mb-5">
+                <ProductCarousel products={productArray} />
+              </div>
+            )} */}
+            </>
           ))}
 
-
-{/* <ResearchLoader/> */}
-{productArray.length > 0 && <ProductCarousel products={productArray} />}
-
-        {isLoading && (
+          {/* <ResearchLoader/> */}
+          {productArray.length > 0 && (
+            <ProductCarousel products={productArray} />
+          )}
+          {/* {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />} */}
+          {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
-               <Avatar className="shadow-md z-10">
-                           <AvatarImage src="/ai2.png" />
-                           <AvatarFallback>CN</AvatarFallback>
-                         </Avatar>
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px] md:w-[300px] bg-[#323232]" />
-                  <Skeleton className="h-4 w-[250px] md:w-[265px] bg-[#323232]" />                  
-                  <Skeleton className="h-4 w-[240px] md:w-[250px] bg-[#323232]" />                
-                  </div>
+              <Avatar className="shadow-md z-10">
+                <AvatarImage src="/ai2.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px] md:w-[300px] bg-[#323232]" />
+                <Skeleton className="h-4 w-[250px] md:w-[265px] bg-[#323232]" />
+                <Skeleton className="h-4 w-[240px] md:w-[250px] bg-[#323232]" />
               </div>
-         
-         )}
+            </div>
+          )}
           <div ref={messagesEndRef} />
-
-       
         </div>
       </section>
 
@@ -466,11 +483,12 @@ useEffect(() => {
           />
           <Button
             type="submit"
-            className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-bold rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
+            className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
             onClick={() => sendMessage(userMessage)} // Pass userMessage to sendMessage function
             disabled={!userMessage.trim()}
           >
-            <IoIosArrowForward className='h-2/3'/>
+            &gt;
+            {/* <IoIosArrowForward className='h-2/3'/> */}
           </Button>
         </div>
       </footer>
