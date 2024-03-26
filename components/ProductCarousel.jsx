@@ -31,8 +31,8 @@ const ProductCarousel = ({ products }) => {
                       <div className="flex-shrink-0">
                         <Image alt="product" src={product.media[0].link} height={200} width={200} className="rounded-xl" />
                       </div>
-                      <div className="flex flex-col justify-between p-4">
-                        <p className="text-md mb-4 mt-2 font-semibold text-white text-pretty">{product.title}</p>
+                      <div className="flex flex-col justify-between p-4 truncate">
+                        <p className="text-md mb-4 mt-2 font-semibold text-white truncate">{product.title}</p>
                         <div className="flex items-center">
                           <p className="text-xs text-white mr-2">Rating : {product.rating} stars</p>
                           {/* <p className="text-xs text-gray-500 mr-2">{product.reviews} reviews</p> */}

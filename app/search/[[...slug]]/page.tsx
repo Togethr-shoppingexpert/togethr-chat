@@ -85,7 +85,16 @@ interface Params {
 
 interface Message {
   sender: string;
-  content: string;
+  // content: string;
+  content : JSX.Element | string;
+}
+
+interface Product {
+  title: string;
+  rating: number;
+  prices: number[];
+  media: { link: string }[];
+  sellers_results: { online_sellers: { link: string }[] };
 }
 
 export default function Page({ params }: { params: Params }) {
@@ -317,12 +326,15 @@ export default function Page({ params }: { params: Params }) {
           );
 
           if (productResponse.ok) {
-            const productData = await productResponse.json();
-            // // Handle the product data received from the external API
-            console.log("Product Data:", productData);
+            //attempt 1
+            // const productData = await productResponse.json();
+            // // // Handle the product data received from the external API
+            // console.log("Product Data:", productData);
 
-            setProductArray(productData);
+            // setProductArray(productData);
 
+
+            //attempt 2
             // console.log("Products data:", productArray);
             // const productData = await productResponse.json();
             // // Handle the product data received from the external API
@@ -336,6 +348,24 @@ export default function Page({ params }: { params: Params }) {
     
             // Add the product AI message to messages
             // setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+
+            //attempt 3
+            const productData = await productResponse.json();
+  // Extract relevant information from productData and pass it to the ProductCarousel component
+  const formattedProducts: Product[] = productData.map((product: any) => ({
+    title: product.title,
+    rating: product.rating,
+    prices: product.prices,
+    media: product.media,
+    sellers_results: product.sellers_results,
+  }));
+  // Create an AI message containing the product data as props
+  const productAiMessage: Message = {
+    sender: "AI",
+    content: <ProductCarousel products={formattedProducts} />, // Pass formattedProducts as props
+  };
+  // Add the product AI message to messages
+  setMessages((prevMessages) => [...prevMessages, productAiMessage]);
           } else {
             console.error(
               "Failed to fetch products:",
@@ -377,53 +407,51 @@ export default function Page({ params }: { params: Params }) {
       <Navbar />
 
       <section className="flex justify-center h-full mb-16 bp-0  ">
-        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 border-2 border-green-200 overflow-hidden ">
+        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 border-2 border-green-500 overflow-hidden ">
+          {/* attempt 1 */}
           {messages.map((message, index) => (
             <>
               <div
                 key={index}
-                className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 border-2  ${
+                className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 border-2 border-orange-400 ${
                   message.sender === "AI" ? "justify-start" : "justify-end"
                 }`}
               >
-                {message.sender === "AI" ? (
-                  <>
-                    <Avatar className="shadow-md z-10">
-                      <AvatarImage src="/ai2.png" />
-                      <AvatarFallback>bot</AvatarFallback>
-                    </Avatar>
-                    <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-                      {typeof message.content === "string" ? (
-                        message.content.split("\n").map((paragraph, i) => (
-                          <div key={i}>
-                            {paragraph.split("\n").map((line, idx) => {
-                              if (/^\d+\./.test(line.trim())) {
-                                return (
-                                  <span key={idx}>
-                                    {line.trim()}
-                                    <br />
-                                  </span>
-                                );
-                              } else {
-                                return <span key={idx}>{line.trim()}</span>;
-                              }
-                            })}
-                          </div>
-                        ))
-                      ) : (
-                        // {productArray.length > 0 && <ProductCarousel products={productArray} />}
+                {/* {message.sender === "AI" ?  */}
+                {/* ( */}
+                  {/* // <>
+                  //   <Avatar className="shadow-md z-10">
+                  //     <AvatarImage src="/ai2.png" />
+                  //     <AvatarFallback>bot</AvatarFallback>
+                  //   </Avatar>
+                  //   <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                  //     {typeof message.content === "string" ? ( */}
+                  {/* //       message.content.split("\n").map((paragraph, i) => (
+                  //         <div key={i}>
+                  //           {paragraph.split("\n").map((line, idx) => { */}
+                  {/* //             if (/^\d+\./.test(line.trim())) { */}
+                  {/* //               return (
+                  //                 <span key={idx}>
+                  //                   {line.trim()}
+                  //                   <br />
+                  //                 </span>
+                  //               );
+                  //             } else { */}
+                  {/* //               return <span key={idx}>{line.trim()}</span>;
+                  //             }
+                  //           })}
+                  //         </div>
+                  //       ))
+                  //     ) : (
 
-                        <div>{message.content}</div> // Render the content as is if it's not a string
-                      )}
-                    </div>
-                    {/*  */}
-                    {/* {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />} */}
-                  {/* {message.content.length > 0 && <ProductCarousel products={productArray} />} */}
-                  </>
-                ) : (
-                  // {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />}
-                  //  {productArray.length > 0 && <ProductCarousel products={productArray} />}
-                  <>
+                  //       <div>{message.content}</div> // Render the content as is if it's not a string
+                  //     )}
+                  //   </div> */}
+                
+                  {/* // </> */}
+                {/* ) : ( */}
+                  {/* //  {productArray.length > 0 && <ProductCarousel products={productArray} />} */}
+                  {/* <>
                     <div className="flex w-max max-w-[75%] flex-col font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
                       {message.content}
                     </div>
@@ -432,7 +460,9 @@ export default function Page({ params }: { params: Params }) {
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                   </>
-                )}
+                )} */}
+
+
 {/* {message.sender==='AI' && productArray.length > 0 && 
       <ProductCarousel products={productArray} />
 } */}
@@ -440,6 +470,52 @@ export default function Page({ params }: { params: Params }) {
   <ProductCarousel products={productArray} />
 )} */}
 
+{/* atempt 2 */}
+ {/* Render AI messages */}
+ {message.sender === "AI" ? (
+      <>
+        <Avatar className="shadow-md z-10">
+          <AvatarImage src="/ai2.png" />
+          <AvatarFallback>bot</AvatarFallback>
+        </Avatar>
+        <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+          {typeof message.content === "string" ? (
+            message.content.split("\n").map((paragraph, i) => (
+              <div key={i}>
+                {paragraph.split("\n").map((line, idx) => {
+                  if (/^\d+\./.test(line.trim())) {
+                    return (
+                      <span key={idx}>
+                        {line.trim()}
+                        <br />
+                      </span>
+                    );
+                  } else {
+                    return <span key={idx}>{line.trim()}</span>;
+                  }
+                })}
+              </div>
+            ))
+          ) : (
+            // Render ProductCarousel
+            <div className="flex w-full max-w-[75%] ">
+              {message.content}
+            </div>
+          )}
+        </div>
+      </>
+    ) : (
+      // Render user messages
+      <>
+        <div className="flex w-max max-w-[75%] flex-col font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
+          {message.content}
+        </div>
+        <Avatar className="shadow-lg z-10">
+          <AvatarImage src="/human.png" className="z-10" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </>
+    )}
 
               </div>
               {/* {message.sender === 'AI' && productArray.length > 0 && (
@@ -454,7 +530,9 @@ export default function Page({ params }: { params: Params }) {
           {productArray.length > 0 && (
             <ProductCarousel products={productArray} />
           )}
+          
           {/* {messages.some(message => message.sender === 'AI') && productArray.length > 0 && <ProductCarousel products={productArray} />} */}
+          {/* message loader */}
           {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <Avatar className="shadow-md z-10">
