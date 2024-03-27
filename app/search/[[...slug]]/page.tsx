@@ -351,6 +351,7 @@ export default function Page({ params }: { params: Params }) {
 
             //attempt 3
             const productData = await productResponse.json();
+            console.log(productData);
   // Extract relevant information from productData and pass it to the ProductCarousel component
   const formattedProducts: Product[] = productData.map((product: any) => ({
     title: product.title,
@@ -407,13 +408,13 @@ export default function Page({ params }: { params: Params }) {
       <Navbar />
 
       <section className="flex justify-center h-full mb-16 bp-0  ">
-        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 border-2 border-green-500 overflow-hidden ">
+        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
           {/* attempt 1 */}
           {messages.map((message, index) => (
             <>
               <div
                 key={index}
-                className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 border-2 border-orange-400 ${
+                className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${
                   message.sender === "AI" ? "justify-start" : "justify-end"
                 }`}
               >
@@ -498,7 +499,7 @@ export default function Page({ params }: { params: Params }) {
             ))
           ) : (
             // Render ProductCarousel
-            <div className="flex w-full max-w-[75%] ">
+            <div className="flex w-full  ">
               {message.content}
             </div>
           )}
