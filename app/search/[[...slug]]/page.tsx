@@ -499,7 +499,7 @@ export default function Page({ params }: { params: Params }) {
             ))
           ) : (
             // Render ProductCarousel
-            <div className="flex w-full  ">
+            <div >
               {message.content}
             </div>
           )}
@@ -508,7 +508,7 @@ export default function Page({ params }: { params: Params }) {
     ) : (
       // Render user messages
       <>
-        <div className="flex w-max max-w-[75%] flex-col font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
+        <div className="flex w-max max-w-[75%] flex-col font-medium  gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
           {message.content}
         </div>
         <Avatar className="shadow-lg z-10">
