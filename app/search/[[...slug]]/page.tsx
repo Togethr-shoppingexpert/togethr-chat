@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ResearchLoader from "@/components/shared/ResearchLoader";
 import ProductCard from "@/components/ProductCard";
 import ProductCarousel from "@/components/ProductCarousel";
+// import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -171,13 +172,21 @@ export default function Page({ params }: { params: Params }) {
   }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
 
   //session id logic , to be replaced with conversation id logic
-  useEffect(() => {
-    const fetchSessionId = async () => {
-      try {
-        const storedConversationId = sessionStorage.getItem("conversationId");
 
-        // Fetch new session ID only if it doesn't exist in session storage or if the page is refreshed
-        if (!storedConversationId || window.performance.navigation.type === 1) {
+
+//attempt2
+useEffect(() => {
+  const storedConversationId = sessionStorage.getItem("conversationId");
+  let isNewIdGenerated = false; // Flag to track if a new ID was generated
+
+  // Check if stored conversation ID exists
+  if (storedConversationId) {
+    setConversationId(storedConversationId);
+  } else {
+    // If stored conversation ID doesn't exist, check if the page is refreshed
+    if (window.performance.navigation.type === 1) {
+      const generateNewConversationId = async () => {
+        try {
           const response = await fetch(
             "https://govoyr.com/api/WebChatbot/conversationId",
             {
@@ -196,22 +205,29 @@ export default function Page({ params }: { params: Params }) {
             const newConversationId = data.ConversationId;
             sessionStorage.setItem("conversationId", newConversationId);
             setConversationId(newConversationId);
+            isNewIdGenerated = true; // Set the flag indicating a new ID was generated
           } else {
             console.error(
               "Failed to fetch conversation ID:",
               response.statusText
             );
           }
-        } else {
-          setConversationId(storedConversationId);
+        } catch (error) {
+          console.error("Error fetching conversation ID:", error);
         }
-      } catch (error) {
-        console.error("Error fetching conversation ID:", error);
-      }
-    };
+      };
 
-    fetchSessionId();
-  }, []);
+      generateNewConversationId();
+    }
+  }
+
+  // If a new ID was not generated, set the conversation ID using the stored value
+  if (!isNewIdGenerated && storedConversationId) {
+    setConversationId(storedConversationId);
+  }
+}, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
+
+
 
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
