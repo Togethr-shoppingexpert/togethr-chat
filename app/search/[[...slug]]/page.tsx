@@ -14,70 +14,6 @@ import ProductCarousel from "@/components/ProductCarousel";
 import Image from "next/image";
 import Link from "next/link";
 
-// const products = [
-//   {
-//     name: 'Product 1',
-//     image: '/pdt.jpeg',
-//     rating: 4.5,
-//     reviews: 100,
-//     price: 1250.99
-//   },
-//   {
-//     name: 'Product 2',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-//   {
-//     name: 'Product 3',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-//   {
-//     name: 'Product 4',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-
-//   {
-//     name: 'Product 5',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-
-//   {
-//     name: 'Product 6',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-
-//   {
-//     name: 'Product 7',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-
-//   {
-//     name: 'Product 8',
-//     image: '/pdt.jpeg',
-//     rating: 4.2,
-//     reviews: 80,
-//     price: 999.99
-//   },
-//   // Add more products as needed
-// ];
-
 import Loader from "@/components/shared/Loader";
 
 interface Params {
@@ -580,7 +516,7 @@ useEffect(() => {
             type="submit"
             className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
             onClick={() => sendMessage(userMessage)} // Pass userMessage to sendMessage function
-            disabled={!userMessage.trim()}
+            disabled={!userMessage.trim() || isLoading}
           >
             &gt;
             {/* <IoIosArrowForward className='h-2/3'/> */}
