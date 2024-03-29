@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ResearchLoader from "@/components/shared/ResearchLoader";
 import ProductCard from "@/components/ProductCard";
 import ProductCarousel from "@/components/ProductCarousel";
+import ReactMarkdown from "react-markdown";
 // import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
@@ -431,31 +432,81 @@ useEffect(() => {
           <AvatarImage src="/ai2.png" />
           <AvatarFallback>bot</AvatarFallback>
         </Avatar>
-        <div className="flex w-max max-w-[75%]  font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-          {typeof message.content === "string" ? (
-            message.content.split("\n").map((paragraph, i) => (
-              <div key={i}>
-                {paragraph.split("\n").map((line, idx) => {
-                  if (/^\d+\./.test(line.trim())) {
-                    return (
-                      <span key={idx}>
-                        {line.trim()}
-                        <br />
-                      </span>
-                    );
-                  } else {
-                    return <span key={idx}>{line.trim()}</span>;
-                  }
-                })}
-              </div>
-            ))
-          ) : (
-            // Render ProductCarousel
-            <div >
-              {message.content}
-            </div>
-          )}
-        </div>
+
+        
+        {/* <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+  
+  {typeof message.content === "string" ? (
+
+    message.content.split("\n").map((paragraph, i) => (
+      <div key={i}>
+        {paragraph.split("\n").map((line, idx) => {
+          if (/^\d+\./.test(line.trim())) {
+            return (
+              <span key={idx}>
+                {line.trim()}
+                <br />
+              </span>
+            );
+          } else {
+            const productNameRegex = /^\*\*([^*]*)\*\*:/;
+            const productNameMatch = line.match(productNameRegex);
+            if (productNameMatch) {
+              const productName = productNameMatch[1];
+              const restOfLine = line.replace(productNameRegex, "");
+              return (
+                <span key={idx}>
+                  {productName}: {restOfLine}
+                  <br />
+                </span>
+              );
+            } else {
+              return (
+                <span key={idx}>
+                  {line.trim()}
+                  <br />
+                </span>
+              );
+            }
+          }
+        })}
+      </div>
+
+      
+    ))
+
+    // <ReactMarkdown>{message.content}</ReactMarkdown>
+  ) : (
+    // Render ProductCarousel
+    <div>
+      {message.content}
+    </div>
+  )}
+</div> */}
+
+
+<div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+  
+  {typeof message.content === "string" ? (
+
+   
+
+      
+
+
+    <ReactMarkdown>{message.content}</ReactMarkdown>
+  ) : (
+    // Render ProductCarousel
+    <div>
+      {message.content}
+    </div>
+  )}
+</div>
+
+
+
+
+
       </>
     ) : (
       // Render user messages
