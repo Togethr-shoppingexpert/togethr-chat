@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
+import useSmoothScrollIntoView from "@/hooks/autoscroll";
 
 
 interface Params {
@@ -68,10 +69,11 @@ export default function Page({ params }: { params: Params }) {
     }
   }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
 
-  //session id logic , to be replaced with conversation id logic
 
 
+  
 //attempt2
+//generating conversation ID.
 useEffect(() => {
   const storedConversationId = sessionStorage.getItem("conversationId");
   let isNewIdGenerated = false; // Flag to track if a new ID was generated
@@ -125,12 +127,13 @@ useEffect(() => {
 }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
 
 
-
+// handle input change
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
   };
 
  
+  //send message and set product cards logic 
  const sendMessage = async (message: string) => {
     setIsLoading(true);
 
@@ -226,6 +229,7 @@ useEffect(() => {
     }
   };
 
+  //function to trigger send message on pressing enter button
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter" && userMessage.trim() !== "") {
@@ -241,9 +245,12 @@ useEffect(() => {
     };
   }, [userMessage]); // Include messageSent in the dependency array
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+
+
+
+
+  // Call the custom hook to enable smooth auto-scrolling
+useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
   
 
   return (
