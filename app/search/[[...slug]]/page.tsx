@@ -71,7 +71,7 @@ export default function Page({ params }: { params: Params }) {
 
 
 
-  
+
 //attempt2
 //generating conversation ID.
 useEffect(() => {
@@ -384,7 +384,7 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
           <Button
             type="submit"
             className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
-            onClick={() => sendMessage(userMessage)} // Pass userMessage to sendMessage function
+            onClick={() => sendMessage(userMessage)}
             disabled={!userMessage.trim() || isLoading}
           >
             &gt;
