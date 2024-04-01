@@ -16,7 +16,7 @@ interface Params {
 interface Message {
   sender: string;
   // content: string;
-  content : JSX.Element | string;
+  content : JSX.Element | string | null;
 }
 
 interface Product {
@@ -204,12 +204,14 @@ useEffect(() => {
     prices: product.prices,
     media: product.media,
     sellers_results: product.sellers_results,
-  }));
-  // Create an AI message containing the product data as props
-  const productAiMessage: Message = {
+}));
+
+// Check if formattedProducts array is not empty before rendering
+const productAiMessage: Message = {
     sender: "AI",
-    content: <ProductCarousel products={formattedProducts} />, // Pass formattedProducts as props
-  };
+    content: formattedProducts.length > 0 ? <ProductCarousel products={formattedProducts} /> : null,
+};
+
   // Add the product AI message to messages
   setMessages((prevMessages) => [...prevMessages, productAiMessage]);
           } else {
@@ -309,17 +311,18 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
   </div>
 ) : (
   <div>
-    {Array.isArray(message.content) ? (
-      // Render ProductCarousel
-      <div>
-        {message.content}
-      </div>
-    ) : (
-      // Render other types of content
-      <div>
-        {message.content}
-      </div>
-    )}
+    {Array.isArray(message.content) && message.content.length > 0 ? (
+  // Render ProductCarousel
+  <div>
+    {message.content}
+  </div>
+) : (
+  // Render other types of content
+  <div>
+    {message.content}
+  </div>
+)}
+
   </div>
 )}
 
