@@ -7,11 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
+import  Followup  from "@/components/Followup";
 
 
 interface Params {
   slug: string[];
 }
+
+
+
 
 interface Message {
   sender: string;
@@ -34,12 +38,33 @@ export default function Page({ params }: { params: Params }) {
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
 
+
+  const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
+  const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
+
+
+
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
 
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
+
+  const [containerWidth, setContainerWidth] = useState<number>(0); // Specify the type as number
+  const containerRef = useRef<HTMLDivElement>(null); // Specify the type as HTMLDivElement
+useEffect(() => {
+    const updateContainerWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateContainerWidth();
+    window.addEventListener('resize', updateContainerWidth);
+    return () => {
+      window.removeEventListener('resize', updateContainerWidth);
+    };
+  }, []);
 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -253,6 +278,14 @@ const productAiMessage: Message = {
 
   // Call the custom hook to enable smooth auto-scrolling
 useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
+
+//set followupcomponent width 
+// Calculate input width
+useEffect(() => {
+  if (inputRef.current) {
+    setInputWidth(inputRef.current.offsetWidth);
+  }
+}, []);
   
 
   return (
@@ -276,7 +309,7 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
  {message.sender === "AI" ? (
       <>
         <Avatar className="shadow-md z-10">
-          <AvatarImage src="/ai2.png" />
+          <AvatarImage src="/ai3.png" />
           <AvatarFallback>bot</AvatarFallback>
         </Avatar>
 
@@ -342,7 +375,7 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
           {message.content}
         </div>
         <Avatar className="shadow-lg z-10">
-          <AvatarImage src="/human.png" className="z-10" />
+          <AvatarImage src="/user.png" className="z-10" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </>
@@ -361,7 +394,7 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
           {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <Avatar className="shadow-md z-10">
-                <AvatarImage src="/ai2.png" />
+                <AvatarImage src="/ai3.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div className="space-y-2">
@@ -377,13 +410,18 @@ useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling w
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
         <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">
+      
           <Input
+            ref={inputRef}
             type="email"
             placeholder="Find your product"
             className="transition border-[#141414] bg-black shadow-lg text-white rounded-xl h-full z-1000"
             value={userMessage}
             onChange={(e) => handleInputChange(e.target.value)}
           />
+         
+            {/* <Followup containerWidth={containerWidth}/> */}
+         
           <Button
             type="submit"
             className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
