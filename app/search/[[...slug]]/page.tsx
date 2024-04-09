@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
 import  Followup  from "@/components/Followup";
-
+import  {ResearchComponent } from "@/components/ResearchComponent";
 
 interface Params {
   slug: string[];
@@ -30,6 +30,11 @@ interface Product {
   media: { link: string }[];
   sellers_results: { online_sellers: { link: string }[] };
 }
+
+const item = {
+  title: 'Section 1',
+  content: 'Content for section 1',
+};
 
 export default function Page({ params }: { params: Params }) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -158,52 +163,394 @@ useEffect(() => {
   };
 
  
-  //send message and set product cards logic 
- const sendMessage = async (message: string) => {
-    setIsLoading(true);
+  //send message and set product cards logic attempt 1 
+//  const sendMessage = async (message: string) => {
+//     setIsLoading(true);
 
-    const conversationId = sessionStorage.getItem("conversationId");
-    if (!conversationId) {
-      console.error("Conversation ID not found in local storage.");
-      setIsLoading(false);
-      return;
-    }
+//     const conversationId = sessionStorage.getItem("conversationId");
+//     if (!conversationId) {
+//       console.error("Conversation ID not found in local storage.");
+//       setIsLoading(false);
+//       return;
+//     }
 
-    const newMessage: Message = { sender: "user", content: message };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setUserMessage("");
+//     const newMessage: Message = { sender: "user", content: message };
+//     setMessages((prevMessages) => [...prevMessages, newMessage]);
+//     setUserMessage("");
 
-    try {
-      const response = await fetch(
-        "https://govoyr.com/api/WebChatbot/message",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokenRef.current}`,
-          },
-          body: JSON.stringify({
-            userMessage: message,
-            id: conversationId,
-          }),
-        }
-      );
+//     try {
+//       const response = await fetch(
+//         "https://govoyr.com/api/WebChatbot/message",
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${authTokenRef.current}`,
+//           },
+//           body: JSON.stringify({
+//             userMessage: message,
+//             id: conversationId,
+//           }),
+//         }
+//       );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Response from backend:", data);
+//       if (response.ok) {
+//         const data = await response.json();
+//         console.log("Response from backend:", data);
 
-        const aiResponse = data.AI_Response;
-        console.log("AI Response:", aiResponse);
+//         const aiResponse = data.AI_Response;
+//         console.log("AI Response:", aiResponse);
 
-        const isCurationRequired = data.curration; // Corrected spelling
+//         const isCurationRequired = data.curration; // Corrected spelling
+//         //product flag
+//         const isPdtFlag = data.productFlag;
 
-        console.log("Is Curation Required:", isCurationRequired);
+//         console.log("Is Curation Required:", isCurationRequired);
+//         console.log("is product flag:" , isPdtFlag);
 
-        const newAiMessage: Message = { sender: "AI", content: aiResponse };
-        setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+//         const newAiMessage: Message = { sender: "AI", content: aiResponse };
+//         setMessages((prevMessages) => [...prevMessages, newAiMessage]);
 
-        if (isCurationRequired) {
+//         if (isCurationRequired){
+//           const productResponse = await fetch(
+//             "https://govoyr.com/api/WebChatbot/product",
+//             {
+//               method: "POST",
+//               headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: `Bearer ${authTokenRef.current}`,
+//               },
+//               body: JSON.stringify({
+//                 MessageId: data.MessageId,
+//               }),
+//             }
+//           );
+
+//           if (productResponse.ok) {
+//             //attempt 3
+//             const productData = await productResponse.json();
+//             console.log(productData);
+//   // Extract relevant information from productData and pass it to the ProductCarousel component
+//   const formattedProducts: Product[] = productData.map((product: any) => ({
+//     title: product.title,
+//     rating: product.rating,
+//     prices: product.prices,
+//     media: product.media,
+//     sellers_results: product.sellers_results,
+// }));
+
+// // Check if formattedProducts array is not empty before rendering
+// const productAiMessage: Message = {
+//     sender: "AI",
+//     content: formattedProducts.length > 0 ? <ProductCarousel products={formattedProducts} /> : null,
+// };
+
+//   // Add the product AI message to messages
+//   setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+//           } else {
+//             console.error(
+//               "Failed to fetch products:",
+//               productResponse.statusText
+//             );
+//           }
+//         }
+//       } else {
+//         console.error("Failed to send message:", response.statusText);
+//       }
+//     } catch (error) {
+//       console.error("Error sending message:", error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//attempt 2 
+// const sendMessage = async (message: string) => {
+//   setIsLoading(true);
+
+//   const conversationId = sessionStorage.getItem("conversationId");
+//   if (!conversationId) {
+//     console.error("Conversation ID not found in local storage.");
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   const newMessage: Message = { sender: "user", content: message };
+//   setMessages((prevMessages) => [...prevMessages, newMessage]);
+//   setUserMessage("");
+
+//   try {
+//     const response = await fetch(
+//       // "https://govoyr.com/api/WebChatbot/message",
+//       "https://9475-20-219-1-67.ngrok-free.app/WebChatbot/message",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${authTokenRef.current}`,
+//         },
+//         body: JSON.stringify({
+//           userMessage: message,
+//           id: conversationId,
+//         }),
+//       }
+//     );
+
+//     if (response.ok) {
+//       const data = await response.json();
+//       console.log("Response from backend:", data);
+
+//       const aiResponse = data.AI_Response;
+//       console.log("AI Response:", aiResponse);
+
+//       const isCurationRequired = data.curration; // Corrected spelling
+//       //product flag
+//       const isPdtFlag = data.productFlag;
+
+//       console.log("Is Curation Required:", isCurationRequired);
+//       console.log("Is Product Flag:", isPdtFlag);
+
+//       const newAiMessage: Message = { sender: "AI", content: aiResponse };
+//       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+
+//       if (isCurationRequired) {
+//         if (!isPdtFlag) {
+//           const productResponse = await fetch(
+//             "https://govoyr.com/api/WebChatbot/product",
+//             {
+//               method: "POST",
+//               headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: `Bearer ${authTokenRef.current}`,
+//               },
+//               body: JSON.stringify({
+//                 MessageId: data.MessageId,
+//               }),
+//             }
+//           );
+
+//           if (productResponse.ok) {
+//             const productData = await productResponse.json();
+//             console.log(productData);
+
+//             // Extract relevant information from productData and pass it to the ProductCarousel component
+//             const formattedProducts: Product[] = productData.map((product: any) => ({
+//               title: product.title,
+//               rating: product.rating,
+//               prices: product.prices,
+//               media: product.media,
+//               sellers_results: product.sellers_results,
+//             }));
+
+//             // Render the products from the product API in the ProductCarousel component
+//             const productAiMessage: Message = {
+//               sender: "AI",
+//               content: <ProductCarousel products={formattedProducts} />,
+//             };
+
+//             // Add the product AI message to messages
+//             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+//           } else {
+//             console.error(
+//               "Failed to fetch products:",
+//               productResponse.statusText
+//             );
+//           }
+//         } else {
+//           // Directly get the products array from AI response and render the ProductCarousel component
+//           const productsFromAI = aiResponse.products;
+//           console.log(aiResponse.products);
+     
+//           const formattedProducts: Product[] = productsFromAI.map((product: any) => ({
+//             title: product.title,
+//             rating: product.rating,
+//             prices: product.prices,
+//             media: product.media,
+//             sellers_results: product.sellers_results,
+//           }
+        
+//         ));
+          
+//           const productAiMessage: Message = {
+//             sender: "AI",
+//             content: <ProductCarousel products={formattedProducts}/>,
+//           };
+//           // Add the product AI message to messages
+//           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+       
+//         }
+//       }
+//     } else {
+//       console.error("Failed to send message:", response.statusText);
+//     }
+//   } catch (error) {
+//     console.error("Error sending message:", error);
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
+//attempt 3 // did not get map error
+// const sendMessage = async (message: string) => {
+//   setIsLoading(true);
+
+//   const conversationId = sessionStorage.getItem("conversationId");
+//   if (!conversationId) {
+//     console.error("Conversation ID not found in local storage.");
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   const newMessage: Message = { sender: "user", content: message };
+//   setMessages((prevMessages) => [...prevMessages, newMessage]);
+//   setUserMessage("");
+
+//   try {
+//     const response = await fetch(
+//       "https://9475-20-219-1-67.ngrok-free.app/WebChatbot/message",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${authTokenRef.current}`,
+//         },
+//         body: JSON.stringify({
+//           userMessage: message,
+//           id: conversationId,
+//         }),
+//       }
+//     );
+
+//     if (response.ok) {
+//       const data = await response.json();
+//       console.log("Response from backend:", data);
+
+//       const aiResponse = data.AI_Response;
+//       console.log("AI Response:", aiResponse);
+
+//       const isCurationRequired = data.curration; // Corrected spelling
+//       const isPdtFlag = data.productFlag;
+
+//       console.log("Is Curation Required:", isCurationRequired);
+//       console.log("Is Product Flag:", isPdtFlag);
+
+//       const newAiMessage: Message = { sender: "AI", content: aiResponse };
+//       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+
+//       if (isCurationRequired && aiResponse.products !== undefined) {
+//         if (!isPdtFlag) {
+//           const productResponse = await fetch(
+//             "https://govoyr.com/api/WebChatbot/product",
+//             {
+//               method: "POST",
+//               headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: `Bearer ${authTokenRef.current}`,
+//               },
+//               body: JSON.stringify({
+//                 MessageId: data.MessageId,
+//               }),
+//             }
+//           );
+
+//           if (productResponse.ok) {
+//             const productData = await productResponse.json();
+//             console.log(productData);
+
+//             const formattedProducts: Product[] = productData.map((product: any) => ({
+//               title: product.title,
+//               rating: product.rating,
+//               prices: product.prices,
+//               media: product.media,
+//               sellers_results: product.sellers_results,
+//             }));
+
+//             const productAiMessage: Message = {
+//               sender: "AI",
+//               content: <ProductCarousel products={formattedProducts} />,
+//             };
+//             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+//           } else {
+//             console.error(
+//               "Failed to fetch products:",
+//               productResponse.statusText
+//             );
+//           }
+//         } else {
+//           const formattedProducts: Product[] = aiResponse.products.map((product: any) => ({
+//             title: product.title,
+//             rating: product.rating,
+//             prices: product.prices,
+//             media: product.media,
+//             sellers_results: product.sellers_results,
+//           }));
+          
+//           const productAiMessage: Message = {
+//             sender: "AI",
+//             content: <ProductCarousel products={formattedProducts}/>,
+//           };
+//           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+//         }
+//       }
+//     } else {
+//       console.error("Failed to send message:", response.statusText);
+//     }
+//   } catch (error) {
+//     console.error("Error sending message:", error);
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
+//attempt 4 
+const sendMessage = async (message: string) => {
+  setIsLoading(true);
+
+  const conversationId = sessionStorage.getItem("conversationId");
+  if (!conversationId) {
+    console.error("Conversation ID not found in local storage.");
+    setIsLoading(false);
+    return;
+  }
+
+  const newMessage: Message = { sender: "user", content: message };
+  setMessages((prevMessages) => [...prevMessages, newMessage]);
+  setUserMessage("");
+
+  try {
+    const response = await fetch(
+      "https://govoyr.com/api/WebChatbot/message",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokenRef.current}`,
+        },
+        body: JSON.stringify({
+          userMessage: message,
+          id: conversationId,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Response from backend:", data);
+
+      const aiResponse = data.AI_Response;
+      console.log("AI Response:", aiResponse);
+
+      const isCurationRequired = data.curration; // Corrected spelling
+      const isPdtFlag = data.productFlag;
+
+      console.log("Is Curation Required:", isCurationRequired);
+      console.log("Is Product Flag:", isPdtFlag);
+
+      const newAiMessage: Message = { sender: "AI", content: aiResponse };
+      setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+
+      if (isCurationRequired) {
+        if (!isPdtFlag && aiResponse.products === undefined) {
           const productResponse = await fetch(
             "https://govoyr.com/api/WebChatbot/product",
             {
@@ -219,42 +566,58 @@ useEffect(() => {
           );
 
           if (productResponse.ok) {
-            //attempt 3
             const productData = await productResponse.json();
             console.log(productData);
-  // Extract relevant information from productData and pass it to the ProductCarousel component
-  const formattedProducts: Product[] = productData.map((product: any) => ({
-    title: product.title,
-    rating: product.rating,
-    prices: product.prices,
-    media: product.media,
-    sellers_results: product.sellers_results,
-}));
 
-// Check if formattedProducts array is not empty before rendering
-const productAiMessage: Message = {
-    sender: "AI",
-    content: formattedProducts.length > 0 ? <ProductCarousel products={formattedProducts} /> : null,
-};
+            const formattedProducts: Product[] = productData.map((product: any) => ({
+              title: product.title,
+              rating: product.rating,
+              prices: product.prices,
+              media: product.media,
+              sellers_results: product.sellers_results,
+            }));
 
-  // Add the product AI message to messages
-  setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+            const productAiMessage: Message = {
+              sender: "AI",
+              content: <ProductCarousel products={formattedProducts} />,
+            };
+            setMessages((prevMessages) => [...prevMessages, productAiMessage]);
           } else {
             console.error(
               "Failed to fetch products:",
               productResponse.statusText
             );
           }
+        } else if (isPdtFlag || data.products !== undefined) {
+          const productsFromAI = data.products || [];
+          console.log(aiResponse.products);
+          console.log(productsFromAI);
+          const formattedProducts: Product[] = productsFromAI.map((product: any) => ({
+            title: product.title,
+            rating: product.rating,
+            prices: product.prices,
+            media: product.media,
+            sellers_results: product.sellers_results,
+          }));
+          const productAiMessage: Message = {
+            sender: "AI",
+            content: <ProductCarousel products={formattedProducts} />,
+          };
+          setMessages((prevMessages) => [...prevMessages, productAiMessage]);
         }
-      } else {
-        console.error("Failed to send message:", response.statusText);
       }
-    } catch (error) {
-      console.error("Error sending message:", error);
-    } finally {
-      setIsLoading(false);
+    } else {
+      console.error("Failed to send message:", response.statusText);
     }
-  };
+  } catch (error) {
+    console.error("Error sending message:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
 
   //function to trigger send message on pressing enter button
   useEffect(() => {
@@ -390,6 +753,8 @@ useEffect(() => {
             <ProductCarousel products={productArray} />
           )}
           
+          {/* <ResearchComponent/> */}
+
           {/* message loader */}
           {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">

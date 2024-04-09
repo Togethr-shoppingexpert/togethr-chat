@@ -199,14 +199,14 @@ const ProductCarousel = ({ products }) => {
                         src={product.media[0].link}
                       />
                     </div>
-                    <CardHeader className="p-4 pb-2">
+                    <CardHeader className="p-4 pb-1">
                       <p className="font-semibold overflow-hidden mt-3 text-base md:text-lg truncate">
                         {product.title.length > 22 ? product.title.substring(0, 22) + '....' : product.title}
                       </p>
                       <div className="font-semibold text-base"> Price : {product.prices[0]}</div>
                     </CardHeader>
                     <CardContent className="p-4 text-sm">
-                      <p className="line-clamp-3 mt-1">
+                      <p className="line-clamp-3">
                         Rating : <span className='font-bold text-xl'>{product.rating}</span> stars
                       </p>
                     </CardContent>
