@@ -46,6 +46,7 @@ export default function Home() {
       localStorage.setItem('UserID', data.User.UserId);
 
       localStorage.setItem('token', data.token);
+      authTokenRef.current = data.token;
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -58,22 +59,41 @@ export default function Home() {
 
 
 // fetch authtoken from localstorage. 
+// useEffect(() => {
+//   //attempt1
+//   const fetchAuthToken = async () => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//       authTokenRef.current = token;
+//     } else {
+//       console.log("token not found");
+//     }
+//   };
+// fetchAuthToken();
+// }, []);
+
+//attempt2 
 useEffect(() => {
   const fetchAuthToken = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      authTokenRef.current = token;
-    } else {
-      console.log("token not found");
+    try {
+      const authToken = localStorage.getItem('token');
+      console.log("Retrieved token:", authToken);
+      if (authToken) {
+        authTokenRef.current = authToken;
+      } else {
+        console.log("Token not found in localStorage");
+      }
+    } catch (error) {
+      console.error('Error fetching token:', error);
     }
   };
-fetchAuthToken();
+
+  fetchAuthToken();
 }, []);
-
-
 
 //session id logic
 //to get conversation ID 
+// attempt 1 
 useEffect(() => {
   const getSessionId = async () => {
     try {
@@ -102,7 +122,89 @@ useEffect(() => {
   getSessionId();
 }, []);
 
-  const buttons = [
+console.log(token);
+
+//attempt 1 
+// useEffect(() => {
+//   const getSessionId = async () => {
+//     try {
+//       const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({
+//           platform: "web",
+//         })
+//       });
+//       if (response.ok) {
+//         const data = await response.json();
+//         const newConversationId = data.ConversationId;
+//         sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+//       } else {
+//         console.error('Failed to fetch conversation ID:', response.statusText);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching conversation ID:', error);
+//     }
+//   };
+
+//   getSessionId();
+// }, []);
+
+
+//attempt2
+// useEffect(() => {
+//   const getSessionId = async () => {
+//     try {
+//       // Retrieve token from local storage
+//       // const authToken = localStorage.getItem('token');
+//       // if (!authToken) {
+//       //   console.error('Token not found in localStorage');
+//       //   return;
+//       // }
+
+//       const authToken = localStorage.getItem('token');
+// if (authToken) {
+//   authTokenRef.current = authToken;
+// } else {
+//   console.log("Token not found in localStorage");
+// }
+
+//       // Make fetch request with the retrieved token
+//       const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${authToken}`,
+//         },
+//         body: JSON.stringify({
+//           platform: "web",
+//         })
+//       });
+
+//       console.log("Request Headers:", response.headers);
+
+//       if (response.ok) {
+//         const data = await response.json();
+//         const newConversationId = data.ConversationId;
+//         sessionStorage.setItem('conversationId', newConversationId);
+//       } else {
+//         console.error('Failed to fetch conversation ID:', response.statusText);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching conversation ID:', error);
+//     }
+//   };
+
+//   // Call getSessionId after the component mounts
+//   getSessionId();
+// }, []); // Empty dependency array to ensure it only runs once after component mount
+
+
+
+const buttons = [
     "bluetooth earbuds for running",
     "phones with great camera",
     "massager for neck pain",

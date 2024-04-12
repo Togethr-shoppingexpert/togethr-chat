@@ -1,4 +1,9 @@
 "use client";
+// import  WebSocket  from 'websocket';
+
+// import  {w3cwebsocket as WebSocket } from 'websocket';
+// import io from 'socket.io-client';
+
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -7,20 +12,20 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
-import  Followup  from "@/components/Followup";
-import  {ResearchComponent } from "@/components/ResearchComponent";
+import Followup from "@/components/Followup";
+import { ResearchComponent } from "@/components/ResearchComponent";
+import ResearchLoader from "@/components/shared/ResearchLoader"
+
+ const ws = new WebSocket('wss://govoyr.com/ws/1213');
 
 interface Params {
   slug: string[];
 }
 
-
-
-
 interface Message {
   sender: string;
   // content: string;
-  content : JSX.Element | string | null;
+  content: JSX.Element | string | null;
 }
 
 interface Product {
@@ -32,8 +37,8 @@ interface Product {
 }
 
 const item = {
-  title: 'Section 1',
-  content: 'Content for section 1',
+  title: "Section 1",
+  content: "Content for section 1",
 };
 
 export default function Page({ params }: { params: Params }) {
@@ -43,11 +48,8 @@ export default function Page({ params }: { params: Params }) {
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
 
-
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
-
-
 
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
@@ -58,19 +60,18 @@ export default function Page({ params }: { params: Params }) {
 
   const [containerWidth, setContainerWidth] = useState<number>(0); // Specify the type as number
   const containerRef = useRef<HTMLDivElement>(null); // Specify the type as HTMLDivElement
-useEffect(() => {
+  useEffect(() => {
     const updateContainerWidth = () => {
       if (containerRef.current) {
         setContainerWidth(containerRef.current.offsetWidth);
       }
     };
     updateContainerWidth();
-    window.addEventListener('resize', updateContainerWidth);
+    window.addEventListener("resize", updateContainerWidth);
     return () => {
-      window.removeEventListener('resize', updateContainerWidth);
+      window.removeEventListener("resize", updateContainerWidth);
     };
   }, []);
-
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageSentRef = useRef<boolean>(false);
@@ -89,8 +90,7 @@ useEffect(() => {
     fetchAuthToken();
   }, []);
 
-  
-// decoding the user query from URL and setting in the input field as soon as we come on this page
+  // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
     if (searchQuery && !messageSentRef.current) {
       sendMessage(decodeURIComponent(searchQuery));
@@ -99,525 +99,367 @@ useEffect(() => {
     }
   }, [searchQuery]); // Empty dependency array to trigger only once when component mounts
 
+  //attempt2
+  //generating conversation ID.
+  useEffect(() => {
+    const storedConversationId = sessionStorage.getItem("conversationId");
+    let isNewIdGenerated = false; // Flag to track if a new ID was generated
 
-
-
-//attempt2
-//generating conversation ID.
-useEffect(() => {
-  const storedConversationId = sessionStorage.getItem("conversationId");
-  let isNewIdGenerated = false; // Flag to track if a new ID was generated
-
-  // Check if stored conversation ID exists
-  if (storedConversationId) {
-    setConversationId(storedConversationId);
-  } else {
-    // If stored conversation ID doesn't exist, check if the page is refreshed
-    if (window.performance.navigation.type === 1) {
-      const generateNewConversationId = async () => {
-        try {
-          const response = await fetch(
-            "https://govoyr.com/api/WebChatbot/conversationId",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
-              },
-              body: JSON.stringify({
-                platform: "web",
-              }),
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            const newConversationId = data.ConversationId;
-            sessionStorage.setItem("conversationId", newConversationId);
-            setConversationId(newConversationId);
-            isNewIdGenerated = true; // Set the flag indicating a new ID was generated
-          } else {
-            console.error(
-              "Failed to fetch conversation ID:",
-              response.statusText
+    // Check if stored conversation ID exists
+    if (storedConversationId) {
+      setConversationId(storedConversationId);
+    } else {
+      // If stored conversation ID doesn't exist, check if the page is refreshed
+      if (window.performance.navigation.type === 1 || window.performance.navigation.type == 0) {
+        const generateNewConversationId = async () => {
+          try {
+            const response = await fetch(
+              "https://govoyr.com/api/WebChatbot/conversationId",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${authTokenRef.current}`,
+                },
+                body: JSON.stringify({
+                  platform: "web",
+                }),
+              }
             );
+            if (response.ok) {
+              const data = await response.json();
+              const newConversationId = data.ConversationId;
+              sessionStorage.setItem("conversationId", newConversationId);
+              setConversationId(newConversationId);
+              isNewIdGenerated = true; // Set the flag indicating a new ID was generated
+            } else {
+              console.error(
+                "Failed to fetch conversation ID:",
+                response.statusText
+              );
+            }
+          } catch (error) {
+            console.error("Error fetching conversation ID:", error);
           }
-        } catch (error) {
-          console.error("Error fetching conversation ID:", error);
-        }
-      };
+        };
 
-      generateNewConversationId();
+        generateNewConversationId();
+      }
     }
-  }
 
-  // If a new ID was not generated, set the conversation ID using the stored value
-  if (!isNewIdGenerated && storedConversationId) {
-    setConversationId(storedConversationId);
-  }
-}, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
+    // If a new ID was not generated, set the conversation ID using the stored value
+    if (!isNewIdGenerated && storedConversationId) {
+      setConversationId(storedConversationId);
+    }
+  }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
+
+  
 
 
-// handle input change
+  // handle input change
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
   };
 
- 
-  //send message and set product cards logic attempt 1 
-//  const sendMessage = async (message: string) => {
-//     setIsLoading(true);
+  
 
-//     const conversationId = sessionStorage.getItem("conversationId");
-//     if (!conversationId) {
-//       console.error("Conversation ID not found in local storage.");
-//       setIsLoading(false);
-//       return;
-//     }
+  //attempt 4
 
-//     const newMessage: Message = { sender: "user", content: message };
-//     setMessages((prevMessages) => [...prevMessages, newMessage]);
-//     setUserMessage("");
+  // const sendMessage = async (message: string) => {
+  //   setIsLoading(true);
 
-//     try {
-//       const response = await fetch(
-//         "https://govoyr.com/api/WebChatbot/message",
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${authTokenRef.current}`,
-//           },
-//           body: JSON.stringify({
-//             userMessage: message,
-//             id: conversationId,
-//           }),
-//         }
-//       );
+  //   const conversationId = sessionStorage.getItem("conversationId");
+  //   if (!conversationId) {
+  //     console.error("Conversation ID not found in local storage.");
+  //     setIsLoading(false);
+  //     return;
+  //   }
 
-//       if (response.ok) {
-//         const data = await response.json();
-//         console.log("Response from backend:", data);
+  //   const newMessage: Message = { sender: "user", content: message };
+  //   setMessages((prevMessages) => [...prevMessages, newMessage]);
+  //   setUserMessage("");
 
-//         const aiResponse = data.AI_Response;
-//         console.log("AI Response:", aiResponse);
+  //   try {
+  //     ws.onopen = (event) => {
+  //       console.log('LOG:: Connected ',event);
+  //     }
+  
+  //     ws.onclose = (event) => {
+  //       console.log('LOG:: Closed ',event);
+  //     }
+  
+  //     ws.onmessage = (event) => {
+  //       console.log('LOG:: onMessage ',event);
+  //     }
+  
+  //     ws.onerror = (event) => {
+  //       console.log('LOG:: Error',event);
+  //     }
+  
+  //     // send message after 2 secs  
+  //     setTimeout(()=>{
+  //       ws.send('I am trying');
+  //     },2000);
+      
+  //     const response = await fetch(
+  //       "https://govoyr.com/api/WebChatbot/message",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${authTokenRef.current}`,
+  //         },
+  //         body: JSON.stringify({
+  //           userMessage: message,
+  //           id: conversationId,
+  //           // id:convnId,
+  //         }),
+  //       }
+  //     );
 
-//         const isCurationRequired = data.curration; // Corrected spelling
-//         //product flag
-//         const isPdtFlag = data.productFlag;
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log("Response from backend:", data);
 
-//         console.log("Is Curation Required:", isCurationRequired);
-//         console.log("is product flag:" , isPdtFlag);
+  //       const aiResponse = data.AI_Response;
+  //       console.log("AI Response:", aiResponse);
 
-//         const newAiMessage: Message = { sender: "AI", content: aiResponse };
-//         setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+  //       const isCurationRequired = data.curration; // Corrected spelling
+  //       const isPdtFlag = data.productFlag;
 
-//         if (isCurationRequired){
-//           const productResponse = await fetch(
-//             "https://govoyr.com/api/WebChatbot/product",
-//             {
-//               method: "POST",
-//               headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${authTokenRef.current}`,
-//               },
-//               body: JSON.stringify({
-//                 MessageId: data.MessageId,
-//               }),
-//             }
-//           );
+  //       console.log("Is Curation Required:", isCurationRequired);
+  //       console.log("Is Product Flag:", isPdtFlag);
 
-//           if (productResponse.ok) {
-//             //attempt 3
-//             const productData = await productResponse.json();
-//             console.log(productData);
-//   // Extract relevant information from productData and pass it to the ProductCarousel component
-//   const formattedProducts: Product[] = productData.map((product: any) => ({
-//     title: product.title,
-//     rating: product.rating,
-//     prices: product.prices,
-//     media: product.media,
-//     sellers_results: product.sellers_results,
-// }));
+  //       const newAiMessage: Message = { sender: "AI", content: aiResponse };
+  //       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
 
-// // Check if formattedProducts array is not empty before rendering
-// const productAiMessage: Message = {
-//     sender: "AI",
-//     content: formattedProducts.length > 0 ? <ProductCarousel products={formattedProducts} /> : null,
-// };
+  //       if (isCurationRequired) {
+  //         if (!isPdtFlag && aiResponse.products === undefined) {
+  //           const productResponse = await fetch(
+  //             "https://govoyr.com/api/WebChatbot/product",
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //                 Authorization: `Bearer ${authTokenRef.current}`,
+  //               },
+  //               body: JSON.stringify({
+  //                 MessageId: data.MessageId,
+  //               }),
+  //             }
+  //           );
 
-//   // Add the product AI message to messages
-//   setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-//           } else {
-//             console.error(
-//               "Failed to fetch products:",
-//               productResponse.statusText
-//             );
-//           }
-//         }
-//       } else {
-//         console.error("Failed to send message:", response.statusText);
-//       }
-//     } catch (error) {
-//       console.error("Error sending message:", error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  //           if (productResponse.ok) {
+  //             const productData = await productResponse.json();
+  //             console.log(productData);
 
-//attempt 2 
-// const sendMessage = async (message: string) => {
-//   setIsLoading(true);
+  //             const formattedProducts: Product[] = productData.map(
+  //               (product: any) => ({
+  //                 title: product.title,
+  //                 rating: product.rating,
+  //                 prices: product.prices,
+  //                 media: product.media,
+  //                 sellers_results: product.sellers_results,
+  //               })
+  //             );
 
-//   const conversationId = sessionStorage.getItem("conversationId");
-//   if (!conversationId) {
-//     console.error("Conversation ID not found in local storage.");
-//     setIsLoading(false);
-//     return;
-//   }
+  //             const productAiMessage: Message = {
+  //               sender: "AI",
+  //               content: <ProductCarousel products={formattedProducts} />,
+  //             };
+  //             setMessages((prevMessages) => [
+  //               ...prevMessages,
+  //               productAiMessage,
+  //             ]);
+  //           } else {
+  //             console.error(
+  //               "Failed to fetch products:",
+  //               productResponse.statusText
+  //             );
+  //           }
+  //         } else if (isPdtFlag || data.products !== undefined) {
+  //           const productsFromAI = data.products || [];
+  //           console.log(aiResponse.products);
+  //           console.log(productsFromAI);
+  //           const formattedProducts: Product[] = productsFromAI.map(
+  //             (product: any) => ({
+  //               title: product.title,
+  //               rating: product.rating,
+  //               prices: product.prices,
+  //               media: product.media,
+  //               sellers_results: product.sellers_results,
+  //             })
+  //           );
+  //           const productAiMessage: Message = {
+  //             sender: "AI",
+  //             content: <ProductCarousel products={formattedProducts} />,
+  //           };
+  //           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+  //         }
+  //       }
+  //     } else {
+  //       console.error("Failed to send message:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending message:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-//   const newMessage: Message = { sender: "user", content: message };
-//   setMessages((prevMessages) => [...prevMessages, newMessage]);
-//   setUserMessage("");
-
-//   try {
-//     const response = await fetch(
-//       // "https://govoyr.com/api/WebChatbot/message",
-//       "https://9475-20-219-1-67.ngrok-free.app/WebChatbot/message",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${authTokenRef.current}`,
-//         },
-//         body: JSON.stringify({
-//           userMessage: message,
-//           id: conversationId,
-//         }),
-//       }
-//     );
-
-//     if (response.ok) {
-//       const data = await response.json();
-//       console.log("Response from backend:", data);
-
-//       const aiResponse = data.AI_Response;
-//       console.log("AI Response:", aiResponse);
-
-//       const isCurationRequired = data.curration; // Corrected spelling
-//       //product flag
-//       const isPdtFlag = data.productFlag;
-
-//       console.log("Is Curation Required:", isCurationRequired);
-//       console.log("Is Product Flag:", isPdtFlag);
-
-//       const newAiMessage: Message = { sender: "AI", content: aiResponse };
-//       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
-//       if (isCurationRequired) {
-//         if (!isPdtFlag) {
-//           const productResponse = await fetch(
-//             "https://govoyr.com/api/WebChatbot/product",
-//             {
-//               method: "POST",
-//               headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${authTokenRef.current}`,
-//               },
-//               body: JSON.stringify({
-//                 MessageId: data.MessageId,
-//               }),
-//             }
-//           );
-
-//           if (productResponse.ok) {
-//             const productData = await productResponse.json();
-//             console.log(productData);
-
-//             // Extract relevant information from productData and pass it to the ProductCarousel component
-//             const formattedProducts: Product[] = productData.map((product: any) => ({
-//               title: product.title,
-//               rating: product.rating,
-//               prices: product.prices,
-//               media: product.media,
-//               sellers_results: product.sellers_results,
-//             }));
-
-//             // Render the products from the product API in the ProductCarousel component
-//             const productAiMessage: Message = {
-//               sender: "AI",
-//               content: <ProductCarousel products={formattedProducts} />,
-//             };
-
-//             // Add the product AI message to messages
-//             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-//           } else {
-//             console.error(
-//               "Failed to fetch products:",
-//               productResponse.statusText
-//             );
-//           }
-//         } else {
-//           // Directly get the products array from AI response and render the ProductCarousel component
-//           const productsFromAI = aiResponse.products;
-//           console.log(aiResponse.products);
-     
-//           const formattedProducts: Product[] = productsFromAI.map((product: any) => ({
-//             title: product.title,
-//             rating: product.rating,
-//             prices: product.prices,
-//             media: product.media,
-//             sellers_results: product.sellers_results,
-//           }
-        
-//         ));
-          
-//           const productAiMessage: Message = {
-//             sender: "AI",
-//             content: <ProductCarousel products={formattedProducts}/>,
-//           };
-//           // Add the product AI message to messages
-//           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-       
-//         }
-//       }
-//     } else {
-//       console.error("Failed to send message:", response.statusText);
-//     }
-//   } catch (error) {
-//     console.error("Error sending message:", error);
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
-
-//attempt 3 // did not get map error
-// const sendMessage = async (message: string) => {
-//   setIsLoading(true);
-
-//   const conversationId = sessionStorage.getItem("conversationId");
-//   if (!conversationId) {
-//     console.error("Conversation ID not found in local storage.");
-//     setIsLoading(false);
-//     return;
-//   }
-
-//   const newMessage: Message = { sender: "user", content: message };
-//   setMessages((prevMessages) => [...prevMessages, newMessage]);
-//   setUserMessage("");
-
-//   try {
-//     const response = await fetch(
-//       "https://9475-20-219-1-67.ngrok-free.app/WebChatbot/message",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${authTokenRef.current}`,
-//         },
-//         body: JSON.stringify({
-//           userMessage: message,
-//           id: conversationId,
-//         }),
-//       }
-//     );
-
-//     if (response.ok) {
-//       const data = await response.json();
-//       console.log("Response from backend:", data);
-
-//       const aiResponse = data.AI_Response;
-//       console.log("AI Response:", aiResponse);
-
-//       const isCurationRequired = data.curration; // Corrected spelling
-//       const isPdtFlag = data.productFlag;
-
-//       console.log("Is Curation Required:", isCurationRequired);
-//       console.log("Is Product Flag:", isPdtFlag);
-
-//       const newAiMessage: Message = { sender: "AI", content: aiResponse };
-//       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
-//       if (isCurationRequired && aiResponse.products !== undefined) {
-//         if (!isPdtFlag) {
-//           const productResponse = await fetch(
-//             "https://govoyr.com/api/WebChatbot/product",
-//             {
-//               method: "POST",
-//               headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${authTokenRef.current}`,
-//               },
-//               body: JSON.stringify({
-//                 MessageId: data.MessageId,
-//               }),
-//             }
-//           );
-
-//           if (productResponse.ok) {
-//             const productData = await productResponse.json();
-//             console.log(productData);
-
-//             const formattedProducts: Product[] = productData.map((product: any) => ({
-//               title: product.title,
-//               rating: product.rating,
-//               prices: product.prices,
-//               media: product.media,
-//               sellers_results: product.sellers_results,
-//             }));
-
-//             const productAiMessage: Message = {
-//               sender: "AI",
-//               content: <ProductCarousel products={formattedProducts} />,
-//             };
-//             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-//           } else {
-//             console.error(
-//               "Failed to fetch products:",
-//               productResponse.statusText
-//             );
-//           }
-//         } else {
-//           const formattedProducts: Product[] = aiResponse.products.map((product: any) => ({
-//             title: product.title,
-//             rating: product.rating,
-//             prices: product.prices,
-//             media: product.media,
-//             sellers_results: product.sellers_results,
-//           }));
-          
-//           const productAiMessage: Message = {
-//             sender: "AI",
-//             content: <ProductCarousel products={formattedProducts}/>,
-//           };
-//           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-//         }
-//       }
-//     } else {
-//       console.error("Failed to send message:", response.statusText);
-//     }
-//   } catch (error) {
-//     console.error("Error sending message:", error);
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
-
-//attempt 4 
-const sendMessage = async (message: string) => {
-  setIsLoading(true);
-
-  const conversationId = sessionStorage.getItem("conversationId");
-  if (!conversationId) {
-    console.error("Conversation ID not found in local storage.");
-    setIsLoading(false);
-    return;
-  }
-
-  const newMessage: Message = { sender: "user", content: message };
-  setMessages((prevMessages) => [...prevMessages, newMessage]);
-  setUserMessage("");
-
-  try {
-    const response = await fetch(
-      "https://govoyr.com/api/WebChatbot/message",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokenRef.current}`,
-        },
-        body: JSON.stringify({
-          userMessage: message,
-          id: conversationId,
-        }),
+  //attempt5 send message 
+  const sendMessage = async (message: string) => {
+    setIsLoading(true);
+  
+    // Check if conversationId exists in session storage
+    let conversationId = sessionStorage.getItem("conversationId");
+    
+    // If conversationId doesn't exist, wait for 500ms to retry fetching
+    if (!conversationId) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      conversationId = sessionStorage.getItem("conversationId");
+      
+      // If conversationId still doesn't exist, log error and return
+      if (!conversationId) {
+        console.error("Conversation ID not found in local storage after timeout.");
+        setIsLoading(false);
+        return;
       }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Response from backend:", data);
-
-      const aiResponse = data.AI_Response;
-      console.log("AI Response:", aiResponse);
-
-      const isCurationRequired = data.curration; // Corrected spelling
-      const isPdtFlag = data.productFlag;
-
-      console.log("Is Curation Required:", isCurationRequired);
-      console.log("Is Product Flag:", isPdtFlag);
-
-      const newAiMessage: Message = { sender: "AI", content: aiResponse };
-      setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
-      if (isCurationRequired) {
-        if (!isPdtFlag && aiResponse.products === undefined) {
-          const productResponse = await fetch(
-            "https://govoyr.com/api/WebChatbot/product",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
-              },
-              body: JSON.stringify({
-                MessageId: data.MessageId,
-              }),
+    }
+  
+    const newMessage: Message = { sender: "user", content: message };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setUserMessage("");
+  
+    try {
+      // WebSocket setup
+      ws.onopen = (event) => {
+        console.log('LOG:: Connected ',event);
+      }
+  
+      ws.onclose = (event) => {
+        console.log('LOG:: Closed ',event);
+      }
+  
+      ws.onmessage = (event) => {
+        console.log('LOG:: onMessage ',event);
+      }
+  
+      ws.onerror = (event) => {
+        console.log('LOG:: Error',event);
+      }
+  
+      // send message after 2 secs  
+      setTimeout(()=>{
+        ws.send('I am trying');
+      },2000);
+  
+      const response = await fetch(
+        "https://govoyr.com/api/WebChatbot/message",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokenRef.current}`,
+          },
+          body: JSON.stringify({
+            userMessage: message,
+            id: conversationId,
+          }),
+        }
+      );
+  
+      // Handle response
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Response from backend:", data);
+  
+        const aiResponse = data.AI_Response;
+        console.log("AI Response:", aiResponse);
+  
+        const isCurationRequired = data.curration; // Corrected spelling
+        const isPdtFlag = data.productFlag;
+  
+        console.log("Is Curation Required:", isCurationRequired);
+        console.log("Is Product Flag:", isPdtFlag);
+  
+        const newAiMessage: Message = { sender: "AI", content: aiResponse };
+        setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+  
+        if (isCurationRequired) {
+          if (!isPdtFlag && aiResponse.products === undefined) {
+            const productResponse = await fetch(
+              "https://govoyr.com/api/WebChatbot/product",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${authTokenRef.current}`,
+                },
+                body: JSON.stringify({
+                  MessageId: data.MessageId,
+                }),
+              }
+            );
+  
+            if (productResponse.ok) {
+              const productData = await productResponse.json();
+              console.log(productData);
+  
+              const formattedProducts: Product[] = productData.map(
+                (product: any) => ({
+                  title: product.title,
+                  rating: product.rating,
+                  prices: product.prices,
+                  media: product.media,
+                  sellers_results: product.sellers_results,
+                })
+              );
+  
+              const productAiMessage: Message = {
+                sender: "AI",
+                content: <ProductCarousel products={formattedProducts} />,
+              };
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                productAiMessage,
+              ]);
+            } else {
+              console.error(
+                "Failed to fetch products:",
+                productResponse.statusText
+              );
             }
-          );
-
-          if (productResponse.ok) {
-            const productData = await productResponse.json();
-            console.log(productData);
-
-            const formattedProducts: Product[] = productData.map((product: any) => ({
-              title: product.title,
-              rating: product.rating,
-              prices: product.prices,
-              media: product.media,
-              sellers_results: product.sellers_results,
-            }));
-
+          } else if (isPdtFlag || data.products !== undefined) {
+            const productsFromAI = data.products || [];
+            console.log(aiResponse.products);
+            console.log(productsFromAI);
+            const formattedProducts: Product[] = productsFromAI.map(
+              (product: any) => ({
+                title: product.title,
+                rating: product.rating,
+                prices: product.prices,
+                media: product.media,
+                sellers_results: product.sellers_results,
+              })
+            );
             const productAiMessage: Message = {
               sender: "AI",
               content: <ProductCarousel products={formattedProducts} />,
             };
             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-          } else {
-            console.error(
-              "Failed to fetch products:",
-              productResponse.statusText
-            );
           }
-        } else if (isPdtFlag || data.products !== undefined) {
-          const productsFromAI = data.products || [];
-          console.log(aiResponse.products);
-          console.log(productsFromAI);
-          const formattedProducts: Product[] = productsFromAI.map((product: any) => ({
-            title: product.title,
-            rating: product.rating,
-            prices: product.prices,
-            media: product.media,
-            sellers_results: product.sellers_results,
-          }));
-          const productAiMessage: Message = {
-            sender: "AI",
-            content: <ProductCarousel products={formattedProducts} />,
-          };
-          setMessages((prevMessages) => [...prevMessages, productAiMessage]);
         }
+      } else {
+        console.error("Failed to send message:", response.statusText);
       }
-    } else {
-      console.error("Failed to send message:", response.statusText);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Error sending message:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
+  };
+  
 
   //function to trigger send message on pressing enter button
   useEffect(() => {
@@ -635,21 +477,47 @@ const sendMessage = async (message: string) => {
     };
   }, [userMessage]); // Include messageSent in the dependency array
 
-
-
-
-
   // Call the custom hook to enable smooth auto-scrolling
-useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
+  useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
 
-//set followupcomponent width 
-// Calculate input width
-useEffect(() => {
-  if (inputRef.current) {
-    setInputWidth(inputRef.current.offsetWidth);
-  }
-}, []);
+  //set followupcomponent width
+  // Calculate input width
+  useEffect(() => {
+    if (inputRef.current) {
+      setInputWidth(inputRef.current.offsetWidth);
+    }
+  }, []);
+
+
+  //websocket 
+
+    // const storedConversationId = sessionStorage.getItem("conversationId");
+    // const ws = new WebSocket(`wss://govoyr.com/ws/${storedConversationId}`);
   
+
+    // Establish WebSocket connection
+    // const socket = new WebSocket(`wss://govoyr.com/ws/${storedConversationId}`);
+
+    // Event listeners for WebSocket events
+    // socket.onopen = () => {
+    //   console.log('WebSocket connection established');
+    // };
+
+    // socket.onmessage = (event) => {
+    //   console.log('Message received:', event.data);
+    // };
+
+    // socket.onclose = () => {
+    //   console.log('WebSocket connection closed');
+    // };
+
+    // // Clean up WebSocket connection on unmount
+    // return () => {
+    //   socket.close();
+    // };
+// Empty dependency array ensures effect runs only once
+
+
 
   return (
     <main className="bg-[#111111]">
@@ -666,93 +534,77 @@ useEffect(() => {
                   message.sender === "AI" ? "justify-start" : "justify-end"
                 }`}
               >
-                
-{/* atempt 2 */}
- {/* Render AI messages */}
- {message.sender === "AI" ? (
-      <>
-        <Avatar className="shadow-md z-10">
-          <AvatarImage src="/ai3.png" />
-          <AvatarFallback>bot</AvatarFallback>
-        </Avatar>
+                {/* atempt 2 */}
+                {/* Render AI messages */}
+                {message.sender === "AI" ? (
+                  <>
+                    <Avatar className="shadow-md z-10">
+                      <AvatarImage src="/ai3.png" />
+                      <AvatarFallback>bot</AvatarFallback>
+                    </Avatar>
 
-       
+                    <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                      {typeof message.content === "string" ? (
+                        <div className="response-content">
+                          {message.content.split("\n").map((paragraph, i) => (
+                            <div key={i}>
+                              {paragraph.split("\n").map((line, idx) => {
+                                const boldRegex = /\*\*([^*]*)\*\*/g;
+                                let parts = line.split(boldRegex);
+                                parts = parts.filter(Boolean); // Remove empty parts
 
-
-<div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
-{typeof message.content === "string" ? (
-  <div className="response-content">
-    {message.content.split("\n").map((paragraph, i) => (
-      <div key={i}>
-        {paragraph.split("\n").map((line, idx) => {
-          const boldRegex = /\*\*([^*]*)\*\*/g;
-          let parts = line.split(boldRegex);
-          parts = parts.filter(Boolean); // Remove empty parts
-
-          return (
-            <span key={idx}>
-              {parts.map((part, index) => {
-                return boldRegex.test(part) ? (
-                  <strong key={index} >{part}</strong>
+                                return (
+                                  <span key={idx}>
+                                    {parts.map((part, index) => {
+                                      return boldRegex.test(part) ? (
+                                        <strong key={index}>{part}</strong>
+                                      ) : (
+                                        <span key={index}>{part}</span>
+                                      );
+                                    })}
+                                    <br />
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          {Array.isArray(message.content) &&
+                          message.content.length > 0 ? (
+                            // Render ProductCarousel
+                            <div>{message.content}</div>
+                          ) : (
+                            // Render other types of content
+                            <div>{message.content}</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </>
                 ) : (
-                  <span key={index}>{part}</span>
-                );
-              })}
-              <br />
-            </span>
-          );
-        })}
-      </div>
-    ))}
-  </div>
-) : (
-  <div>
-    {Array.isArray(message.content) && message.content.length > 0 ? (
-  // Render ProductCarousel
-  <div>
-    {message.content}
-  </div>
-) : (
-  // Render other types of content
-  <div>
-    {message.content}
-  </div>
-)}
-
-  </div>
-)}
-
-
-
-</div>
-
-
-
-
-
-      </>
-    ) : (
-      // Render user messages
-      <>
-        <div className="flex w-max max-w-[75%] flex-col items-center justify-center font-medium  gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
-          {message.content}
-        </div>
-        <Avatar className="shadow-lg z-10">
-          <AvatarImage src="/user.png" className="z-10" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </>
-    )}
-
+                  // Render user messages
+                  <>
+                    <div className="flex w-max max-w-[75%] flex-col items-center justify-center font-medium  gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
+                      {message.content}
+                    </div>
+                    <Avatar className="shadow-lg z-10">
+                      <AvatarImage src="/user.png" className="z-10" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </>
+                )}
               </div>
             </>
           ))}
 
           {/* <ResearchLoader/> */}
+
           {productArray.length > 0 && (
             <ProductCarousel products={productArray} />
           )}
-          
+
           {/* <ResearchComponent/> */}
 
           {/* message loader */}
@@ -775,7 +627,6 @@ useEffect(() => {
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
         <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">
-      
           <Input
             ref={inputRef}
             type="email"
@@ -784,9 +635,9 @@ useEffect(() => {
             value={userMessage}
             onChange={(e) => handleInputChange(e.target.value)}
           />
-         
-            {/* <Followup containerWidth={containerWidth}/> */}
-         
+
+          {/* <Followup containerWidth={containerWidth}/> */}
+
           <Button
             type="submit"
             className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
