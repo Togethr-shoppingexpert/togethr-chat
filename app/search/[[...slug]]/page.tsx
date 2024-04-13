@@ -13,13 +13,18 @@ import ResearchLoader from "@/components/shared/ResearchLoader"
 
 
 
-const [isLoadingResearch, setIsLoadingResearch] = useState(false);
 
 const id = sessionStorage.getItem("conversationId");
 const WebSocketSingleton = (() => {
   let instance: WebSocket | null = null;
+
+  // Callback function to update loading state
+  let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
+
+  // Function to create WebSocket instance
   function createInstance(id: string) {
     const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+    
     // WebSocket setup
     ws.onopen = (event) => {
       console.log('LOG:: Connected ', event);
@@ -33,12 +38,15 @@ const WebSocketSingleton = (() => {
       console.log('LOG:: onMessage ', event);
       console.log(event.data);
       const eventData = JSON.parse(event.data);
-      if (eventData && eventData.type === "research_in_progress") {
-        setIsLoadingResearch(true);
-      } else if (eventData && eventData.type === "research_completed") {
-        setIsLoadingResearch(false);
+      if (updateLoadingStateCallback && eventData) {
+        if (eventData.type === "research_flag") {
+          updateLoadingStateCallback(true);
+        } else if (eventData.data === "Preparing Response") {
+          updateLoadingStateCallback(false);
+        }
       }
     };
+
     ws.onerror = (event) => {
       console.log('LOG:: Error', event);
     };
@@ -47,7 +55,10 @@ const WebSocketSingleton = (() => {
   }
 
   return {
-    getInstance: (id: string) => {
+    getInstance: (id: string, callback: (isLoading: boolean) => void) => {
+      // Set the loading state update callback
+      updateLoadingStateCallback = callback;
+
       if (!instance) {
         instance = createInstance(id);
       }
@@ -55,6 +66,49 @@ const WebSocketSingleton = (() => {
     }
   };
 })();
+
+// const WebSocketSingleton = (() => {
+
+//   let instance: WebSocket | null = null;
+
+  
+//   function createInstance(id: string) {
+//     const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+//     // WebSocket setup
+//     ws.onopen = (event) => {
+//       console.log('LOG:: Connected ', event);
+//     };
+
+//     ws.onclose = (event) => {
+//       console.log('LOG:: Closed ', event);
+//     };
+
+//     ws.onmessage = (event) => {
+//       console.log('LOG:: onMessage ', event);
+//       console.log(event.data);
+//       const eventData = JSON.parse(event.data);
+//       if (eventData && eventData.type === "research_in_progress") {
+//         setIsLoadingResearch(true);
+//       } else if (eventData && eventData.type === "research_completed") {
+//         setIsLoadingResearch(false);
+//       }
+//     };
+//     ws.onerror = (event) => {
+//       console.log('LOG:: Error', event);
+//     };
+
+//     return ws;
+//   }
+
+//   return {
+//     getInstance: (id: string) => {
+//       if (!instance) {
+//         instance = createInstance(id);
+//       }
+//       return instance;
+//     }
+//   };
+// })();
 
 
 
@@ -89,6 +143,8 @@ export default function Page({ params }: { params: Params }) {
   const [isLoading, setIsLoading] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
+  const [isLoadingResearch, setIsLoadingResearch] = useState(false);
+
 
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
@@ -207,24 +263,29 @@ export default function Page({ params }: { params: Params }) {
 
   
 
+// Function to handle WebSocket messages and update loading state
+const handleWebSocketMessage = (isLoading: boolean) => {
+  setIsLoadingResearch(isLoading);
+};;
+
+
+  useEffect(() => {
+    // Get conversation ID from sessionStorage
+    const storedConversationId = sessionStorage.getItem("conversationId");
   
-
-
-useEffect(() => {
-  // Get conversation ID from sessionStorage
-  const storedConversationId = sessionStorage.getItem("conversationId");
+    // If conversation ID exists, initialize WebSocket connection
+    if (storedConversationId) {
+      // Get the WebSocket instance and pass the callback function
+      const ws = WebSocketSingleton.getInstance(storedConversationId, handleWebSocketMessage);
   
-  // If conversation ID exists, initialize WebSocket connection
-  if (storedConversationId) {
-    // Get the WebSocket instance
-    const ws = WebSocketSingleton.getInstance(storedConversationId);
-
-    // Send message after 2 secs
-    setTimeout(() => {
-      ws.send('I am trying');
-    }, 2000);
-  }
-}, []); //
+      // Send message after 2 secs
+      setTimeout(() => {
+        ws.send('I am trying');
+      }, 2000);
+    } else {
+      console.error("Conversation ID not found in sessionStorage");
+    }
+  }, []); // Empty dependency array to run once on component mount
 
 
   
@@ -469,16 +530,16 @@ useEffect(() => {
             </>
           ))}
 
-          {/* <ResearchLoader/> */}
 
           {productArray.length > 0 && (
             <ProductCarousel products={productArray} />
           )}
 
           {/* <ResearchComponent/> */}
+          {isLoadingResearch && isLoading && (<ResearchLoader />) } 
 
           {/* message loader */}
-          {isLoading && (
+         {isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <Avatar className="shadow-md z-10">
                 <AvatarImage src="/ai3.png" />
@@ -490,7 +551,10 @@ useEffect(() => {
                 <Skeleton className="h-4 w-[240px] md:w-[250px] bg-[#323232]" />
               </div>
             </div>
-          )}
+          )} 
+
+
+
           <div ref={messagesEndRef} />
         </div>
       </section>

@@ -68,7 +68,7 @@ const ResearchLoader = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentStep(prevStep => (prevStep + 1) % steps.length);
-    }, 10000); 
+    }, 7500); 
 
     return () => clearInterval(intervalId);
   }, []);
@@ -82,7 +82,7 @@ const ResearchLoader = () => {
   }, [currentStep]);
 
   return (
-    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base ">
+    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base mx-1 md:mx-6 ">
       {steps.map((step, index) => (
         <div key={index} className="flex flex-row gap-3 items-center">
           {(index === currentStep || (index === 0 && currentStep === steps.length)) && (
