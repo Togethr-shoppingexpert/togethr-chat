@@ -55,8 +55,6 @@ import Flicker from "@/public/assets/flicker.gif";
 import Image from "next/image";
 
 const steps = [
-  "Understanding your query",
-  "Thinking",
   "Searching the internet",
   "Summarizing the information"
 ];
@@ -68,7 +66,7 @@ const ResearchLoader = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentStep(prevStep => (prevStep + 1) % steps.length);
-    }, 7500); 
+    }, 10000); 
 
     return () => clearInterval(intervalId);
   }, []);
