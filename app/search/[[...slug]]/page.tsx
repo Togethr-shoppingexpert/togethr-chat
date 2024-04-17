@@ -521,7 +521,7 @@ export default function Page({ params }: { params: Params }) {
           )}
 
 {/* <GeneralLoader /> */}
-<ResearchLoader />
+{/* <ResearchLoader /> */}
 
           {/* message loader */}
           {!isLoadingResearch && isLoading && (
