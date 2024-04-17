@@ -520,8 +520,11 @@ export default function Page({ params }: { params: Params }) {
             <ProductCarousel products={productArray} />
           )}
 
+{/* <GeneralLoader /> */}
+<ResearchLoader />
+
           {/* message loader */}
-          {isLoading && (
+          {!isLoadingResearch && isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <GeneralLoader />
             </div>
