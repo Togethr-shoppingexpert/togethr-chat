@@ -515,7 +515,12 @@ export default function Page({ params }: { params: Params }) {
               </div>
             </>
           ))}
-
+          {isLoading && (
+            <div className="flex items-center space-x-4 mx-1 md:mx-6">
+              <GeneralLoader />
+            </div>
+          )}
+          
           {productArray.length > 0 && (
             <ProductCarousel products={productArray} />
           )}
@@ -524,18 +529,14 @@ export default function Page({ params }: { params: Params }) {
 <ResearchLoader /> */}
 
           {/* message loader */}
-          {isLoading && (
-            <div className="flex items-center space-x-4 mx-1 md:mx-6">
-              <GeneralLoader />
-            </div>
-          )}
+          
 
           {/* <ResearchComponent/> */}
-          {isLoadingResearch && isLoading && (
+          {/* {isLoadingResearch && isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <ResearchLoader />
             </div>
-          )}
+          )} */}
 
           <div ref={messagesEndRef} />
         </div>
