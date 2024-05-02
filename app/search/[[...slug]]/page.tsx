@@ -153,7 +153,7 @@ export default function Page({ params }: { params: Params }) {
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
   const [curation,setCuration]=useState(false);
   const [pdt,setPdt]=useState(false);
-
+  const [nextsearch,setNextSearch]=useState(false);
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
 
@@ -268,7 +268,11 @@ export default function Page({ params }: { params: Params }) {
   const handleWebSocketMessage = (isLoading: boolean) => {
     setIsLoadingResearch(isLoading);
   };
-
+  useEffect(()=>{
+    if(isLoading===false){
+      setCuration(false);
+    }
+  })
   useEffect(() => {
     // Get conversation ID from sessionStorage
     const storedConversationId = sessionStorage.getItem("conversationId");
@@ -343,6 +347,7 @@ export default function Page({ params }: { params: Params }) {
         const isPdtFlag = data.productFlag;
         setCuration(isCurationRequired);
         setPdt(isPdtFlag);
+        
 
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
@@ -433,6 +438,7 @@ export default function Page({ params }: { params: Params }) {
       }
     };
 
+    
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -450,7 +456,7 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
-
+  
   useEffect(()=>{
     if(curation===true){
       setIsLoading(false);
@@ -477,7 +483,7 @@ export default function Page({ params }: { params: Params }) {
                 {message.sender === "AI" ? (
                   <>
                     <Avatar className="shadow-md z-10">
-                      <AvatarImage src="/ai3.png" />
+                      <AvatarImage src="/icon2.png" />
                       <AvatarFallback>bot</AvatarFallback>
                     </Avatar>
 
@@ -536,13 +542,15 @@ export default function Page({ params }: { params: Params }) {
               </div>
             </>
           ))}
-          {isLoading &&productArray.length ===0 &&!curation&&!pdt&& (
+          {(isLoading &&productArray.length ===0 &&!curation&&!pdt)&& (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
               <GeneralLoader/>
             </div>
           )}
-
+          
+          
           {!isLoading&&productArray.length > 0 && (
+            
             <ProductCarousel products={productArray} />
           )}
 
@@ -564,7 +572,7 @@ export default function Page({ params }: { params: Params }) {
         
       </section>
      
-        <div id="followUpQuestionContainer">
+        {/* <div id="followUpQuestionContainer">
         console.log(followupques);
       setFollowup(followupques);
       console.log(Followup);
@@ -573,7 +581,7 @@ export default function Page({ params }: { params: Params }) {
           {message}
         </button>
       ))}
-    </div>
+    </div> */}
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
         <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">
@@ -586,7 +594,7 @@ export default function Page({ params }: { params: Params }) {
             onChange={(e) => handleInputChange(e.target.value)}
           />
 
-          <Followup containerWidth={containerWidth}/>
+          {/* <Followup containerWidth={containerWidth}/> */}
 
           <Button
             type="submit"
