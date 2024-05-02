@@ -15,14 +15,13 @@ import GeneralLoader from "@/components/shared/GeneralLoader";
 const id = sessionStorage.getItem("conversationId");
 const WebSocketSingleton = (() => {
   let instance: WebSocket | null = null;
-
+let followupques;
   // Callback function to update loading state
   let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
 
   // Function to create WebSocket instance
   function createInstance(id: string) {
     const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
-
     // WebSocket setup
     ws.onopen = (event) => {
       console.log("LOG:: Connected ", event);
@@ -34,16 +33,28 @@ const WebSocketSingleton = (() => {
 
     ws.onmessage = (event) => {
       console.log("LOG:: onMessage ", event);
-      console.log(event.data);
+      console.log("event : ", event.data);
       const eventData = JSON.parse(event.data);
       if (updateLoadingStateCallback && eventData) {
         if (eventData.type === "research_flag") {
           updateLoadingStateCallback(true);
         } else if (eventData.data === "Preparing Response") {
           updateLoadingStateCallback(false);
+        } else if (eventData.type === "follow_up_questions") {
+          let messages = eventData.data; // Assuming eventData.data is an array of messages
+          // messages.forEach((message: string | null) => {
+          //   let messageButton = document.createElement('button');
+          //   messageButton.textContent = message;
+          //   messageButton.addEventListener('click', () => {
+          //     // Handle button click event, if needed
+          //   });
+          //   document.getElementById('followUpQuestionContainer').appendChild(messageButton);
+          // });
+          followupques=messages;
         }
       }
     };
+    
 
     ws.onerror = (event) => {
       console.log("LOG:: Error", event);
@@ -137,9 +148,11 @@ export default function Page({ params }: { params: Params }) {
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
   const [isLoadingResearch, setIsLoadingResearch] = useState(false);
-
+  const [followup,setFollowup]=useState([]);
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
+  const [curation,setCuration]=useState(false);
+  const [pdt,setPdt]=useState(false);
 
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
@@ -328,6 +341,8 @@ export default function Page({ params }: { params: Params }) {
 
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
+        setCuration(isCurationRequired);
+        setPdt(isPdtFlag);
 
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
@@ -353,7 +368,7 @@ export default function Page({ params }: { params: Params }) {
 
             if (productResponse.ok) {
               const productData = await productResponse.json();
-              console.log(productData);
+              console.log("product data :",productData);
 
               const formattedProducts: Product[] = productData.map(
                 (product: any) => ({
@@ -381,8 +396,8 @@ export default function Page({ params }: { params: Params }) {
             }
           } else if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
-            console.log(aiResponse.products);
-            console.log(productsFromAI);
+            console.log("ai response : " , aiResponse.products);
+            console.log("products from ai: " , productsFromAI);
             const formattedProducts: Product[] = productsFromAI.map(
               (product: any) => ({
                 title: product.title,
@@ -435,6 +450,12 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
+
+  useEffect(()=>{
+    if(curation===true){
+      setIsLoading(false);
+    }
+  },[])
 
   return (
     <main className="bg-[#111111]">
@@ -515,13 +536,13 @@ export default function Page({ params }: { params: Params }) {
               </div>
             </>
           ))}
-          {isLoading && (
+          {isLoading &&productArray.length ===0 &&!curation&&!pdt&& (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
-              <GeneralLoader />
+              <GeneralLoader/>
             </div>
           )}
-          
-          {productArray.length > 0 && (
+
+          {!isLoading&&productArray.length > 0 && (
             <ProductCarousel products={productArray} />
           )}
 
@@ -540,7 +561,19 @@ export default function Page({ params }: { params: Params }) {
 
           <div ref={messagesEndRef} />
         </div>
+        
       </section>
+     
+        <div id="followUpQuestionContainer">
+        console.log(followupques);
+      setFollowup(followupques);
+      console.log(Followup);
+      {followup.map((message, index) => (
+        <button key={index} onClick={() => console.log('Button clicked:', message)}>
+          {message}
+        </button>
+      ))}
+    </div>
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
         <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">
@@ -553,7 +586,7 @@ export default function Page({ params }: { params: Params }) {
             onChange={(e) => handleInputChange(e.target.value)}
           />
 
-          {/* <Followup containerWidth={containerWidth}/> */}
+          <Followup containerWidth={containerWidth}/>
 
           <Button
             type="submit"

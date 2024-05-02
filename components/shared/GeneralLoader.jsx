@@ -181,6 +181,7 @@ const GeneralLoader = () => {
         </div>
       )}
     </div>
+    
   );
 };
 
