@@ -1,9 +1,4 @@
 "use client";
-// import  WebSocket  from 'websocket';
-
-// import  {w3cwebsocket as WebSocket } from 'websocket';
-// import io from 'socket.io-client';
-
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,9 +9,114 @@ import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
 import Followup from "@/components/Followup";
 import { ResearchComponent } from "@/components/ResearchComponent";
-import ResearchLoader from "@/components/shared/ResearchLoader"
+import ResearchLoader from "@/components/shared/ResearchLoader";
+import GeneralLoader from "@/components/shared/GeneralLoader";
 
- const ws = new WebSocket('wss://govoyr.com/ws/1213');
+const id = sessionStorage.getItem("conversationId");
+const WebSocketSingleton = (() => {
+  let instance: WebSocket | null = null;
+let followupques;
+  // Callback function to update loading state
+  let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
+
+  // Function to create WebSocket instance
+  function createInstance(id: string) {
+    const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+    // WebSocket setup
+    ws.onopen = (event) => {
+      console.log("LOG:: Connected ", event);
+    };
+
+    ws.onclose = (event) => {
+      console.log("LOG:: Closed ", event);
+    };
+
+    ws.onmessage = (event) => {
+      console.log("LOG:: onMessage ", event);
+      console.log("event : ", event.data);
+      const eventData = JSON.parse(event.data);
+      if (updateLoadingStateCallback && eventData) {
+        if (eventData.type === "research_flag") {
+          updateLoadingStateCallback(true);
+        } else if (eventData.data === "Preparing Response") {
+          updateLoadingStateCallback(false);
+        } else if (eventData.type === "follow_up_questions") {
+          let messages = eventData.data; // Assuming eventData.data is an array of messages
+          // messages.forEach((message: string | null) => {
+          //   let messageButton = document.createElement('button');
+          //   messageButton.textContent = message;
+          //   messageButton.addEventListener('click', () => {
+          //     // Handle button click event, if needed
+          //   });
+          //   document.getElementById('followUpQuestionContainer').appendChild(messageButton);
+          // });
+          followupques=messages;
+        }
+      }
+    };
+    
+
+    ws.onerror = (event) => {
+      console.log("LOG:: Error", event);
+    };
+
+    return ws;
+  }
+
+  return {
+    getInstance: (id: string, callback: (isLoading: boolean) => void) => {
+      // Set the loading state update callback
+      updateLoadingStateCallback = callback;
+
+      if (!instance) {
+        instance = createInstance(id);
+      }
+      return instance;
+    },
+  };
+})();
+
+// const WebSocketSingleton = (() => {
+
+//   let instance: WebSocket | null = null;
+
+//   function createInstance(id: string) {
+//     const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+//     // WebSocket setup
+//     ws.onopen = (event) => {
+//       console.log('LOG:: Connected ', event);
+//     };
+
+//     ws.onclose = (event) => {
+//       console.log('LOG:: Closed ', event);
+//     };
+
+//     ws.onmessage = (event) => {
+//       console.log('LOG:: onMessage ', event);
+//       console.log(event.data);
+//       const eventData = JSON.parse(event.data);
+//       if (eventData && eventData.type === "research_in_progress") {
+//         setIsLoadingResearch(true);
+//       } else if (eventData && eventData.type === "research_completed") {
+//         setIsLoadingResearch(false);
+//       }
+//     };
+//     ws.onerror = (event) => {
+//       console.log('LOG:: Error', event);
+//     };
+
+//     return ws;
+//   }
+
+//   return {
+//     getInstance: (id: string) => {
+//       if (!instance) {
+//         instance = createInstance(id);
+//       }
+//       return instance;
+//     }
+//   };
+// })();
 
 interface Params {
   slug: string[];
@@ -47,10 +147,13 @@ export default function Page({ params }: { params: Params }) {
   const [isLoading, setIsLoading] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
-
+  const [isLoadingResearch, setIsLoadingResearch] = useState(false);
+  const [followup,setFollowup]=useState([]);
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
-
+  const [curation,setCuration]=useState(false);
+  const [pdt,setPdt]=useState(false);
+  const [nextsearch,setNextSearch]=useState(false);
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
 
@@ -110,7 +213,10 @@ export default function Page({ params }: { params: Params }) {
       setConversationId(storedConversationId);
     } else {
       // If stored conversation ID doesn't exist, check if the page is refreshed
-      if (window.performance.navigation.type === 1 || window.performance.navigation.type == 0) {
+      if (
+        window.performance.navigation.type === 1 ||
+        window.performance.navigation.type == 0
+      ) {
         const generateNewConversationId = async () => {
           try {
             const response = await fetch(
@@ -153,207 +259,67 @@ export default function Page({ params }: { params: Params }) {
     }
   }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
 
-  
-
-
   // handle input change
   const handleInputChange = (newValue: string) => {
     setUserMessage(newValue);
   };
 
-  
+  // Function to handle WebSocket messages and update loading state
+  const handleWebSocketMessage = (isLoading: boolean) => {
+    setIsLoadingResearch(isLoading);
+  };
+  useEffect(()=>{
+    if(isLoading===false){
+      setCuration(false);
+    }
+  })
+  useEffect(() => {
+    // Get conversation ID from sessionStorage
+    const storedConversationId = sessionStorage.getItem("conversationId");
 
-  //attempt 4
+    // If conversation ID exists, initialize WebSocket connection
+    if (storedConversationId) {
+      // Get the WebSocket instance and pass the callback function
+      const ws = WebSocketSingleton.getInstance(
+        storedConversationId,
+        handleWebSocketMessage
+      );
 
-  // const sendMessage = async (message: string) => {
-  //   setIsLoading(true);
+      // Send message after 2 secs
+      setTimeout(() => {
+        ws.send("I am trying");
+      }, 2000);
+    } else {
+      console.error("Conversation ID not found in sessionStorage");
+    }
+  }, []); // Empty dependency array to run once on component mount
 
-  //   const conversationId = sessionStorage.getItem("conversationId");
-  //   if (!conversationId) {
-  //     console.error("Conversation ID not found in local storage.");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   const newMessage: Message = { sender: "user", content: message };
-  //   setMessages((prevMessages) => [...prevMessages, newMessage]);
-  //   setUserMessage("");
-
-  //   try {
-  //     ws.onopen = (event) => {
-  //       console.log('LOG:: Connected ',event);
-  //     }
-  
-  //     ws.onclose = (event) => {
-  //       console.log('LOG:: Closed ',event);
-  //     }
-  
-  //     ws.onmessage = (event) => {
-  //       console.log('LOG:: onMessage ',event);
-  //     }
-  
-  //     ws.onerror = (event) => {
-  //       console.log('LOG:: Error',event);
-  //     }
-  
-  //     // send message after 2 secs  
-  //     setTimeout(()=>{
-  //       ws.send('I am trying');
-  //     },2000);
-      
-  //     const response = await fetch(
-  //       "https://govoyr.com/api/WebChatbot/message",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${authTokenRef.current}`,
-  //         },
-  //         body: JSON.stringify({
-  //           userMessage: message,
-  //           id: conversationId,
-  //           // id:convnId,
-  //         }),
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       console.log("Response from backend:", data);
-
-  //       const aiResponse = data.AI_Response;
-  //       console.log("AI Response:", aiResponse);
-
-  //       const isCurationRequired = data.curration; // Corrected spelling
-  //       const isPdtFlag = data.productFlag;
-
-  //       console.log("Is Curation Required:", isCurationRequired);
-  //       console.log("Is Product Flag:", isPdtFlag);
-
-  //       const newAiMessage: Message = { sender: "AI", content: aiResponse };
-  //       setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
-  //       if (isCurationRequired) {
-  //         if (!isPdtFlag && aiResponse.products === undefined) {
-  //           const productResponse = await fetch(
-  //             "https://govoyr.com/api/WebChatbot/product",
-  //             {
-  //               method: "POST",
-  //               headers: {
-  //                 "Content-Type": "application/json",
-  //                 Authorization: `Bearer ${authTokenRef.current}`,
-  //               },
-  //               body: JSON.stringify({
-  //                 MessageId: data.MessageId,
-  //               }),
-  //             }
-  //           );
-
-  //           if (productResponse.ok) {
-  //             const productData = await productResponse.json();
-  //             console.log(productData);
-
-  //             const formattedProducts: Product[] = productData.map(
-  //               (product: any) => ({
-  //                 title: product.title,
-  //                 rating: product.rating,
-  //                 prices: product.prices,
-  //                 media: product.media,
-  //                 sellers_results: product.sellers_results,
-  //               })
-  //             );
-
-  //             const productAiMessage: Message = {
-  //               sender: "AI",
-  //               content: <ProductCarousel products={formattedProducts} />,
-  //             };
-  //             setMessages((prevMessages) => [
-  //               ...prevMessages,
-  //               productAiMessage,
-  //             ]);
-  //           } else {
-  //             console.error(
-  //               "Failed to fetch products:",
-  //               productResponse.statusText
-  //             );
-  //           }
-  //         } else if (isPdtFlag || data.products !== undefined) {
-  //           const productsFromAI = data.products || [];
-  //           console.log(aiResponse.products);
-  //           console.log(productsFromAI);
-  //           const formattedProducts: Product[] = productsFromAI.map(
-  //             (product: any) => ({
-  //               title: product.title,
-  //               rating: product.rating,
-  //               prices: product.prices,
-  //               media: product.media,
-  //               sellers_results: product.sellers_results,
-  //             })
-  //           );
-  //           const productAiMessage: Message = {
-  //             sender: "AI",
-  //             content: <ProductCarousel products={formattedProducts} />,
-  //           };
-  //           setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-  //         }
-  //       }
-  //     } else {
-  //       console.error("Failed to send message:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending message:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  //attempt5 send message 
   const sendMessage = async (message: string) => {
     setIsLoading(true);
-  
+
     // Check if conversationId exists in session storage
     let conversationId = sessionStorage.getItem("conversationId");
-    
+
     // If conversationId doesn't exist, wait for 500ms to retry fetching
     if (!conversationId) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       conversationId = sessionStorage.getItem("conversationId");
-      
+
       // If conversationId still doesn't exist, log error and return
       if (!conversationId) {
-        console.error("Conversation ID not found in local storage after timeout.");
+        console.error(
+          "Conversation ID not found in local storage after timeout."
+        );
         setIsLoading(false);
         return;
       }
     }
-  
+
     const newMessage: Message = { sender: "user", content: message };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
-  
+
     try {
-      // WebSocket setup
-      ws.onopen = (event) => {
-        console.log('LOG:: Connected ',event);
-      }
-  
-      ws.onclose = (event) => {
-        console.log('LOG:: Closed ',event);
-      }
-  
-      ws.onmessage = (event) => {
-        console.log('LOG:: onMessage ',event);
-      }
-  
-      ws.onerror = (event) => {
-        console.log('LOG:: Error',event);
-      }
-  
-      // send message after 2 secs  
-      setTimeout(()=>{
-        ws.send('I am trying');
-      },2000);
-  
       const response = await fetch(
         "https://govoyr.com/api/WebChatbot/message",
         {
@@ -368,24 +334,27 @@ export default function Page({ params }: { params: Params }) {
           }),
         }
       );
-  
+
       // Handle response
       if (response.ok) {
         const data = await response.json();
         console.log("Response from backend:", data);
-  
+
         const aiResponse = data.AI_Response;
         console.log("AI Response:", aiResponse);
-  
+
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
-  
+        setCuration(isCurationRequired);
+        setPdt(isPdtFlag);
+        
+
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
-  
+
         const newAiMessage: Message = { sender: "AI", content: aiResponse };
         setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-  
+
         if (isCurationRequired) {
           if (!isPdtFlag && aiResponse.products === undefined) {
             const productResponse = await fetch(
@@ -401,11 +370,11 @@ export default function Page({ params }: { params: Params }) {
                 }),
               }
             );
-  
+
             if (productResponse.ok) {
               const productData = await productResponse.json();
-              console.log(productData);
-  
+              console.log("product data :",productData);
+
               const formattedProducts: Product[] = productData.map(
                 (product: any) => ({
                   title: product.title,
@@ -415,7 +384,7 @@ export default function Page({ params }: { params: Params }) {
                   sellers_results: product.sellers_results,
                 })
               );
-  
+
               const productAiMessage: Message = {
                 sender: "AI",
                 content: <ProductCarousel products={formattedProducts} />,
@@ -432,8 +401,8 @@ export default function Page({ params }: { params: Params }) {
             }
           } else if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
-            console.log(aiResponse.products);
-            console.log(productsFromAI);
+            console.log("ai response : " , aiResponse.products);
+            console.log("products from ai: " , productsFromAI);
             const formattedProducts: Product[] = productsFromAI.map(
               (product: any) => ({
                 title: product.title,
@@ -459,7 +428,6 @@ export default function Page({ params }: { params: Params }) {
       setIsLoading(false);
     }
   };
-  
 
   //function to trigger send message on pressing enter button
   useEffect(() => {
@@ -470,6 +438,7 @@ export default function Page({ params }: { params: Params }) {
       }
     };
 
+    
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -487,37 +456,12 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
-
-
-  //websocket 
-
-    // const storedConversationId = sessionStorage.getItem("conversationId");
-    // const ws = new WebSocket(`wss://govoyr.com/ws/${storedConversationId}`);
   
-
-    // Establish WebSocket connection
-    // const socket = new WebSocket(`wss://govoyr.com/ws/${storedConversationId}`);
-
-    // Event listeners for WebSocket events
-    // socket.onopen = () => {
-    //   console.log('WebSocket connection established');
-    // };
-
-    // socket.onmessage = (event) => {
-    //   console.log('Message received:', event.data);
-    // };
-
-    // socket.onclose = () => {
-    //   console.log('WebSocket connection closed');
-    // };
-
-    // // Clean up WebSocket connection on unmount
-    // return () => {
-    //   socket.close();
-    // };
-// Empty dependency array ensures effect runs only once
-
-
+  useEffect(()=>{
+    if(curation===true){
+      setIsLoading(false);
+    }
+  },[])
 
   return (
     <main className="bg-[#111111]">
@@ -539,7 +483,7 @@ export default function Page({ params }: { params: Params }) {
                 {message.sender === "AI" ? (
                   <>
                     <Avatar className="shadow-md z-10">
-                      <AvatarImage src="/ai3.png" />
+                      <AvatarImage src="/icon2.png" />
                       <AvatarFallback>bot</AvatarFallback>
                     </Avatar>
 
@@ -598,32 +542,46 @@ export default function Page({ params }: { params: Params }) {
               </div>
             </>
           ))}
-
-          {/* <ResearchLoader/> */}
-
-          {productArray.length > 0 && (
+          {(isLoading &&productArray.length ===0 &&!curation&&!pdt)&& (
+            <div className="flex items-center space-x-4 mx-1 md:mx-6">
+              <GeneralLoader/>
+            </div>
+          )}
+          
+          
+          {!isLoading&&productArray.length > 0 && (
+            
             <ProductCarousel products={productArray} />
           )}
 
-          {/* <ResearchComponent/> */}
+{/* <GeneralLoader />
+<ResearchLoader /> */}
 
           {/* message loader */}
-          {isLoading && (
+          
+
+          {/* <ResearchComponent/> */}
+          {/* {isLoadingResearch && isLoading && (
             <div className="flex items-center space-x-4 mx-1 md:mx-6">
-              <Avatar className="shadow-md z-10">
-                <AvatarImage src="/ai3.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px] md:w-[300px] bg-[#323232]" />
-                <Skeleton className="h-4 w-[250px] md:w-[265px] bg-[#323232]" />
-                <Skeleton className="h-4 w-[240px] md:w-[250px] bg-[#323232]" />
-              </div>
+              <ResearchLoader />
             </div>
-          )}
+          )} */}
+
           <div ref={messagesEndRef} />
         </div>
+        
       </section>
+     
+        {/* <div id="followUpQuestionContainer">
+        console.log(followupques);
+      setFollowup(followupques);
+      console.log(Followup);
+      {followup.map((message, index) => (
+        <button key={index} onClick={() => console.log('Button clicked:', message)}>
+          {message}
+        </button>
+      ))}
+    </div> */}
 
       <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
         <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">

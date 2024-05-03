@@ -1,107 +1,147 @@
 // import { useEffect, useState } from 'react';
 // import Tick from "@/public/assets/tick.png";
 // import Flicker from "@/public/assets/flicker.gif";
-// import Image from "next/image"
+// import Image from "next/image";
+
+// const steps = [
+//   "Searching the internet",
+//   "Summarizing Information",
+// ];
+
+// const flickerDuration = 500;
+// const totalDuration = 10000; 
+// const stepDuration = totalDuration / steps.length; 
 
 // const ResearchLoader = () => {
+//   const [currentStep, setCurrentStep] = useState(0);
 //   const [completedSteps, setCompletedSteps] = useState([]);
+//   const [allStepsCompleted, setAllStepsCompleted] = useState(false);
+//     const [loadingComplete, setLoadingComplete] = useState(false);
+
 
 //   useEffect(() => {
 //     const intervalId = setInterval(() => {
-//       setCompletedSteps(prevCompletedSteps => {
-//         const nextStep = prevCompletedSteps.length % 3; // Assuming 3 steps
-//         return [...prevCompletedSteps, nextStep];
-//       });
-//     }, 5000);
+//       if (currentStep === steps.length - 1 && loadingComplete) {
+//         setAllStepsCompleted(true);
+//         clearInterval(intervalId); // Stop the interval when last step is completed
+//       } else {
+//         setCurrentStep(prevStep => (prevStep + 1) % steps.length);
+//         // setCompletedSteps([]);
+//       }
+//     }, totalDuration);
+
 //     return () => clearInterval(intervalId);
-//   }, []);
+//   }, [currentStep , loadingComplete]);
 
 //   useEffect(() => {
-//     if (completedSteps.length === 0) {
-//       // If no steps are completed, start with the first step
-//       setCompletedSteps([0]);
+//     if (currentStep !== 0 && !allStepsCompleted) {
+//       const flickerTimeout = setTimeout(() => {
+//         setLoadingComplete(true);
+//         setCompletedSteps(prevCompletedSteps => [...prevCompletedSteps, currentStep-1]);
+//       } , flickerDuration);
+      
+//       return () => clearTimeout(flickerTimeout);
 //     }
-//   }, [completedSteps]);
+//   }, [currentStep, allStepsCompleted]);
+
+
+
 
 //   return (
-//     <div className="flex  md:max-w-2xl md:min-w-[42rem] max-w-md  font-medium flex-col gap-y-4 gap-2 rounded-xl  shadow-lg px-3 py-2 text-xs md:text-base ">
+//     <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base mx-1 md:mx-6">
+      
+
+      
 //       <div className="flex flex-row gap-3 items-center">
-//         <Image src={Tick} alt="togethr" width={20} height={20} className="step-icon" />
-//         <p className={`step-text ${completedSteps.includes(0) ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>Understanding your query</p>
+//  {completedSteps.includes(0) || allStepsCompleted ? (
+//           <Image src={Tick} alt="tick" width={20} height={20} className="step-icon" />
+//         ) : (
+//           <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />
+//         )}
+
+//         <p className={`step-text ${completedSteps.includes(0) || allStepsCompleted ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>{steps[0]}</p>
 //       </div>
 
-//       <div className="flex flex-row gap-3 items-center">
-//         <Image src={Tick}  alt="togethr" width={20} height={20} className="step-icon" />
-//         <p className={`step-text ${completedSteps.includes(1) ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>Thinking</p>
-//       </div>
+//       {!allStepsCompleted && currentStep !== 0 && (
+//         <div className="flex flex-row gap-3 items-center">
+//           {currentStep === 1 && (
+//             <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />
+//           )}
+//           {completedSteps.includes(1) && (
+//             <Image src={Tick} alt="tick" width={20} height={20} className="step-icon" />
+//           )}
+//           <p className={`step-text ${completedSteps.includes(1) ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>{steps[1]}</p>
+//         </div>
+//       )}
 
-//       <div className="flex flex-row gap-3 items-center">
-//         <Image src={Tick} alt="togethr" width={20} height={20} className="step-icon" />
-//         <p className={`step-text ${completedSteps.includes(2) ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>Searching the internet</p>
-//       </div>
-
-//       <div className="flex flex-row gap-3 items-center">
-//         <Image src={Tick} alt="togethr" width={20} height={20} className="step-icon" />
-//         <p className={`step-text ${completedSteps.includes(2) ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>Summarizing the information</p>
-//       </div>
 //     </div>
 //   );
 // };
 
 // export default ResearchLoader;
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Tick from "@/public/assets/tick.png";
 import Flicker from "@/public/assets/flicker.gif";
 import Image from "next/image";
 
 const steps = [
-  "Understanding your query",
-  "Thinking",
   "Searching the internet",
-  "Summarizing the information"
+  "Summarizing Information",
 ];
 
 const ResearchLoader = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState([]);
+  const [showSearchingFlicker, setShowSearchingFlicker] = useState(true);
+  const [showSearchingTick, setShowSearchingTick] = useState(false);
+  const [showSummarizingFlicker, setShowSummarizingFlicker] = useState(false);
+  const [showSummarizingTick, setShowSummarizingTick] = useState(false);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentStep(prevStep => (prevStep + 1) % steps.length);
-    }, 10000); 
+    const searchingFlickerTimeout = setTimeout(() => {
+      setShowSummarizingFlicker(true);
+      setShowSummarizingTick(false);
+      setShowSearchingFlicker(false);
+      setShowSearchingTick(true);
+    }, 7000); 
 
-    return () => clearInterval(intervalId);
+    const summarizingFlickerTimeout = setTimeout(() => {
+      setShowSummarizingFlicker(true);
+      setShowSummarizingTick(false);
+      setShowSearchingFlicker(false);
+      setShowSearchingTick(true);
+    }, 14000); 
+
+    return () => {
+      clearTimeout(searchingFlickerTimeout);
+      clearTimeout(summarizingFlickerTimeout);
+    };
   }, []);
 
-  useEffect(() => {
-    if (currentStep !== 0) {
-      setTimeout(() => {
-        setCompletedSteps(prevCompletedSteps => [...prevCompletedSteps, currentStep - 1]);
-      }, 500); // Assuming flicker duration is 500 milliseconds
-    }
-  }, [currentStep]);
-
   return (
-    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base ">
-      {steps.map((step, index) => (
-        <div key={index} className="flex flex-row gap-3 items-center">
-          {(index === currentStep || (index === 0 && currentStep === steps.length)) && (
-            <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />
-          )}
-          {(completedSteps.includes(index)) && (
-            <Image src={Tick} alt="tick" width={20} height={20} className="step-icon" />
-          )}
-          <p className={`step-text ${completedSteps.includes(index) || index === steps.length ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>{step}</p>
+    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base mx-1 md:mx-6">
+      <div className="flex flex-row gap-3 items-center">
+        {showSearchingFlicker ? (
+          <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />
+        ) : showSearchingTick ? (
+          <Image src={Tick} alt="tick" width={20} height={20} className="step-icon" />
+        ) : null}
+        <p className={`step-text ${showSearchingTick ? 'text-white' : 'text-[#999999]'} mx-2 transition-colors duration-500`}>{steps[0]}</p>
+      </div>
+
+      {showSummarizingFlicker && (
+        <div className="flex flex-row gap-3 items-center">
+          <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />
+          <p className="step-text text-[#999999] mx-2 transition-colors duration-500">{steps[1]}</p>
         </div>
-      ))}
+      )}
+
+      {showSummarizingTick && (
+        <div className="flex flex-row gap-3 items-center">
+          <Image src={Tick} alt="tick" width={20} height={20} className="step-icon" />
+          <p className="step-text text-white mx-2 transition-colors duration-500">{steps[1]}</p>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ResearchLoader;
-
-
-
-
-
-

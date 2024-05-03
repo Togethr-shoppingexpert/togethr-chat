@@ -206,9 +206,10 @@ const ProductCarousel = ({ products }) => {
                       <div className="font-semibold text-base"> Price : {product.prices[0]}</div>
                     </CardHeader>
                     <CardContent className="p-4 text-sm">
-                      <p className="line-clamp-3">
+                      {product.rating && ( <p className="line-clamp-3">
                         Rating : <span className='font-bold text-xl'>{product.rating}</span> stars
-                      </p>
+                      </p>)}
+                     
                     </CardContent>
                   </Card>
                 </Link>
