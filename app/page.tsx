@@ -225,9 +225,9 @@ const buttons = [
       <main className="bg-[#111111]">
         <Navbar />
         <div className="flex flex-col items-center justify-center my-28">
-          <div className='w-full md:w-2/3 flex justify-start md:justify-center mb-4 px-4'>
+          <div className='w-full md:w-2/3 flex justify-center md:justify-center mb-4 px-4 text-center'>
             
-          <h1 className="font-semibold text-[35px] md:text-3xl lg:text-4xl text-white">Let's Shop Togethr</h1>
+          <h1 className="font-semibold text-[35px] sm:text-3xl md:text-3xl lg:text-4xl text-white text-center">Let's Shop Togethr</h1>
           {/* <span className='text-white'>preview</span> */}
           </div>
           
@@ -235,7 +235,7 @@ const buttons = [
             <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3  md:w-1/2  my-6 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:w-[46%] md:w-[75%] sm:w-[100%] w-[100%]  my-6 gap-2 mx-18 px-[15px] ">
             {buttons.map((text, index) => (
               <Badge
                 key={index}

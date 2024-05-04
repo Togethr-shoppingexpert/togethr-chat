@@ -129,7 +129,7 @@ const GeneralLoader = () => {
   }, []);
 
   return (
-    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-base mx-1 md:mx-6">
+    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs my-2 md:text-base mx-1 md:mx-6">
       <div className="flex flex-row gap-3 items-center">
         {showUnderstandingWithFlicker ? (
           <Image src={Flicker} alt="flicker" width={20} height={20} className="step-icon" />

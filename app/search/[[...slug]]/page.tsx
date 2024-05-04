@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, SetStateAction } from "react";
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,11 @@ import Followup from "@/components/Followup";
 import { ResearchComponent } from "@/components/ResearchComponent";
 import ResearchLoader from "@/components/shared/ResearchLoader";
 import GeneralLoader from "@/components/shared/GeneralLoader";
-
+import { FaRegLightbulb } from "react-icons/fa";
+let followupques: SetStateAction<never[]>;
 const id = sessionStorage.getItem("conversationId");
 const WebSocketSingleton = (() => {
   let instance: WebSocket | null = null;
-let followupques;
   // Callback function to update loading state
   let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
 
@@ -41,15 +41,7 @@ let followupques;
         } else if (eventData.data === "Preparing Response") {
           updateLoadingStateCallback(false);
         } else if (eventData.type === "follow_up_questions") {
-          let messages = eventData.data; // Assuming eventData.data is an array of messages
-          // messages.forEach((message: string | null) => {
-          //   let messageButton = document.createElement('button');
-          //   messageButton.textContent = message;
-          //   messageButton.addEventListener('click', () => {
-          //     // Handle button click event, if needed
-          //   });
-          //   document.getElementById('followUpQuestionContainer').appendChild(messageButton);
-          // });
+          let messages = eventData.data; 
           followupques=messages;
         }
       }
@@ -75,6 +67,7 @@ let followupques;
     },
   };
 })();
+
 
 // const WebSocketSingleton = (() => {
 
@@ -162,6 +155,12 @@ export default function Page({ params }: { params: Params }) {
   const searchQuery = slug[1];
 
   const [containerWidth, setContainerWidth] = useState<number>(0); // Specify the type as number
+  const [isOpen, setIsOpen] = useState(false);
+ 
+  const toggleFollowup = () => {
+    setIsOpen(!isOpen);
+    
+  };
   const containerRef = useRef<HTMLDivElement>(null); // Specify the type as HTMLDivElement
   useEffect(() => {
     const updateContainerWidth = () => {
@@ -175,7 +174,9 @@ export default function Page({ params }: { params: Params }) {
       window.removeEventListener("resize", updateContainerWidth);
     };
   }, []);
-
+  useEffect(()=>{
+    setFollowup(followupques)
+  })
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageSentRef = useRef<boolean>(false);
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
@@ -282,6 +283,7 @@ export default function Page({ params }: { params: Params }) {
       // Get the WebSocket instance and pass the callback function
       const ws = WebSocketSingleton.getInstance(
         storedConversationId,
+        
         handleWebSocketMessage
       );
 
@@ -572,40 +574,43 @@ export default function Page({ params }: { params: Params }) {
         
       </section>
      
-        {/* <div id="followUpQuestionContainer">
-        console.log(followupques);
-      setFollowup(followupques);
-      console.log(Followup);
-      {followup.map((message, index) => (
-        <button key={index} onClick={() => console.log('Button clicked:', message)}>
-          {message}
-        </button>
-      ))}
-    </div> */}
+        
 
-      <footer className="fixed bottom-0 w-full flex justify-center mt-5  p-5 bg-[#111111] z-50">
-        <div className="flex w-full max-w-2xl h-[64px]  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center space-x-2 z-1200">
-          <Input
-            ref={inputRef}
-            type="email"
-            placeholder="Find your product"
-            className="transition border-[#141414] bg-black shadow-lg text-white rounded-xl h-full z-1000"
-            value={userMessage}
-            onChange={(e) => handleInputChange(e.target.value)}
-          />
+      <footer className="fixed bottom-0 w-full flex justify-center mt-6 p-5 bg-[#111111] z-50 ">
+  <div className="flex flex-col w-full max-w-2xl  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center  z-1200 relative">
+    {followup && followup.length > 0 && (
+      <Followup containerWidth={containerWidth} followup={followup} isOpen={isOpen} setUserMessage={setUserMessage} sendMessage={sendMessage}  setIsOpen={setIsOpen}/>
+    )}
+    <div className={`flex justify-center w-full mt-1 items-center bg-black rounded-xl ${isOpen ? 'rounded-b-none' : 'rounded-xl'}`}>
+      <Input
+        ref={inputRef}
+        type="email"
+        placeholder="Find your product"
+        className={`transition  border-none focus:outline-none bg-black shadow-lg text-white h-full z-1000 ${isOpen ? 'rounded-t-none' : 'rounded-xl'}`}
+        value={userMessage}
+        onChange={(e) => handleInputChange(e.target.value)}
+      />
+      {followup && followup.length > 0 && (
+        <Button
+          onClick={toggleFollowup}
+          className="font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl h-[58px] w-[58px] md:w-[65px] m-1"
+        >
+          <FaRegLightbulb className="w-[50%] h-[50%]" />
+        </Button>
+      )}
+      <Button
+        type="submit"
+        className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl h-[58px] w-[58px] md:w-[65px] m-1"
+        onClick={() => sendMessage(userMessage)}
+        disabled={!userMessage.trim() || isLoading}
+      >
+        &gt;
+      </Button>
+    </div>
+  </div>
+</footer>
 
-          {/* <Followup containerWidth={containerWidth}/> */}
 
-          <Button
-            type="submit"
-            className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl  h-[58px]  w-[58px] md:w-[65px]"
-            onClick={() => sendMessage(userMessage)}
-            disabled={!userMessage.trim() || isLoading}
-          >
-            &gt;
-          </Button>
-        </div>
-      </footer>
     </main>
   );
 }
