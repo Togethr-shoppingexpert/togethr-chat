@@ -149,7 +149,7 @@ export default function Page({ params }: { params: Params }) {
   const [nextsearch,setNextSearch]=useState(false);
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState<any[]>([]);
-
+  // const [refresheddata,setRefreshedData]=useState<any[]>([]);
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
@@ -205,60 +205,60 @@ export default function Page({ params }: { params: Params }) {
 
   //attempt2
   //generating conversation ID.
-  useEffect(() => {
-    const storedConversationId = sessionStorage.getItem("conversationId");
-    let isNewIdGenerated = false; // Flag to track if a new ID was generated
+  // useEffect(() => {
+  //   const storedConversationId = sessionStorage.getItem("conversationId");
+  //   let isNewIdGenerated = false; // Flag to track if a new ID was generated
 
-    // Check if stored conversation ID exists
-    if (storedConversationId) {
-      setConversationId(storedConversationId);
-    } else {
-      // If stored conversation ID doesn't exist, check if the page is refreshed
-      if (
-        window.performance.navigation.type === 1 ||
-        window.performance.navigation.type == 0
-      ) {
-        const generateNewConversationId = async () => {
-          try {
-            const response = await fetch(
-              "https://govoyr.com/api/WebChatbot/conversationId",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${authTokenRef.current}`,
-                },
-                body: JSON.stringify({
-                  platform: "web",
-                }),
-              }
-            );
-            if (response.ok) {
-              const data = await response.json();
-              const newConversationId = data.ConversationId;
-              sessionStorage.setItem("conversationId", newConversationId);
-              setConversationId(newConversationId);
-              isNewIdGenerated = true; // Set the flag indicating a new ID was generated
-            } else {
-              console.error(
-                "Failed to fetch conversation ID:",
-                response.statusText
-              );
-            }
-          } catch (error) {
-            console.error("Error fetching conversation ID:", error);
-          }
-        };
+  //   // Check if stored conversation ID exists
+  //   if (storedConversationId) {
+  //     setConversationId(storedConversationId);
+  //   } else {
+  //     // If stored conversation ID doesn't exist, check if the page is refreshed
+  //     if (
+  //       window.performance.navigation.type === 1 ||
+  //       window.performance.navigation.type == 0
+  //     ) {
+  //       const generateNewConversationId = async () => {
+  //         try {
+  //           const response = await fetch(
+  //             "https://govoyr.com/api/WebChatbot/conversationId",
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //                 Authorization: `Bearer ${authTokenRef.current}`,
+  //               },
+  //               body: JSON.stringify({
+  //                 platform: "web",
+  //               }),
+  //             }
+  //           );
+  //           if (response.ok) {
+  //             const data = await response.json();
+  //             const newConversationId = data.ConversationId;
+  //             sessionStorage.setItem("conversationId", newConversationId);
+  //             setConversationId(newConversationId);
+  //             isNewIdGenerated = true; // Set the flag indicating a new ID was generated
+  //           } else {
+  //             console.error(
+  //               "Failed to fetch conversation ID:",
+  //               response.statusText
+  //             );
+  //           }
+  //         } catch (error) {
+  //           console.error("Error fetching conversation ID:", error);
+  //         }
+  //       };
 
-        generateNewConversationId();
-      }
-    }
+  //       generateNewConversationId();
+  //     }
+  //   }
 
-    // If a new ID was not generated, set the conversation ID using the stored value
-    if (!isNewIdGenerated && storedConversationId) {
-      setConversationId(storedConversationId);
-    }
-  }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
+  //   // If a new ID was not generated, set the conversation ID using the stored value
+  //   if (!isNewIdGenerated && storedConversationId) {
+  //     setConversationId(storedConversationId);
+  //   }
+  // }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
 
   // handle input change
   const handleInputChange = (newValue: string) => {
@@ -458,20 +458,85 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
-  
-  useEffect(()=>{
-    if(curation===true){
-      setIsLoading(false);
-    }
-  },[])
+//   useEffect(() => {
+//     // Check if the page is being refreshed
+//     const perfEntries = performance.getEntriesByType("navigation");
+//     const perfEntry = perfEntries.length && perfEntries[0] as PerformanceNavigationTiming;
+//     const isPageRefreshed = perfEntry && perfEntry.type === "reload";
+
+//     console.log("Is page refreshed:", isPageRefreshed);
+
+//     if (isPageRefreshed) {
+//         // Clear the flag indicating page refresh
+//         sessionStorage.removeItem('isPageRefreshed');
+        
+//         // Get conversationId from URL
+//         const params = new URLSearchParams(window.location.search);
+//         const urlConversationId = params.get('convid');
+//         console.log("urlconvid: ", urlConversationId);
+        
+//         // Check if conversationId exists in sessionStorage
+//         const storedConversationId = sessionStorage.getItem('conversationId');
+//         console.log("stored convid: ", storedConversationId);
+
+//         if (urlConversationId && urlConversationId === storedConversationId) {
+//             // Use data from sessionStorage if conversationId matches
+//             const data = ["text1", "text2", "text3"];
+//             setRefreshedData(data);
+//             setConversationId(storedConversationId);
+//         } else {
+//             // Generate new conversationId
+//             const generateNewConversationId = async () => {
+//                 try {
+//                     const response = await fetch(
+//                         "https://govoyr.com/api/WebChatbot/conversationId",
+//                         {
+//                             method: "POST",
+//                             headers: {
+//                                 "Content-Type": "application/json",
+//                                 Authorization: `Bearer ${authTokenRef.current}`,
+//                             },
+//                             body: JSON.stringify({
+//                                 platform: "web",
+//                             }),
+//                         }
+//                     );
+//                     if (response.ok) {
+//                         const data = await response.json();
+//                         const newConversationId = data.ConversationId;
+//                         sessionStorage.setItem("conversationId", newConversationId);
+//                         setConversationId(newConversationId);
+//                     } else {
+//                         console.error(
+//                             "Failed to fetch conversation ID:",
+//                             response.statusText
+//                         );
+//                     }
+//                 } catch (error) {
+//                     console.error("Error fetching conversation ID:", error);
+//                 }
+//             };
+            
+//             generateNewConversationId();
+//         }
+//     } else {
+//         // Set flag indicating page refresh
+//         // sessionStorage.setItem('isPageRefreshed', 'true');
+//     }
+// }, []);
+
+
+
+
 
   return (
     <main className="bg-[#111111]">
       <Navbar />
-
+     
       <section className="flex justify-center h-full mb-16 bp-0  ">
         <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
           {/* attempt 1 */}
+          
           {messages.map((message, index) => (
             <>
               <div
@@ -573,6 +638,8 @@ export default function Page({ params }: { params: Params }) {
         </div>
         
       </section>
+  
+        
      
         
 

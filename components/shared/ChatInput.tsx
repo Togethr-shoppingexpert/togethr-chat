@@ -10,10 +10,11 @@ interface ChatInputProps {
     initialText: string; // Define initialText prop
     onInputChange: (newValue: string) => void; // Define onInputChange prop
     searchQuery : string;
+    convnId:string;
 }
 
 
-export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInputProps) {
+export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: ChatInputProps) {
     // Define a state to manage the input value
     const [inputValue, setInputValue] = useState(initialText);
     const router = useRouter();
@@ -27,7 +28,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
 
     const handleClick = () => {
         console.log("Button clicked");
-        router.push(`/search/${searchQuery}/${initialText}`);
+        router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}`);
     }
 
     const handleKeyDown = (event : KeyboardEvent) => {
@@ -45,11 +46,12 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
     }, [initialText, searchQuery]); // Add initialText and searchQuery as dependencies
 
     return (
-        <div className="flex w-full max-w-2xl h-[64px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
+        <div className="w-full max-w-2xl h-[65px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
+            <div className="flex w-full max-w-2xl  h-[56px] bg-black items-center space-x-2  px-[6px] py-2 rounded-xl">
             <Input
                 type="email"
                 placeholder="Find your product"
-                className="transition border-[#141414] bg-black shadow-lg rounded-xl text-white h-full"
+                className="transition border-none bg-black shadow-lg rounded-xl text-white h-full"
                 value={initialText} // Bind input value to state
                 onChange={handleInputChange} // Call handleInputChange function on input change
                 
@@ -57,13 +59,14 @@ export function ChatInput({ initialText, onInputChange , searchQuery }: ChatInpu
 
             <Button
                 type="button"
-                className="bg-[#0C8CE9] text-2xl md:text-2xl lg:text-3xl hover:bg-[#0c8de99a]  rounded-xl focus:border-pink-600 h-[58px]  w-[58px] md:w-[65px]"
+                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl focus:border-pink-600   w-[58px] md:w-[58px]"
                 onClick={handleClick}
                 disabled={!initialText.trim()}
             >
                           &gt;
 
             </Button>
+            </div>
         </div>
     );
 }

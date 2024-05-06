@@ -9,6 +9,8 @@ export default function Home() {
   const [guestID, setGuestID] = useState("");
   const [token, setToken] = useState("");
   const [sessionID, setSessionID] = useState(""); // State to hold session ID
+  const [convnId, setConversationId] = useState("");
+
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
 
 
@@ -56,6 +58,60 @@ export default function Home() {
     setSelectedText(newValue);
   };
 
+  // useEffect(() => {
+  //   const storedConversationId = sessionStorage.getItem("conversationId");
+  //   let isNewIdGenerated = false; // Flag to track if a new ID was generated
+
+  //   // Check if stored conversation ID exists
+  //   if (storedConversationId) {
+  //     setConversationId(storedConversationId);
+  //   } else {
+  //     // If stored conversation ID doesn't exist, check if the page is refreshed
+  //     if (
+  //       window.performance.navigation.type === 1 ||
+  //       window.performance.navigation.type == 0
+  //     ) {
+  //       const generateNewConversationId = async () => {
+  //         try {
+  //           const response = await fetch(
+  //             "https://govoyr.com/api/WebChatbot/conversationId",
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //                 Authorization: `Bearer ${authTokenRef.current}`,
+  //               },
+  //               body: JSON.stringify({
+  //                 platform: "web",
+  //               }),
+  //             }
+  //           );
+  //           if (response.ok) {
+  //             const data = await response.json();
+  //             const newConversationId = data.ConversationId;
+  //             sessionStorage.setItem("conversationId", newConversationId);
+  //             setConversationId(newConversationId);
+  //             isNewIdGenerated = true; // Set the flag indicating a new ID was generated
+  //           } else {
+  //             console.error(
+  //               "Failed to fetch conversation ID:",
+  //               response.statusText
+  //             );
+  //           }
+  //         } catch (error) {
+  //           console.error("Error fetching conversation ID:", error);
+  //         }
+  //       };
+
+  //       generateNewConversationId();
+  //     }
+  //   }
+
+  //   // If a new ID was not generated, set the conversation ID using the stored value
+  //   if (!isNewIdGenerated && storedConversationId) {
+  //     setConversationId(storedConversationId);
+  //   }
+  // }, [authTokenRef]); // Include authTokenRef as a dependency if it's used inside the effect
 
 
 // fetch authtoken from localstorage. 
@@ -91,6 +147,8 @@ useEffect(() => {
   fetchAuthToken();
 }, []);
 
+
+
 //session id logic
 //to get conversation ID 
 // attempt 1 
@@ -111,6 +169,7 @@ useEffect(() => {
         const data = await response.json();
         const newConversationId = data.ConversationId;
         sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+        setConversationId(newConversationId);
       }else {
         console.error('Failed to fetch conversation ID:', response.statusText);
       }
@@ -205,12 +264,12 @@ console.log(token);
 
 
 const buttons = [
-    "bluetooth earbuds for running",
-    "phones with great camera",
-    "massager for neck pain",
-    "air purifier to combat pollution",
-    "ergonomic chair for home office",
-    "bicycle for city rides"
+    "Bluetooth earbuds for running",
+    "Phones with great camera",
+    "Massager for neck pain",
+    "Air purifier to combat pollution",
+    "Ergonomic chair for home office",
+    "Bicycle for city rides"
   ];
 
   const handleBadgeClick = (text: string) => {
@@ -232,14 +291,14 @@ const buttons = [
           </div>
           
           <div className='w-full flex justify-center mx-18 px-[15px]'>
-            <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} />
+            <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} convnId={convnId} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:w-[46%] md:w-[75%] sm:w-[100%] w-[100%]  my-6 gap-2 mx-18 px-[15px] ">
+          <div className="grid grid-cols-2 md:grid-cols-3  lg:w-[46%] md:w-[75%] sm:w-[100%] w-[100%]  my-6 gap-2 mx-18 px-[15px] ">
             {buttons.map((text, index) => (
               <Badge
                 key={index}
-                className="text-[10px] sm:text-[10px] md:text-[12px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1 flex items-center justify-center transition ease-in-out shadow-sm"
+                className="text-[10px] sm:text-[10px] md:text-[12px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1 flex  text-left  transition ease-in-out shadow-sm"
                 onClick={() => handleBadgeClick(text)}
               >
                 {text}
