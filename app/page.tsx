@@ -46,7 +46,7 @@ export default function Home() {
       // Store guestID and token in local storage
       // localStorage.setItem('guestID', data.guest.GuestId);
       localStorage.setItem('UserID', data.User.UserId);
-
+      
       localStorage.setItem('token', data.token);
       authTokenRef.current = data.token;
     } catch (error) {
@@ -169,6 +169,8 @@ useEffect(() => {
         const data = await response.json();
         const newConversationId = data.ConversationId;
         sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+        sessionStorage.removeItem('chatstarted');
+
         setConversationId(newConversationId);
       }else {
         console.error('Failed to fetch conversation ID:', response.statusText);
@@ -264,15 +266,16 @@ console.log(token);
 
 
 const buttons = [
-    "Bluetooth earbuds for running",
+    "Bluetooth earbuds",
     "Phones with great camera",
+    "Air purifier for office",
     "Massager for neck pain",
-    "Air purifier to combat pollution",
-    "Ergonomic chair for home office",
+    "Gaming chair for home ",
     "Bicycle for city rides"
   ];
 
   const handleBadgeClick = (text: string) => {
+    sessionStorage.setItem('initialmsg',selectedText);
     setSelectedText(text);
   };
 
@@ -283,29 +286,32 @@ const buttons = [
     <>
       <main className="bg-[#111111]">
         <Navbar />
-        <div className="flex flex-col items-center justify-center my-28">
-          <div className='w-full md:w-2/3 flex justify-center md:justify-center mb-4 px-4 text-center'>
-            
-          <h1 className="font-semibold text-[35px] sm:text-3xl md:text-3xl lg:text-4xl text-white text-center">Let's Shop Togethr</h1>
-          {/* <span className='text-white'>preview</span> */}
-          </div>
-          
-          <div className='w-full flex justify-center mx-18 px-[15px]'>
-            <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} convnId={convnId} />
-          </div>
+        <div className="flex flex-col w-[70%] items-center mt-28 h-screen mx-auto">
+  <div className='w-full flex flex-col items-center mb-4 px-4 text-center '>
+    <h1 className="font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl text-white mb-2">Let's Shop Together</h1>
+    {/* You can uncomment the line below if you want to add a preview */}
+    {/* <span className='text-white'>preview</span> */}
+  </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3  lg:w-[46%] md:w-[75%] sm:w-[100%] w-[100%]  my-6 gap-2 mx-18 px-[15px] ">
-            {buttons.map((text, index) => (
-              <Badge
-                key={index}
-                className="text-[10px] sm:text-[10px] md:text-[12px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1 flex  text-left  transition ease-in-out shadow-sm"
-                onClick={() => handleBadgeClick(text)}
-              >
-                {text}
-              </Badge>
-            ))}
-          </div>
-        </div>
+  <div className='w-[100%] flex justify-center mb-4'>
+    <ChatInput initialText={selectedText} onInputChange={handleInputChange} searchQuery={userId} convnId={convnId} />
+  </div>
+<div className='w-[100%] md:max-w-2xl sm:max-w-2xl lg:max-w-2xl xl:max-w-2xl'>
+  <div className="grid  grid-cols-2 xl:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 sm:grid-cols-3 w-[100%] gap-2">
+    {buttons.map((text, index) => (
+      <Badge
+        key={index}
+        className="text-[8px] md:text-[11px]  lg:text-[12px] xl:text-[14px] sm:text-[9px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1  transition ease-in-out shadow-sm"
+        onClick={() => handleBadgeClick(text)}
+      >
+        {text}
+      </Badge>
+    ))}
+  </div>
+  </div>
+</div>
+
+
       </main>
     </>
   );

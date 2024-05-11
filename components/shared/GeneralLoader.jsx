@@ -66,11 +66,11 @@
 // };
 
 // export default GeneralLoader;
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Tick from "@/public/assets/tick.png";
 import Flicker from "@/public/assets/flicker.gif";
 import Image from "next/image";
+import useSmoothScrollIntoView from '@/hooks/autoscroll';
 
 const steps = [
   "Understanding your query",
@@ -90,15 +90,21 @@ const GeneralLoader = () => {
   const [showSummarizingWithTick, setShowSummarizingTick] = useState(false);
   const [showimageswithFlicker, setShowimageswithFlicker] = useState(false);
   const [showimageswithTick, setShowimageswithTick] = useState(false);
-
+  // const [step,setStep]=useState([]);
+  // const messagesEndRef = useRef<HTMLDivElement>(null); // Change this line
+  const messagesEndRef = useRef(null);
   useEffect(() => {
     const understandingTickTimeout = setTimeout(() => {
+      // setStep((prevmsg)=>[...prevmsg,"first"]);
       setShowUnderstandingWithFlicker(false);
       setShowUnderstandingWithTick(true);
       setShowThinkingWithFlicker(true);
     }, 7000); 
 
     const thinkingFlickerTimeout = setTimeout(() => {
+      // setStep((prevmsg)=>[...prevmsg,"second"]);
+
+
       setShowThinkingWithFlicker(false);
       setShowThinkingWithTick(true);
       setShowSearchingFlicker(true)
@@ -112,12 +118,18 @@ const GeneralLoader = () => {
 
   useEffect(() => {
     const searchingFlickerTimeout = setTimeout(() => {
+      // setStep((prevmsg)=>[...prevmsg,"third"]);
+
+
       setShowSearchingFlicker(false);
       setShowSearchingTick(true);
       setShowSummarizingFlicker(true);
     }, 21000); 
 
     const summarizingFlickerTimeout = setTimeout(() => {
+      // setStep((prevmsg)=>[...prevmsg,"fourth"]);
+
+
       setShowSummarizingFlicker(true);
       // setShowSummarizingTick(true);
     }, 40000);
@@ -127,7 +139,26 @@ const GeneralLoader = () => {
       clearTimeout(summarizingFlickerTimeout);
     };
   }, []);
+  useEffect(() => {
+    // Your existing useEffect logic here
 
+    // Scroll to bottom when step changes or a new step appears
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [
+    showUnderstandingWithFlicker,
+    showUnderstandingWithTick,
+    showThinkingWithFlicker,
+    showThinkingWithTick,
+    showSearchingWithFlicker,
+    showSearchingWithTick,
+    showSummarizingWithFlicker,
+    showSummarizingWithTick,
+    showimageswithFlicker,
+    showimageswithTick,
+  ]);
+  // useSmoothScrollIntoView(messagesEndRef, [step]);
   return (
     <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl shadow-lg px-3 py-2 text-xs my-2 md:text-base mx-1 md:mx-6">
       <div className="flex flex-row gap-3 items-center">
@@ -180,8 +211,13 @@ const GeneralLoader = () => {
           <p className="step-text text-white mx-2 transition-colors duration-500">{steps[3]}</p>
         </div>
       )}
-    </div>
+
+        {/* <div ref={messagesEndRef} /> */}
+      
+        <div ref={messagesEndRef} />
     
+    </div>
+
   );
 };
 

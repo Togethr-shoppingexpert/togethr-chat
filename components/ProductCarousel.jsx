@@ -113,15 +113,15 @@ import { CardHeader, CardContent, Card } from "@/components/ui/card";
 
 
 const ProductCarousel = ({ products }) => {
-  const hasErrors = products.some(product => product && product.Error);
+  // const hasErrors = products.some(product => product && product.Error);
 
-  if (hasErrors) {
-    return (
-      <div className="flex justify-center items-center">
-        <p className="text-red-500 font-semibold">Not found</p>
-      </div>
-    );
-  }
+  // if (hasErrors) {
+  //   return (
+  //     <div className="flex justify-center items-center">
+  //       <p className="text-red-500 font-semibold">Not found</p>
+  //     </div>
+  //   );
+  // }
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef(null);

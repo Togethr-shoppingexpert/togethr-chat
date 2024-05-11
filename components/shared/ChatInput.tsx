@@ -46,7 +46,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: 
     }, [initialText, searchQuery]); // Add initialText and searchQuery as dependencies
 
     return (
-        <div className="w-full max-w-2xl h-[65px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
+        <div className="w-full md:max-w-2xl xl:max-w-2xl lg:max-w-2xl sm:max-w-2xl h-[65px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
             <div className="flex w-full max-w-2xl  h-[56px] bg-black items-center space-x-2  px-[6px] py-2 rounded-xl">
             <Input
                 type="email"
