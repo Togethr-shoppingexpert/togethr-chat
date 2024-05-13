@@ -169,7 +169,9 @@ useEffect(() => {
         const data = await response.json();
         const newConversationId = data.ConversationId;
         sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
-        sessionStorage.removeItem('chatstarted');
+        // sessionStorage.removeItem('chatstarted');
+        localStorage.removeItem('chatstarted');
+        localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
 
         setConversationId(newConversationId);
       }else {
@@ -275,7 +277,7 @@ const buttons = [
   ];
 
   const handleBadgeClick = (text: string) => {
-    sessionStorage.setItem('initialmsg',selectedText);
+    
     setSelectedText(text);
   };
 
