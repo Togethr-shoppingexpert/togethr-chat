@@ -15,64 +15,62 @@ import { FaRegLightbulb } from "react-icons/fa";
 let followupques: SetStateAction<never[]>;
 let productinformation: any[];
 const id = sessionStorage.getItem("conversationId");
-const WebSocketSingleton = (() => {
-  let instance: WebSocket | null = null;
-  // Callback function to update loading state
-  let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
+// const WebSocketSingleton = (() => {
+//   let instance: WebSocket | null = null;
+//   // Callback function to update loading state
+//   let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
 
-  // Function to create WebSocket instance
-  function createInstance(id: string) {
-    const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
-    // WebSocket setup
-    ws.onopen = (event) => {
-      console.log("LOG:: Connected ", event);
-    };
+//   // Function to create WebSocket instance
+//   function createInstance(id: string) {
+//     const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+//     // WebSocket setup
+//     ws.onopen = (event) => {
+//       console.log("LOG:: Connected ", event);
+//     };
 
-    ws.onclose = (event) => {
-      console.log("LOG:: Closed ", event);
-    };
+//     ws.onclose = (event) => {
+//       console.log("LOG:: Closed ", event);
+//     };
 
-    ws.onmessage = (event) => {
-      console.log("LOG:: onMessage ", event);
-      console.log("event : ", event.data);
-      const eventData = JSON.parse(event.data);
-      console.log("eventdatatype:", eventData.type);
-      if (eventData) {
-        if (eventData.type === "research_flag") {
-          updateLoadingStateCallback && updateLoadingStateCallback(true);
-        } else if (eventData.data === "Preparing Response") {
-          updateLoadingStateCallback && updateLoadingStateCallback(false);
-        } else if (eventData.type === "follow_up_questions") {
-          let messages = eventData.data;
-          followupques = messages;
-          console.log("followupques: ", followupques);
-        } else if (eventData.type === "product information") {
-          let info = eventData.data;
-          console.log("productinfo: ", eventData.data);
-          productinformation = info;
-        }
-      }
-    };
+//     ws.onmessage = (event) => {
+//       console.log("LOG:: onMessage ", event);
+//       console.log("event : ", event.data);
+//       const eventData = JSON.parse(event.data);
+//       console.log("eventdatatype:", eventData.type);
+//       if (updateLoadingStateCallback&&eventData) {
+//         if (eventData.type === "research_flag") {
+//            updateLoadingStateCallback(true);
+//         } else if (eventData.data === "Preparing Response") {
+//            updateLoadingStateCallback(false);
+//         } else if (eventData.type === "follow_up_questions") {
+//           let messages = eventData.data;
+//           followupques = messages;
+//           console.log("followupques: ", followupques);
+//         } 
+//       }
 
-    ws.onerror = (event) => {
-      console.log("LOG:: Error", event);
-    };
 
-    return ws;
-  }
+//     };
 
-  return {
-    getInstance: (id: string, callback: (isLoading: boolean) => void) => {
-      // Set the loading state update callback
-      updateLoadingStateCallback = callback;
+//     ws.onerror = (event) => {
+//       console.log("LOG:: Error", event);
+//     };
 
-      if (!instance) {
-        instance = createInstance(id);
-      }
-      return instance;
-    },
-  };
-})();
+//     return ws;
+//   }
+
+//   return {
+//     getInstance: (id: string, callback: (isLoading: boolean) => void) => {
+//       // Set the loading state update callback
+//       updateLoadingStateCallback = callback;
+
+//       if (!instance) {
+//         instance = createInstance(id);
+//       }
+//       return instance;
+//     },
+//   };
+// })();
 
 // const WebSocketSingleton = (() => {
 
@@ -173,29 +171,103 @@ export default function Page({ params }: { params: Params }) {
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
+  
 
   const [containerWidth, setContainerWidth] = useState<number>(0); // Specify the type as number
   const [isOpen, setIsOpen] = useState(false);
+
+
+  const WebSocketSingleton = (() => {
+    let instance: WebSocket | null = null;
+    // Callback function to update loading state
+    let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
+  
+    // Function to create WebSocket instance
+    function createInstance(id: string) {
+      const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+      // WebSocket setup
+      ws.onopen = (event) => {
+        console.log("LOG:: Connected ", event);
+      };
+  
+      ws.onclose = (event) => {
+        console.log("LOG:: Closed ", event);
+      };
+  
+      ws.onmessage = (event) => {
+        console.log("LOG:: onMessage ", event);
+        console.log("event : ", event.data);
+        const eventData = JSON.parse(event.data);
+        console.log("eventdatatype:", eventData.type);
+        if (updateLoadingStateCallback&&eventData) {
+          if (eventData.type === "research_flag") {
+             updateLoadingStateCallback(true);
+          } else if (eventData.data === "Preparing Response") {
+             updateLoadingStateCallback(false);
+          } else if (eventData.type === "follow_up_questions") {
+            let messages = eventData.data;
+            followupques = messages;
+            setFollowup(messages);
+            console.log("followupques: ", followupques);
+          } else if(eventData.type==="product information"){
+            let ques=eventData.data;
+            setProductArray(ques);
+            console.log("setproductarrayworked: ",productArray);
+            
+          }
+        }
+  
+  
+      };
+  
+      ws.onerror = (event) => {
+        console.log("LOG:: Error", event);
+      };
+  
+      return ws;
+    }
+  
+    return {
+      getInstance: (id: string, callback: (isLoading: boolean) => void) => {
+        // Set the loading state update callback
+        updateLoadingStateCallback = callback;
+  
+        if (!instance) {
+          instance = createInstance(id);
+        }
+        return instance;
+      },
+    };
+  })();
+  
+
 
   const toggleFollowup = () => {
     setIsOpen(!isOpen);
   };
   const containerRef = useRef<HTMLDivElement>(null); // Specify the type as HTMLDivElement
-  useEffect(() => {
-    const updateContainerWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      }
-    };
-    updateContainerWidth();
-    window.addEventListener("resize", updateContainerWidth);
-    return () => {
-      window.removeEventListener("resize", updateContainerWidth);
-    };
-  }, []);
+
+
+  // useEffect(() => {
+  //   const updateContainerWidth = () => {
+  //     if (containerRef.current) {
+  //       setContainerWidth(containerRef.current.offsetWidth);
+  //     }
+  //   };
+  //   updateContainerWidth();
+  //   window.addEventListener("resize", updateContainerWidth);
+  //   return () => {
+  //     window.removeEventListener("resize", updateContainerWidth);
+  //   };
+  // }, []);
+
+
   useEffect(() => {
     setFollowup(followupques);
-  });
+    console.log("setfollowupworked",followup);
+  },[]);
+
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageSentRef = useRef<boolean>(false);
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
@@ -477,18 +549,18 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
+
+  useEffect(()=>{
+    const params = new URLSearchParams(window.location.search);
+      const urlConversationId = params.get("convid");
+      if(urlConversationId&&urlConversationId.length>0){
+        sessionStorage.setItem('conversationId',urlConversationId);
+      }
+  },[])
+
   useEffect(() => {
     // Check if the page is being refreshed
-    const perfEntries = performance.getEntriesByType("navigation");
-    const perfEntry =
-      perfEntries.length && (perfEntries[0] as PerformanceNavigationTiming);
-    const isPageRefreshed = perfEntry && perfEntry.type === "reload";
-
-    console.log("Is page refreshed:", isPageRefreshed);
-
-    if (isPageRefreshed) {
-      // Clear the flag indicating page refresh
-      sessionStorage.removeItem("isPageRefreshed");
+    
 
       // Get conversationId from URL
       const params = new URLSearchParams(window.location.search);
@@ -561,10 +633,7 @@ export default function Page({ params }: { params: Params }) {
         sessionStorage.removeItem("chatstarted");
         generateNewConversationId();
       }
-    } else {
-      // Set flag indicating page refresh
-      // sessionStorage.setItem('isPageRefreshed', 'true');
-    }
+    
   }, []);
 
   return (
@@ -572,7 +641,7 @@ export default function Page({ params }: { params: Params }) {
       <Navbar />
 
       <section className="flex justify-center h-full mb-16 bp-0  ">
-        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0 overflow-hidden ">
+        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0  ">
           {/* attempt 1 */}
 
           {conversationHistorydata.map((message, index) => (
