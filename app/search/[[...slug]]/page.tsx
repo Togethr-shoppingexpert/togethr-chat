@@ -287,13 +287,11 @@ export default function Page({ params }: { params: Params }) {
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
-    const chatstarted = localStorage.getItem("chatstarted");
+    const chatstarted = sessionStorage.getItem("chatstarted");
     if (!chatstarted && searchQuery && !messageSentRef.current) {
       sendMessage(decodeURIComponent(searchQuery));
       // setUserMessage(decodeURIComponent(searchQuery));
       sessionStorage.setItem("chatstarted", "true");
-      localStorage.setItem("chatstarted", "true");
-
 
       messageSentRef.current = true; // Update the flag
     }
@@ -372,7 +370,7 @@ export default function Page({ params }: { params: Params }) {
   });
   useEffect(() => {
     // Get conversation ID from sessionStorage
-    const storedConversationId = localStorage.getItem("conversationId");
+    const storedConversationId = sessionStorage.getItem("conversationId");
 
     // If conversation ID exists, initialize WebSocket connection
     if (storedConversationId) {
@@ -395,12 +393,12 @@ export default function Page({ params }: { params: Params }) {
     setIsLoading(true);
 
     // Check if conversationId exists in session storage
-    let conversationId = localStorage.getItem("conversationId");
+    let conversationId = sessionStorage.getItem("conversationId");
 
     // If conversationId doesn't exist, wait for 500ms to retry fetching
     if (!conversationId) {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      conversationId = localStorage.getItem("conversationId");
+      conversationId = sessionStorage.getItem("conversationId");
 
       // If conversationId still doesn't exist, log error and return
       if (!conversationId) {
@@ -552,15 +550,13 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []);
 
-  // useEffect(()=>{
-  //   const params = new URLSearchParams(window.location.search);
-  //     const urlConversationId = params.get("convid");
-  //     if(urlConversationId&&urlConversationId.length>0){
-  //       sessionStorage.setItem('conversationId',urlConversationId);
-  //       localStorage.setItem('conversationId',urlConversationId);
-
-  //     }
-  // },[])
+  useEffect(()=>{
+    const params = new URLSearchParams(window.location.search);
+      const urlConversationId = params.get("convid");
+      if(urlConversationId&&urlConversationId.length>0){
+        sessionStorage.setItem('conversationId',urlConversationId);
+      }
+  },[])
 
   useEffect(() => {
     // Check if the page is being refreshed
@@ -572,7 +568,7 @@ export default function Page({ params }: { params: Params }) {
       console.log("urlconvid: ", urlConversationId);
 
       // Check if conversationId exists in sessionStorage
-      const storedConversationId = localStorage.getItem("conversationId");
+      const storedConversationId = sessionStorage.getItem("conversationId");
       console.log("stored convid: ", storedConversationId);
 
       if (urlConversationId && urlConversationId === storedConversationId) {
@@ -623,8 +619,6 @@ export default function Page({ params }: { params: Params }) {
               const data = await response.json();
               const newConversationId = data.ConversationId;
               sessionStorage.setItem("conversationId", newConversationId);
-              localStorage.setItem("conversationId", newConversationId);
-
               setConversationId(newConversationId);
             } else {
               console.error(
@@ -637,8 +631,6 @@ export default function Page({ params }: { params: Params }) {
           }
         };
         sessionStorage.removeItem("chatstarted");
-        localStorage.removeItem("chatstarted");
-
         generateNewConversationId();
       }
     
