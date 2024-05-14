@@ -3,6 +3,8 @@ import { useState, useEffect , useRef } from 'react';
 import Navbar from "../components/shared/Navbar";
 import { ChatInput } from "@/components/shared/ChatInput";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from 'next/navigation';
+
 
 export default function Home() {
   const [selectedText, setSelectedText] = useState("");
@@ -12,7 +14,6 @@ export default function Home() {
   const [convnId, setConversationId] = useState("");
 
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
-
 
 
   // guestsignup and localstorage logic
@@ -146,6 +147,13 @@ useEffect(() => {
 
   fetchAuthToken();
 }, []);
+ // useEffect(()=>{
+  //   const params = new URLSearchParams(window.location.search);
+  //     const urlConversationId = params.get("convid");
+  //     if(urlConversationId&&urlConversationId.length>0){
+  //       sessionStorage.setItem('conversationId',urlConversationId);
+  //     }
+  // },[])
 
 
 
@@ -170,7 +178,8 @@ useEffect(() => {
         const newConversationId = data.ConversationId;
         sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
         sessionStorage.removeItem('chatstarted');
-
+        localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+        localStorage.removeItem('chatstarted');
         setConversationId(newConversationId);
       }else {
         console.error('Failed to fetch conversation ID:', response.statusText);

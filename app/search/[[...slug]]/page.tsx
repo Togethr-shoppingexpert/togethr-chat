@@ -12,6 +12,8 @@ import { ResearchComponent } from "@/components/ResearchComponent";
 import ResearchLoader from "@/components/shared/ResearchLoader";
 import GeneralLoader from "@/components/shared/GeneralLoader";
 import { FaRegLightbulb } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
+
 let followupques: SetStateAction<never[]>;
 let productinformation: any[];
 const id = sessionStorage.getItem("conversationId");
@@ -171,6 +173,7 @@ export default function Page({ params }: { params: Params }) {
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
+  const router = useRouter();
   
 
   const [containerWidth, setContainerWidth] = useState<number>(0); // Specify the type as number
@@ -287,11 +290,13 @@ export default function Page({ params }: { params: Params }) {
 
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
-    const chatstarted = sessionStorage.getItem("chatstarted");
+    const chatstarted = localStorage.getItem("chatstarted");
     if (!chatstarted && searchQuery && !messageSentRef.current) {
       sendMessage(decodeURIComponent(searchQuery));
       // setUserMessage(decodeURIComponent(searchQuery));
       sessionStorage.setItem("chatstarted", "true");
+      localStorage.setItem("chatstarted", "true");
+
 
       messageSentRef.current = true; // Update the flag
     }
@@ -550,14 +555,25 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []);
 
+  // useEffect(()=>{
+  //   const params = new URLSearchParams(window.location.search);
+  //     const urlConversationId = params.get("convid");
+  //     if(urlConversationId&&urlConversationId.length>0){
+  //       sessionStorage.setItem('conversationId',urlConversationId);
+  //     }
+  // },[])
   useEffect(()=>{
-    const params = new URLSearchParams(window.location.search);
-      const urlConversationId = params.get("convid");
-      if(urlConversationId&&urlConversationId.length>0){
-        sessionStorage.setItem('conversationId',urlConversationId);
-      }
-  },[])
-
+    const params=new URLSearchParams(window.location.search);
+    const urlConversationID=params.get("convid");
+    
+    const savedConversationID=localStorage.getItem('conversationId');
+    if(savedConversationID!==urlConversationID){
+      localStorage.removeItem('chatstarted');
+      localStorage.removeItem('conversationId');
+  
+    router.push('/');
+    }
+  })
   useEffect(() => {
     // Check if the page is being refreshed
     
@@ -568,11 +584,12 @@ export default function Page({ params }: { params: Params }) {
       console.log("urlconvid: ", urlConversationId);
 
       // Check if conversationId exists in sessionStorage
-      const storedConversationId = sessionStorage.getItem("conversationId");
+      const storedConversationId = localStorage.getItem("conversationId");
       console.log("stored convid: ", storedConversationId);
 
       if (urlConversationId && urlConversationId === storedConversationId) {
         // Use data from sessionStorage if conversationId matches
+        sessionStorage.setItem('conversationId',storedConversationId);
         const getrefresheddata = async () => {
           try {
             const response = await fetch(
@@ -587,7 +604,7 @@ export default function Page({ params }: { params: Params }) {
             setConversationHistorydata(conversationHistory);
             setProductsHistory(products[0]);
             setConversationId(storedConversationId);
-            console.log("products:",products[0][0]);
+            // console.log("products:",products[0][0]);
             console.log("response: ", response);
             console.log("conversationHistory: ", conversationHistorydata);
             console.log("producthistory: ", productsHistory);
@@ -619,6 +636,10 @@ export default function Page({ params }: { params: Params }) {
               const data = await response.json();
               const newConversationId = data.ConversationId;
               sessionStorage.setItem("conversationId", newConversationId);
+              localStorage.setItem("conversationId", newConversationId);
+              localStorage.removeItem('chatstarted');
+              sessionStorage.removeItem('chatstarted');
+
               setConversationId(newConversationId);
             } else {
               console.error(
