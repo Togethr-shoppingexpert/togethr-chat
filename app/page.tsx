@@ -4,6 +4,9 @@ import Navbar from "../components/shared/Navbar";
 import { ChatInput } from "@/components/shared/ChatInput";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from 'next/navigation';
+import { config } from '../constants';
+const API_ENDPOINT=config.url;
+console.log("API_ENDPOINT: ",API_ENDPOINT);
 
 
 export default function Home() {
@@ -32,7 +35,7 @@ export default function Home() {
 
   const fetchGuestAuthSignup = async () => {
     try {
-      const response = await fetch('https://govoyr.com/api/guest-auth/signup');
+      const response = await fetch(`https://${API_ENDPOINT}/api/guest-auth/signup`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -163,7 +166,7 @@ useEffect(() => {
 useEffect(() => {
   const getSessionId = async () => {
     try {
-      const response = await fetch('https://govoyr.com/api/WebChatbot/conversationId', {
+      const response = await fetch(`https://${API_ENDPOINT}/api/WebChatbot/conversationId`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

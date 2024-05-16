@@ -13,7 +13,9 @@ import ResearchLoader from "@/components/shared/ResearchLoader";
 import GeneralLoader from "@/components/shared/GeneralLoader";
 import { FaRegLightbulb } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
-
+import { config } from '../../../constants';
+const API_ENDPOINT=config.url;
+console.log("API_ENDPOINT: ",API_ENDPOINT);
 let followupques: SetStateAction<never[]>;
 let productinformation: any[];
 const id = sessionStorage.getItem("conversationId");
@@ -163,6 +165,10 @@ export default function Page({ params }: { params: Params }) {
   const [nextsearch, setNextSearch] = useState(false);
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState([]);
+  const [showbuttons,setShowbuttons]=useState(false);
+  const [guestID, setGuestID] = useState("");
+  const [token, setToken] = useState("");
+  const [prevConvId,setPrevConvId]=useState("");
   // const [refresheddata,setRefreshedData]=useState<any[]>([]);
   // const [refresheddata, setRefreshedData] = useState<any>({});
   const [conversationHistorydata, setConversationHistorydata] = useState<any[]>(
@@ -187,7 +193,7 @@ export default function Page({ params }: { params: Params }) {
   
     // Function to create WebSocket instance
     function createInstance(id: string) {
-      const ws = new WebSocket(`wss://govoyr.com/ws/${id}`);
+      const ws = new WebSocket(`wss://${API_ENDPOINT}/ws/${id}`);
       // WebSocket setup
       ws.onopen = (event) => {
         console.log("LOG:: Connected ", event);
@@ -421,7 +427,7 @@ export default function Page({ params }: { params: Params }) {
 
     try {
       const response = await fetch(
-        "https://govoyr.com/api/WebChatbot/message",
+        `https://${API_ENDPOINT}/api/WebChatbot/message`,
         {
           method: "POST",
           headers: {
@@ -457,7 +463,7 @@ export default function Page({ params }: { params: Params }) {
         if (isCurationRequired) {
           if (!isPdtFlag && aiResponse.products === undefined) {
             const productResponse = await fetch(
-              "https://govoyr.com/api/WebChatbot/product",
+              `https://${API_ENDPOINT}/api/WebChatbot/product`,
               {
                 method: "POST",
                 headers: {
@@ -562,18 +568,18 @@ export default function Page({ params }: { params: Params }) {
   //       sessionStorage.setItem('conversationId',urlConversationId);
   //     }
   // },[])
-  useEffect(()=>{
-    const params=new URLSearchParams(window.location.search);
-    const urlConversationID=params.get("convid");
+  // useEffect(()=>{
+  //   const params=new URLSearchParams(window.location.search);
+  //   const urlConversationID=params.get("convid");
     
-    const savedConversationID=localStorage.getItem('conversationId');
-    if(savedConversationID!==urlConversationID){
-      localStorage.removeItem('chatstarted');
-      localStorage.removeItem('conversationId');
+  //   const savedConversationID=localStorage.getItem('conversationId');
+  //   if(savedConversationID!==urlConversationID){
+  //     localStorage.removeItem('chatstarted');
+  //     localStorage.removeItem('conversationId');
   
-    router.push('/');
-    }
-  })
+  //   router.push('/');
+  //   }
+  // })
   useEffect(() => {
     // Check if the page is being refreshed
     
@@ -586,14 +592,14 @@ export default function Page({ params }: { params: Params }) {
       // Check if conversationId exists in sessionStorage
       const storedConversationId = localStorage.getItem("conversationId");
       console.log("stored convid: ", storedConversationId);
-
-      if (urlConversationId && urlConversationId === storedConversationId) {
+      const prevconvid=localStorage.getItem('prevconversationid');
+      if (!prevconvid&&storedConversationId&&urlConversationId && urlConversationId === storedConversationId) {
         // Use data from sessionStorage if conversationId matches
         sessionStorage.setItem('conversationId',storedConversationId);
         const getrefresheddata = async () => {
           try {
             const response = await fetch(
-              `https://govoyr.com/api/WebChatbot/conversation/${storedConversationId}`
+              `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`
             );
             if (!response.ok) {
               throw new Error("Network response was not ok.");
@@ -617,54 +623,175 @@ export default function Page({ params }: { params: Params }) {
         getrefresheddata(); // Call the async function
       } else {
         // Generate new conversationId
-        const generateNewConversationId = async () => {
-          try {
-            const response = await fetch(
-              "https://govoyr.com/api/WebChatbot/conversationId",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${authTokenRef.current}`,
-                },
-                body: JSON.stringify({
-                  platform: "web",
-                }),
-              }
-            );
-            if (response.ok) {
-              const data = await response.json();
-              const newConversationId = data.ConversationId;
-              sessionStorage.setItem("conversationId", newConversationId);
-              localStorage.setItem("conversationId", newConversationId);
-              localStorage.removeItem('chatstarted');
-              sessionStorage.removeItem('chatstarted');
+        setShowbuttons(true);
+        urlConversationId&&localStorage.setItem('prevconversationid',urlConversationId);
+        // const generateNewConversationId = async () => {
+        //   try {
+        //     const response = await fetch(
+        //       "https://govoyr.com/api/WebChatbot/conversationId",
+        //       {
+        //         method: "POST",
+        //         headers: {
+        //           "Content-Type": "application/json",
+        //           Authorization: `Bearer ${authTokenRef.current}`,
+        //         },
+        //         body: JSON.stringify({
+        //           platform: "web",
+        //         }),
+        //       }
+        //     );
+        //     if (response.ok) {
+        //       const data = await response.json();
+        //       const newConversationId = data.ConversationId;
+        //       sessionStorage.setItem("conversationId", newConversationId);
+        //       localStorage.setItem("conversationId", newConversationId);
+        //       localStorage.removeItem('chatstarted');
+        //       sessionStorage.removeItem('chatstarted');
 
-              setConversationId(newConversationId);
-            } else {
-              console.error(
-                "Failed to fetch conversation ID:",
-                response.statusText
-              );
-            }
-          } catch (error) {
-            console.error("Error fetching conversation ID:", error);
-          }
-        };
-        sessionStorage.removeItem("chatstarted");
-        generateNewConversationId();
+        //       setConversationId(newConversationId);
+        //     } else {
+        //       console.error(
+        //         "Failed to fetch conversation ID:",
+        //         response.statusText
+        //       );
+        //     }
+        //   } catch (error) {
+        //     console.error("Error fetching conversation ID:", error);
+        //   }
+        // };
+        // sessionStorage.removeItem("chatstarted");
+        // generateNewConversationId();
       }
     
   }, []);
 
+  useEffect(()=>{
+    const prevconvid=localStorage.getItem('prevconversationid');
+    prevconvid&&setPrevConvId(prevconvid);
+    const getrefresheddata = async () => {
+      try {
+        const response = await fetch(
+          `https://${API_ENDPOINT}/api/WebChatbot/conversation/${prevConvId}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        const data = await response.json();
+        const { conversationHistory, products } = data;
+        console.log("history: ", data);
+        setConversationHistorydata(conversationHistory);
+        setProductsHistory(products[0]);
+        // console.log("products:",products[0][0]);
+        console.log("response: ", response);
+        console.log("conversationHistory: ", conversationHistorydata);
+        console.log("producthistory: ", productsHistory);
+        // setConversationId(urlConversationId);
+      } catch (error) {
+        console.error("Error fetching conversation data:", error);
+      }
+    };
+  
+    if(prevconvid){
+      getrefresheddata();
+      // localStorage.removeItem('prevconversationid');
+
+    }
+
+    
+  
+  },[])
+
+  const getSessionId = async () => {
+    try {
+      const response = await fetch(`https://${API_ENDPOINT}/api/WebChatbot/conversationId`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authTokenRef.current}`,
+        },
+        body: JSON.stringify({
+          platform: "web",
+        })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const newConversationId = data.ConversationId;
+        sessionStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+        sessionStorage.removeItem('chatstarted');
+        localStorage.setItem('conversationId', newConversationId); // Store conversation ID in local storage
+        localStorage.removeItem('chatstarted');
+        setConversationId(newConversationId);
+      }else {
+        console.error('Failed to fetch conversation ID:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching conversation ID:', error);
+    }
+  }
+  const fetchGuestAuthSignup = async () => {
+    try {
+      const response = await fetch(`https://${API_ENDPOINT}/api/guest-auth/signup`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      //.guest ---> .User
+      //.guestId ---> UserId
+      // setGuestID(data.guest.GuestId);
+      // setToken(data.token);
+
+      setGuestID(data.User.UserId);
+      setToken(data.token);
+      // Store guestID and token in local storage
+      // localStorage.setItem('guestID', data.guest.GuestId);
+      localStorage.setItem('UserID', data.User.UserId);
+      
+      localStorage.setItem('token', data.token);
+      authTokenRef.current = data.token;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const storedGuestID = localStorage.getItem('UserID');
+    const storedToken = localStorage.getItem('token');
+    
+    if (storedGuestID && storedToken) {
+      setGuestID(storedGuestID);
+      setToken(storedToken);
+    } else {
+      // Fetch API only if guestID and token are not stored in local storage
+      fetchGuestAuthSignup();
+    }
+  }, []);
+
+  function StartnewConversation(){
+    setShowbuttons(false);
+    router.push('/');
+  }
+
+  function ContinuethisConversation(){
+      setShowbuttons(false);
+      fetchGuestAuthSignup();
+      getSessionId();
+      router.push(`/search/${guestID}/${searchQuery}?convid=${convnId}`)
+
+  }
+
   return (
     <main className="bg-[#111111]">
       <Navbar />
-
+    {showbuttons?(
+    <div className="flex justify-center h-full mb-16 bp-0">
+      <button onClick={ContinuethisConversation} className="m-2 text-white rounded-lg bg-[#0C8CE9] p-2 md:text-[12px]  text-[10px]">Continue this conversation</button>
+      <button onClick={StartnewConversation}className=" m-2 text-white rounded-lg bg-[#0C8CE9] p-2 md:text-[12px]  text-[10px]">Start new Conversation</button>
+    </div>):(
+      <div>
       <section className="flex justify-center h-full mb-16 bp-0  ">
-        <div className="md:max-w-2xl md:min-w-[42rem] max-w-md  mt-5 mb-10 h-full p-0  ">
+        <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
           {/* attempt 1 */}
-
+        
           {conversationHistorydata.map((message, index) => (
   <div
     key={index}
@@ -826,7 +953,7 @@ export default function Page({ params }: { params: Params }) {
         </div>
       </section>
 
-      <footer className="fixed bottom-0 w-full flex justify-center mt-6 p-5 bg-[#111111] z-50 ">
+      <footer className="fixed bottom-0 w-full flex justify-center mt-6 p-5 bg-[#111111] z-10 ">
         <div className="flex flex-col w-full max-w-2xl  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center  z-1200 relative">
           {followup && followup.length > 0 && (
             <Followup
@@ -872,6 +999,8 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </div>
       </footer>
+      </div>
+          )}
     </main>
   );
 }
