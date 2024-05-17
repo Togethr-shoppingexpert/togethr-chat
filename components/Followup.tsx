@@ -22,12 +22,12 @@ const Followup: React.FC<FollowupProps> = ({ containerWidth, followup, isOpen, s
         
         {/* <ul className="list-disc list-inside"> */}
           {followup.map((ques, index) => (
-            <>
+            <div key={index}>
             <div onClick={()=>{sendMessage(ques);setIsOpen(!isOpen);}}  className='my-1 p-1 cursor-pointer' key={index}><h4>{ques}</h4></div>
             {index!=followup.length-1&&
             <hr className="my-2 border-b-2 border-[#222222]" />
 }
-            </>
+            </div>
           ))}
         {/* </ul> */}
       </div>
