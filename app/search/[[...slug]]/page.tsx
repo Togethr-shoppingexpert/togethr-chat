@@ -211,7 +211,7 @@ export default function Page({ params }: { params: Params }) {
   });
   useEffect(() => {
     // Get conversation ID from sessionStorage
-    const storedConversationId = sessionStorage.getItem("conversationId");
+    const storedConversationId = localStorage.getItem("conversationId");
 
     // If conversation ID exists, initialize WebSocket connection
     if (storedConversationId) {
