@@ -408,7 +408,14 @@ if (isPageRefreshed) {
       const getrefresheddata = async () => {
         try {
           const response = await fetch(
-            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`
+            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`,{
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              }
+              
+            }
           );
           if (!response.ok) {
             throw new Error("Network response was not ok.");
