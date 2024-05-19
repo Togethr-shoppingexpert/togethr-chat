@@ -388,13 +388,13 @@ export default function Page({ params }: { params: Params }) {
     console.log("urlconvid: ", urlConversationId);
 
     // Check if conversationId exists in sessionStorage
-    let storedConversationId;
-    if(isPageRefreshed){
-       storedConversationId = sessionStorage.getItem("conversationId");  
-    }
-    else{
-     storedConversationId = localStorage.getItem("conversationId");
-    }
+    let storedConversationId: string;
+if (isPageRefreshed) {
+    storedConversationId = sessionStorage.getItem("conversationId") || "";  
+} else {
+    storedConversationId = localStorage.getItem("conversationId") || "";
+}
+
     console.log("stored convid: ", storedConversationId);
     
     if (
