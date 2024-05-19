@@ -380,16 +380,25 @@ export default function Page({ params }: { params: Params }) {
   }, []);
 
   useEffect(() => {
+    const perfEntries = performance.getEntriesByType("navigation");
+    const perfEntry = perfEntries.length && perfEntries[0] as PerformanceNavigationTiming;
+    const isPageRefreshed = perfEntry && perfEntry.type === "reload";
     const params = new URLSearchParams(window.location.search);
     const urlConversationId = params.get("convid");
     console.log("urlconvid: ", urlConversationId);
 
     // Check if conversationId exists in sessionStorage
-    const storedConversationId = localStorage.getItem("conversationId");
+    let storedConversationId;
+    if(isPageRefreshed){
+       storedConversationId = sessionStorage.getItem("conversationId");  
+    }
+    else{
+     storedConversationId = localStorage.getItem("conversationId");
+    }
     console.log("stored convid: ", storedConversationId);
-    const prevconvid = localStorage.getItem("prevconversationid");
+    
     if (
-      !prevconvid &&
+      
       storedConversationId &&
       urlConversationId &&
       urlConversationId === storedConversationId
