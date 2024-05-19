@@ -142,7 +142,7 @@ export default function Home() {
         <div className="flex flex-col w-[70%] items-center mt-28 h-screen mx-auto">
           <div className="w-full flex flex-col items-center mb-4 px-4 text-center ">
             <h1 className="font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl text-white mb-2">
-              Let's Shop Together
+              Let's Shop Togethr
             </h1>
           </div>
 
