@@ -59,7 +59,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: 
 
             <Button
                 type="button"
-                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl focus:border-pink-600   w-[58px] md:w-[58px]"
+                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl focus:border-pink-600   w-[50px] md:w-[50px]"
                 onClick={handleClick}
                 disabled={!initialText.trim()}
             >

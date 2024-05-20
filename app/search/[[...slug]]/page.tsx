@@ -127,11 +127,12 @@ export default function Page({ params }: { params: Params }) {
             followupques = messages;
             setFollowup(messages);
             console.log("followupques: ", followupques);
-          } else if (eventData.type === "product information") {
-            let ques = eventData.data;
-            setProductArray(ques);
-            console.log("setproductarrayworked: ", productArray);
-          }
+          } 
+          // else if (eventData.type === "product information") {
+          //   let ques = eventData.data;
+          //   setProductArray(ques);
+          //   console.log("setproductarrayworked: ", productArray);
+          // }
         }
       };
 
@@ -208,7 +209,7 @@ export default function Page({ params }: { params: Params }) {
     if (isLoading === false) {
       setCuration(false);
     }
-  });
+  },[]);
   useEffect(() => {
     // Get conversation ID from sessionStorage
     const storedConversationId = localStorage.getItem("conversationId");
@@ -292,12 +293,24 @@ export default function Page({ params }: { params: Params }) {
 
         if (isCurationRequired) {
           if (!isPdtFlag && aiResponse.products === undefined) {
-            
+            const productResponse = await fetch(
+              `https://${API_ENDPOINT}/api/WebChatbot/product`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${authTokenRef.current}`,
+                },
+                body: JSON.stringify({
+                  MessageId: data.MessageId,
+                }),
+              }
+            );
 
-            if (productArray.length>0) {
-              const productData = productArray;
+            if (productResponse.ok) {
+              const productData = await productResponse.json();
               console.log("product data :", productData);
-
+              setCuration(false);
               const formattedProducts: Product[] = productData.map(
                 (product: any) => ({
                   title: product.title,
@@ -316,6 +329,7 @@ export default function Page({ params }: { params: Params }) {
                 ...prevMessages,
                 productAiMessage,
               ]);
+              setProductArray([]);
             } else {
               console.error(
                 "Failed to fetch products:",
@@ -370,7 +384,7 @@ export default function Page({ params }: { params: Params }) {
 
   // Call the custom hook to enable smooth auto-scrolling
   useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
-  useSmoothScrollIntoView(messagesEndRef,[productArray]);
+  
   //set followupcomponent width
   // Calculate input width
   useEffect(() => {
@@ -412,7 +426,7 @@ if (isPageRefreshed) {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
+                Authorization: `Bearer ${authTokenRef.current}`, 
               }
               
             }
@@ -635,13 +649,13 @@ if (isPageRefreshed) {
                 </div>
               </>
             ))}
-            {isLoading && productArray.length === 0 && !curation && !pdt && (
+            {isLoading  &&productArray.length===0&& !curation && !pdt && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
                 <GeneralLoader />
               </div>
             )}
 
-            {!isLoading && productArray.length > 0 && (
+            { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )}
 
@@ -662,7 +676,7 @@ if (isPageRefreshed) {
         </section>
         
         <footer className="fixed bottom-0 w-full flex justify-center mt-6 p-5 bg-[#111111] z-10 ">
-          <div className="flex flex-col w-full max-w-2xl  bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center  z-1200 relative">
+          <div className="flex flex-col w-full max-w-2xl   bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center  z-1200 relative">
             {followup && followup.length > 0 && (
               <Followup
                 containerWidth={containerWidth}
@@ -674,7 +688,7 @@ if (isPageRefreshed) {
               />
             )}
             <div
-              className={`flex justify-center w-full mt-1 items-center bg-black rounded-xl ${
+              className={`flex w-full max-w-2xl  h-[56px] bg-black items-center space-x-2  px-[6px] py-2 rounded-xl ${
                 isOpen ? "rounded-b-none" : "rounded-xl"
               }`}
             >
@@ -698,7 +712,7 @@ if (isPageRefreshed) {
               )}
               <Button
                 type="submit"
-                className="bg-[#0C8CE9] hover:bg-[#0c8de99a] font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl h-[58px] w-[58px] md:w-[65px] m-1"
+                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb] m-1 rounded-xl focus:border-pink-600   w-[50px] md:w-[50px]"
                 onClick={() => sendMessage(userMessage)}
                 disabled={!userMessage.trim() || isLoading}
               >

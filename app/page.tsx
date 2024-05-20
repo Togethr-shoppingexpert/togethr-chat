@@ -159,7 +159,7 @@ export default function Home() {
               {buttons.map((text, index) => (
                 <Badge
                   key={index}
-                  className="text-[8px] md:text-[11px]  lg:text-[12px] xl:text-[14px] sm:text-[9px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1  transition ease-in-out shadow-sm"
+                  className="text-[8px] md:text-[9px]  lg:text-[10px] xl:text-[12px] sm:text-[9px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1  transition ease-in-out shadow-sm"
                   onClick={() => handleBadgeClick(text)}
                 >
                   {text}
