@@ -15,9 +15,3 @@ const useSmoothScrollIntoView = <T extends HTMLElement>(
 
 export default useSmoothScrollIntoView;
 
-
-
-// old code , used on chat page 
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages]);
