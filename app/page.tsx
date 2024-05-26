@@ -5,8 +5,10 @@ import { ChatInput } from "@/components/shared/ChatInput";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { config } from "../constants";
+import { FaSun, FaMoon } from "react-icons/fa"; 
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
+
 
 export default function Home() {
   const [selectedText, setSelectedText] = useState("");
@@ -14,9 +16,21 @@ export default function Home() {
   const [token, setToken] = useState("");
   const [sessionID, setSessionID] = useState(""); // State to hold session ID
   const [convnId, setConversationId] = useState("");
-
+  // const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return getThemeFromLocalStorage();
+  });
   const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+  // useEffect(() => {
+  //   localStorage.setItem("darkmode", isDarkMode.toString());
+  // }, [isDarkMode]);
 
+  
+  function getThemeFromLocalStorage() {
+    const savedTheme = localStorage.getItem("darkmode");
+    return savedTheme === "dark";
+  }
+  
   // guestsignup and localstorage logic
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
@@ -135,13 +149,65 @@ export default function Home() {
 
   const userId = guestID;
 
+  // Toggle dark mode
+  // function getThemeFromLocalStorage() {
+	// 	const savedTheme = localStorage.getItem("darkmode");
+	// 	if (savedTheme) {
+	// 		setIsDarkMode(savedTheme);
+	// 	}
+	// }
+
+	// function toggleDarkMode() {
+	// 	setIsDarkMode((prevTheme) => {
+	// 		const newTheme = prevTheme === "light" ? "dark" : "light";
+	// 		localStorage.setItem("darkmode", newTheme);
+	// 		return newTheme;
+	// 	});
+	// }
+
+	// useEffect(() => {
+	// 	getThemeFromLocalStorage();
+	// }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevTheme) => {
+      const newTheme = !prevTheme; // Toggle between true (dark) and false (light)
+      localStorage.setItem("darkmode", newTheme ? "dark" : "light");
+      return newTheme;
+    });
+  };
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("darkmode");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    }
+
+    window.addEventListener("storage", () => {
+      setIsDarkMode(getThemeFromLocalStorage());
+    });
+
+    return () => {
+      window.removeEventListener("storage", () => {
+        setIsDarkMode(getThemeFromLocalStorage());
+      });
+    };
+  }, []);
+
   return (
     <>
-      <main className="bg-[#111111]">
-        <Navbar />
+      <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
+        <Navbar mode={isDarkMode? "dark" : "light"} />
+
+        <div className="fixed top-[90px] right-4">
+      <label className="switch">
+        <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+        <span className="slider round"></span>
+      </label>
+      {/* Your other content here */}
+    </div>
         <div className="flex flex-col w-[70%] items-center mt-28 h-screen mx-auto">
           <div className="w-full flex flex-col items-center mb-4 px-4 text-center ">
-            <h1 className="font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl text-white mb-2">
+            <h1 className={`font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl mb-2 ${isDarkMode ? "text-white" : "text-[#080808]"}`}>
               Let's Shop Togethr
             </h1>
           </div>
@@ -152,6 +218,7 @@ export default function Home() {
               onInputChange={handleInputChange}
               searchQuery={userId}
               convnId={convnId}
+              mode={isDarkMode? "dark" : "light"}
             />
           </div>
           <div className="w-[100%] md:max-w-2xl sm:max-w-2xl lg:max-w-2xl xl:max-w-2xl">
@@ -159,7 +226,7 @@ export default function Home() {
               {buttons.map((text, index) => (
                 <Badge
                   key={index}
-                  className="text-[8px] md:text-[9px]  lg:text-[10px] xl:text-[12px] sm:text-[9px] hover:cursor-pointer bg-[#1A1A1A] text-[#999999] font-medium hover:bg-[#0C8CE9] hover:text-white py-1  transition ease-in-out shadow-sm"
+                  className={`text-[7px] md:text-[8px] lg:text-[9px] xl:text-[11px] sm:text-[8px] hover:cursor-pointer ${isDarkMode ? "bg-[#2e2f2f] text-white" : "bg-white text-black"}  font-medium hover:bg-[#2196F3] hover:text-white py-1 transition ease-in-out shadow-sm`}
                   onClick={() => handleBadgeClick(text)}
                 >
                   {text}

@@ -15,6 +15,8 @@ import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import favicon from "@/app/favicon.ico"
+import { FaSun, FaMoon } from "react-icons/fa"; 
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
@@ -25,9 +27,10 @@ import GeneralLoader from "@/components/shared/GeneralLoader";
 import { FaRegLightbulb } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { config } from "../../../constants";
+import Sources from "@/components/Sources";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
-let followupques: SetStateAction<never[]>;
+let followupques: [];
 let productinformation: any[];
 const id = sessionStorage.getItem("conversationId");
 
@@ -48,16 +51,7 @@ interface Product {
   media: { link: string }[];
   sellers_results: { online_sellers: { link: string }[] };
 }
-interface Conversation {
-  ConversationId: string;
-  MessageBody: string;
-  MessageId: string;
-  containsProduct: boolean;
-  createdAt: string;
-  role: string;
-  tokenUsage: number;
-  updatedAt: string;
-}
+
 const item = {
   title: "Section 1",
   content: "Content for section 1",
@@ -86,13 +80,16 @@ export default function Page({ params }: { params: Params }) {
     []
   );
   const [productsHistory, setProductsHistory] = useState<any[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return getThemeFromLocalStorage();
+  });
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
   const router = useRouter();
 
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const WebSocketSingleton = (() => {
     let instance: WebSocket | null = null;
@@ -126,13 +123,15 @@ export default function Page({ params }: { params: Params }) {
             let messages = eventData.data;
             followupques = messages;
             setFollowup(messages);
+            console.log("followupques: ", followup);
             console.log("followupques: ", followupques);
+
           } 
-          // else if (eventData.type === "product information") {
-          //   let ques = eventData.data;
-          //   setProductArray(ques);
-          //   console.log("setproductarrayworked: ", productArray);
-          // }
+          else if (eventData.type === "product information") {
+            let ques = eventData.data;
+            setProductArray(ques);
+            console.log("setproductarrayworked: ", productArray);
+          }
         }
       };
 
@@ -161,10 +160,7 @@ export default function Page({ params }: { params: Params }) {
   };
   const containerRef = useRef<HTMLDivElement>(null); // Specify the type as HTMLDivElement
 
-  useEffect(() => {
-    setFollowup(followupques);
-    console.log("setfollowupworked", followup);
-  }, []);
+  
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageSentRef = useRef<boolean>(false);
@@ -293,25 +289,27 @@ export default function Page({ params }: { params: Params }) {
 
         if (isCurationRequired) {
           if (!isPdtFlag && aiResponse.products === undefined) {
-            const productResponse = await fetch(
-              `https://${API_ENDPOINT}/api/WebChatbot/product`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${authTokenRef.current}`,
-                },
-                body: JSON.stringify({
-                  MessageId: data.MessageId,
-                }),
-              }
-            );
+            // const productResponse = await fetch(
+            //   `https://${API_ENDPOINT}/api/WebChatbot/product`,
+            //   {
+            //     method: "POST",
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //       Authorization: `Bearer ${authTokenRef.current}`,
+            //     },
+            //     body: JSON.stringify({
+            //       MessageId: data.MessageId,
+            //     }),
+            //   }
+            // );
 
-            if (productResponse.ok) {
-              const productData = await productResponse.json();
-              console.log("product data :", productData);
+
+
+            if (productArray&&productArray.length>0) {
+              // const productData = await productResponse.json();
+              console.log("product data :", productArray);
               setCuration(false);
-              const formattedProducts: Product[] = productData.map(
+              const formattedProducts: Product[] = productArray.map(
                 (product: any) => ({
                   title: product.title,
                   rating: product.rating,
@@ -330,6 +328,7 @@ export default function Page({ params }: { params: Params }) {
                 productAiMessage,
               ]);
               setProductArray([]);
+              setCuration(false);
             } else {
               console.error(
                 "Failed to fetch products:",
@@ -392,6 +391,36 @@ export default function Page({ params }: { params: Params }) {
       setInputWidth(inputRef.current.offsetWidth);
     }
   }, []);
+
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevTheme) => {
+      const newTheme = !prevTheme; // Toggle between true (dark) and false (light)
+      localStorage.setItem("darkmode", newTheme ? "dark" : "light");
+      return newTheme;
+    });
+  };
+  function getThemeFromLocalStorage() {
+    const savedTheme = localStorage.getItem("darkmode");
+    return savedTheme === "dark";
+  }
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("darkmode");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    }
+
+    window.addEventListener("storage", () => {
+      setIsDarkMode(getThemeFromLocalStorage());
+    });
+
+    return () => {
+      window.removeEventListener("storage", () => {
+        setIsDarkMode(getThemeFromLocalStorage());
+      });
+    };
+  }, []);
+  
 
   useEffect(() => {
     const perfEntries = performance.getEntriesByType("navigation");
@@ -501,9 +530,16 @@ if (isPageRefreshed) {
 
  
   return (
-    <main className="bg-[#111111]">
-      <Navbar />
-
+    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
+      
+      <Navbar mode={isDarkMode?"dark":"light"} />
+      <div className=" fixed top-[90px] right-4">
+      <label className="switch">
+        <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+        <span className="slider round"></span>
+      </label>
+      {/* Your other content here */}
+    </div>
       <div>
         <section className="flex justify-center h-full mb-16 bp-0  ">
           <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
@@ -520,11 +556,11 @@ if (isPageRefreshed) {
                 {message.role === "AI" ? (
                   <>
                     <Avatar className="shadow-md z-10">
-                      <AvatarImage src="/icon2.png" />
+                      <AvatarImage src="/favicon.png"/>
                       <AvatarFallback>bot</AvatarFallback>
                     </Avatar>
 
-                    <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                    <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-transparent text-black"}`}>
                       {/* Render message content */}
                       <div className="response-content">
                         {typeof message.MessageBody === "string" ? (
@@ -543,10 +579,11 @@ if (isPageRefreshed) {
                                     return (
                                       <span key={idx}>
                                         {parts.map((part, index) => {
-                                          return boldRegex.test(part) ? (
-                                            <strong key={index}>{part}</strong>
-                                          ) : (
+                                          return boldRegex.test(`**${part}**`) ? (
                                             <span key={index}>{part}</span>
+                                          ) : (
+                                            <strong key={index} className="font-bold">{part}</strong>
+                                            
                                           );
                                         })}
                                         <br />
@@ -590,11 +627,11 @@ if (isPageRefreshed) {
                   {message.sender === "AI" ? (
                     <>
                       <Avatar className="shadow-md z-10">
-                        <AvatarImage src="/icon2.png" />
+                        <AvatarImage src="/favicon.png" />
                         <AvatarFallback>bot</AvatarFallback>
                       </Avatar>
 
-                      <div className="flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm text-[#DDDDDD] bg-[#1A1A1A]">
+                      <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-transparent text-black"}`}>
                         {typeof message.content === "string" ? (
                           <div className="response-content">
                             {message.content.split("\n").map((paragraph, i) => (
@@ -607,10 +644,11 @@ if (isPageRefreshed) {
                                   return (
                                     <span key={idx}>
                                       {parts.map((part, index) => {
-                                        return boldRegex.test(part) ? (
-                                          <strong key={index}>{part}</strong>
-                                        ) : (
+                                        return boldRegex.test(`**${part}**`) ? (
                                           <span key={index}>{part}</span>
+                                        ) : (
+                                          <strong key={index} className="font-bold">{part}</strong>
+                                          
                                         );
                                       })}
                                       <br />
@@ -655,8 +693,32 @@ if (isPageRefreshed) {
               </div>
             )}
 
-            { productArray.length > 0 && (
+            {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
+            )} */}
+            
+            {followup&& followup.length > 0 && (
+              <div>
+              <Sources containerWidth={containerWidth}
+              followup={followupques}
+              isOpen={isOpen}
+              setUserMessage={setUserMessage}
+              sendMessage={sendMessage}
+              mode={isDarkMode?"dark":"light"}
+              setIsOpen={setIsOpen}/>
+              <Followup
+                containerWidth={containerWidth}
+                followup={followupques}
+                isOpen={isOpen}
+                setUserMessage={setUserMessage}
+                sendMessage={sendMessage}
+                setIsOpen={setIsOpen}
+                mode={isDarkMode?"dark":"light"}
+              />
+              
+
+              </div>
+              
             )}
 
             {/* <GeneralLoader />
@@ -675,48 +737,38 @@ if (isPageRefreshed) {
           </div>
         </section>
         
-        <footer className="fixed bottom-0 w-full flex justify-center mt-6 p-5 bg-[#111111] z-10 ">
-          <div className="flex flex-col w-full max-w-2xl   bg-[#1A1A1A] px-[6px] py-1 rounded-xl items-center  z-1200 relative">
-            {followup && followup.length > 0 && (
-              <Followup
-                containerWidth={containerWidth}
-                followup={followup}
-                isOpen={isOpen}
-                setUserMessage={setUserMessage}
-                sendMessage={sendMessage}
-                setIsOpen={setIsOpen}
-              />
-            )}
+        <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}  z-10 `}>
+          <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ?"h-[60px]":"h-[56px]"} ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"}  px-[6px] py-1 rounded-xl items-center  z-1200 relative`}>
+            
             <div
-              className={`flex w-full max-w-2xl  h-[56px] bg-black items-center space-x-2  px-[6px] py-2 rounded-xl ${
-                isOpen ? "rounded-b-none" : "rounded-xl"
-              }`}
+              className={`flex w-full max-w-2xl  h-[50px] ${isDarkMode ? "bg-[#242424]" : "bg-white"}   items-center space-x-2  px-[0px] py-2 rounded-xl 
+              `}
             >
               <Input
                 ref={inputRef}
                 type="email"
                 placeholder="Find your product"
-                className={`transition  border-none focus:outline-none bg-black shadow-lg text-white h-full z-1000 ${
-                  isOpen ? "rounded-t-none" : "rounded-xl"
-                }`}
+                className={`${isDarkMode? "bg-[#242424] text-white" : "bg-white text-black"} transition  border-none outline-none focus:outline-none focus:border-none   rounded-xl  font-semibold `}
                 value={userMessage}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
-              {followup && followup.length > 0 && (
+              {/* {followup && followup.length > 0 && (
                 <Button
                   onClick={toggleFollowup}
                   className="font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl h-[58px] w-[58px] md:w-[65px] m-1"
                 >
                   <FaRegLightbulb className="w-[50%] h-[50%]" />
                 </Button>
-              )}
+              )} */}
               <Button
                 type="submit"
-                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb] m-1 rounded-xl focus:border-pink-600   w-[50px] md:w-[50px]"
+                className="bg-[#0C8CE9] flex justify-center items-center  cursor-pointer text-2xl h-[45px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl border-none  w-[45px] md:w-[45px]"
                 onClick={() => sendMessage(userMessage)}
                 disabled={!userMessage.trim() || isLoading}
               >
-                &gt;
+                <div className='flex items-center justify-center mb-1' >
+                          &gt;
+                          </div>
               </Button>
             </div>
           </div>
