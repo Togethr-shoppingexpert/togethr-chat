@@ -699,7 +699,6 @@ if (isPageRefreshed) {
                 <GeneralLoader />
               </div>
             )}
-            <div ref={messagesEndRef} />
             {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )} */}
@@ -742,6 +741,8 @@ if (isPageRefreshed) {
 
             
           </div>
+          <div ref={messagesEndRef} />
+
         </section>
         
         <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}  z-10 `}>
