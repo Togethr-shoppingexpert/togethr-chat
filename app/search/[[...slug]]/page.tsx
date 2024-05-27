@@ -532,7 +532,7 @@ if (isPageRefreshed) {
   }, []);
   useSmoothScrollIntoView(messagesEndRef, [messages]);
   return (
-    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[103vh]`}>
+    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
       
       <Navbar mode={isDarkMode?"dark":"light"} />
       <div className=" fixed top-[90px] right-4">
