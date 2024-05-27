@@ -385,6 +385,7 @@ export default function Page({ params }: { params: Params }) {
   }, [userMessage]); // Include messageSent in the dependency array
 
   // Call the custom hook to enable smooth auto-scrolling
+  useSmoothScrollIntoView(messagesEndRef, [messages]);
    // Trigger auto-scrolling whenever messages change
   
   //set followupcomponent width
@@ -530,7 +531,7 @@ if (isPageRefreshed) {
       fetchGuestAuthSignup();
     }
   }, []);
-  useSmoothScrollIntoView(messagesEndRef, [messages]);
+  
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
       
@@ -726,6 +727,7 @@ if (isPageRefreshed) {
               </div>
               
             )}
+            <div ref={messagesEndRef} />
 
             {/* <GeneralLoader />
 <ResearchLoader /> */}
@@ -741,7 +743,7 @@ if (isPageRefreshed) {
 
             
           </div>
-          <div ref={messagesEndRef} />
+          
 
         </section>
         
