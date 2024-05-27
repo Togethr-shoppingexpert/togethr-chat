@@ -32,7 +32,7 @@ const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 let followupques: [];
 let productinformation: any[];
-const id = sessionStorage.getItem("conversationId");
+// const id = sessionStorage.getItem("conversationId");
 
 interface Params {
   slug: string[];
@@ -130,6 +130,7 @@ export default function Page({ params }: { params: Params }) {
           else if (eventData.type === "product information") {
             let ques = eventData.data;
             setProductArray(ques);
+            setCuration(false);
             console.log("setproductarrayworked: ", productArray);
           }
         }
@@ -201,11 +202,11 @@ export default function Page({ params }: { params: Params }) {
   const handleWebSocketMessage = (isLoading: boolean) => {
     setIsLoadingResearch(isLoading);
   };
-  useEffect(() => {
-    if (isLoading === false) {
-      setCuration(false);
-    }
-  },[]);
+  // useEffect(() => {
+  //   if (isLoading === false) {
+  //     setCuration(false);
+  //   }
+  // },[]);
   useEffect(() => {
     // Get conversation ID from sessionStorage
     const storedConversationId = localStorage.getItem("conversationId");
@@ -308,7 +309,7 @@ export default function Page({ params }: { params: Params }) {
             if (productArray&&productArray.length>0) {
               // const productData = await productResponse.json();
               console.log("product data :", productArray);
-              setCuration(false);
+              // setCuration(false);
               const formattedProducts: Product[] = productArray.map(
                 (product: any) => ({
                   title: product.title,
@@ -334,6 +335,8 @@ export default function Page({ params }: { params: Params }) {
                 "Failed to fetch products:",
                 // productResponse.statusText
               );
+              setCuration(false);
+
             }
           } else if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
@@ -382,7 +385,7 @@ export default function Page({ params }: { params: Params }) {
   }, [userMessage]); // Include messageSent in the dependency array
 
   // Call the custom hook to enable smooth auto-scrolling
-  useSmoothScrollIntoView(messagesEndRef, [messages]); // Trigger auto-scrolling whenever messages change
+   // Trigger auto-scrolling whenever messages change
   
   //set followupcomponent width
   // Calculate input width
@@ -527,10 +530,9 @@ if (isPageRefreshed) {
       fetchGuestAuthSignup();
     }
   }, []);
-
- 
+  useSmoothScrollIntoView(messagesEndRef, [messages]);
   return (
-    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
+    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[103vh]`}>
       
       <Navbar mode={isDarkMode?"dark":"light"} />
       <div className=" fixed top-[90px] right-4">
@@ -545,7 +547,9 @@ if (isPageRefreshed) {
           <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
             {/* attempt 1 */}
 
-            {conversationHistorydata.map((message, index) => (
+            {conversationHistorydata.map((message, index) => {
+               let productIndex = 0;
+               return (
               <div
                 key={index}
                 className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${
@@ -556,7 +560,7 @@ if (isPageRefreshed) {
                 {message.role === "AI" ? (
                   <>
                     <Avatar className="shadow-md z-10">
-                      <AvatarImage src="/favicon.png"/>
+                      <AvatarImage src={`${isDarkMode?"/icon2.png":"/favicon.png"}`}/>
                       <AvatarFallback>bot</AvatarFallback>
                     </Avatar>
 
@@ -590,6 +594,9 @@ if (isPageRefreshed) {
                                       </span>
                                     );
                                   })}
+                                  {message.containsProduct && Array.isArray(productsHistory[0][productIndex]) && (
+                        <ProductCarousel products={productsHistory[0][productIndex++]} />
+                      )}
                                 </div>
                               )
                             )}
@@ -613,7 +620,7 @@ if (isPageRefreshed) {
                   </>
                 )}
               </div>
-            ))}
+            );})}
             {messages.map((message, index) => (
               <>
                 <div
@@ -627,7 +634,7 @@ if (isPageRefreshed) {
                   {message.sender === "AI" ? (
                     <>
                       <Avatar className="shadow-md z-10">
-                        <AvatarImage src="/favicon.png" />
+                        <AvatarImage src={`${isDarkMode?"/icon2.png":"/favicon.png"}`} />
                         <AvatarFallback>bot</AvatarFallback>
                       </Avatar>
 
@@ -687,12 +694,12 @@ if (isPageRefreshed) {
                 </div>
               </>
             ))}
-            {isLoading  &&productArray.length===0&& !curation && !pdt && (
+            {(isLoading  && !curation) && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
                 <GeneralLoader />
               </div>
             )}
-
+            <div ref={messagesEndRef} />
             {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )} */}
@@ -733,7 +740,7 @@ if (isPageRefreshed) {
             </div>
           )} */}
 
-            <div ref={messagesEndRef} />
+            
           </div>
         </section>
         

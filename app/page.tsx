@@ -26,10 +26,7 @@ export default function Home() {
   // }, [isDarkMode]);
 
   
-  function getThemeFromLocalStorage() {
-    const savedTheme = localStorage.getItem("darkmode");
-    return savedTheme === "dark";
-  }
+  
   
   // guestsignup and localstorage logic
   useEffect(() => {
@@ -168,7 +165,13 @@ export default function Home() {
 	// useEffect(() => {
 	// 	getThemeFromLocalStorage();
 	// }, [isDarkMode]);
-
+  function getThemeFromLocalStorage() {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("darkmode");
+      return savedTheme === "dark";
+    }
+    return false;
+  }
   const toggleDarkMode = () => {
     setIsDarkMode((prevTheme) => {
       const newTheme = !prevTheme; // Toggle between true (dark) and false (light)
