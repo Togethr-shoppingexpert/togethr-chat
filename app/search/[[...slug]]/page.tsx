@@ -123,15 +123,39 @@ export default function Page({ params }: { params: Params }) {
             let messages = eventData.data;
             followupques = messages;
             setFollowup(messages);
-            console.log("followupques: ", followup);
-            console.log("followupques: ", followupques);
+            
 
           } 
           else if (eventData.type === "product information") {
-            let ques = eventData.data;
-            setProductArray(ques);
-            setCuration(false);
-            console.log("setproductarrayworked: ", productArray);
+            setTimeout(()=>{
+              let ques = eventData.data;
+              const formattedProducts: Product[] = eventData.data.map(
+                (product: any) => ({
+                  title: product.title,
+                  rating: product.rating,
+                  prices: product.prices,
+                  media: product.media,
+                  sellers_results: product.sellers_results,
+                })
+              );
+  
+              const productAiMessage: Message = {
+                sender: "AI",
+                content: <ProductCarousel products={formattedProducts} />,
+              };
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                productAiMessage,
+              ]);
+              setProductArray([]);
+              setCuration(false);
+              console.log("followupques: ", followup);
+              console.log("followupques: ", followupques);
+              setProductArray(ques);
+              setCuration(false);
+              console.log("setproductarrayworked: ", productArray);
+            },12000);
+           
           }
         }
       };
@@ -289,7 +313,7 @@ export default function Page({ params }: { params: Params }) {
         setMessages((prevMessages) => [...prevMessages, newAiMessage]);
 
         if (isCurationRequired) {
-          if (!isPdtFlag && aiResponse.products === undefined) {
+          // if (!isPdtFlag && aiResponse.products === undefined) {
             // const productResponse = await fetch(
             //   `https://${API_ENDPOINT}/api/WebChatbot/product`,
             //   {
@@ -306,39 +330,41 @@ export default function Page({ params }: { params: Params }) {
 
 
 
-            if (productArray&&productArray.length>0) {
-              // const productData = await productResponse.json();
-              console.log("product data :", productArray);
-              // setCuration(false);
-              const formattedProducts: Product[] = productArray.map(
-                (product: any) => ({
-                  title: product.title,
-                  rating: product.rating,
-                  prices: product.prices,
-                  media: product.media,
-                  sellers_results: product.sellers_results,
-                })
-              );
+          //   if (productArray&&productArray.length>0) {
+          //     // const productData = await productResponse.json();
+          //     console.log("product data :", productArray);
+          //     // setCuration(false);
+          //     const formattedProducts: Product[] = productArray.map(
+          //       (product: any) => ({
+          //         title: product.title,
+          //         rating: product.rating,
+          //         prices: product.prices,
+          //         media: product.media,
+          //         sellers_results: product.sellers_results,
+          //       })
+          //     );
 
-              const productAiMessage: Message = {
-                sender: "AI",
-                content: <ProductCarousel products={formattedProducts} />,
-              };
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                productAiMessage,
-              ]);
-              setProductArray([]);
-              setCuration(false);
-            } else {
-              console.error(
-                "Failed to fetch products:",
-                // productResponse.statusText
-              );
-              setCuration(false);
+          //     const productAiMessage: Message = {
+          //       sender: "AI",
+          //       content: <ProductCarousel products={formattedProducts} />,
+          //     };
+          //     setMessages((prevMessages) => [
+          //       ...prevMessages,
+          //       productAiMessage,
+          //     ]);
+          //     setProductArray([]);
+          //     setCuration(false);
+          //   } else {
+          //     console.error(
+          //       "Failed to fetch products:",
+          //       // productResponse.statusText
+          //     );
+          //     setCuration(false);
 
-            }
-          } else if (isPdtFlag || data.products !== undefined) {
+          //   }
+          // } else
+          setCuration(false);
+           if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
             console.log("ai response : ", aiResponse.products);
             console.log("products from ai: ", productsFromAI);
@@ -438,8 +464,16 @@ export default function Page({ params }: { params: Params }) {
     let storedConversationId: string;
 if (isPageRefreshed) {
     storedConversationId = sessionStorage.getItem("conversationId") || "";  
+    const savedTheme = localStorage.getItem("darkmode");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    }
 } else {
     storedConversationId = localStorage.getItem("conversationId") || "";
+    const savedTheme = localStorage.getItem("darkmode");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
+    }
 }
 
     console.log("stored convid: ", storedConversationId);
