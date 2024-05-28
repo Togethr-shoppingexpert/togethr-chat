@@ -154,7 +154,7 @@ export default function Page({ params }: { params: Params }) {
               setProductArray(ques);
               setCuration(false);
               console.log("setproductarrayworked: ", productArray);
-            },12000);
+            },2000);
            
           }
         }
