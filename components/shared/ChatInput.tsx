@@ -52,7 +52,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mo
             <Input
                 type="email"
                 placeholder="Find your product"
-                className={`${mode === "dark" ? "bg-[#242424]" : "bg-white"} transition  border-none outline-none focus:outline-none focus:border-none   rounded-xl text-black font-semibold `}
+                className={`${mode === "dark" ? "bg-[#242424] text-white" : "bg-white text-black"} transition  border-none outline-none focus:outline-none focus:border-none   rounded-xl  font-semibold `}
                 value={initialText} // Bind input value to state
                 onChange={handleInputChange} // Call handleInputChange function on input change
                 

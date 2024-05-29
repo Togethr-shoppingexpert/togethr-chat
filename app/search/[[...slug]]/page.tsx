@@ -83,6 +83,7 @@ export default function Page({ params }: { params: Params }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
+  const [followupSourcesVisible,setFollowupSourcesVisible]=useState(false);
   const { slug } = params;
   const userId = slug[0];
   const searchQuery = slug[1];
@@ -123,11 +124,11 @@ export default function Page({ params }: { params: Params }) {
             let messages = eventData.data;
             followupques = messages;
             setFollowup(messages);
-            
+            setFollowupSourcesVisible(true);
 
           } 
           else if (eventData.type === "product information") {
-            setTimeout(()=>{
+            
               let ques = eventData.data;
               const formattedProducts: Product[] = eventData.data.map(
                 (product: any) => ({
@@ -154,7 +155,7 @@ export default function Page({ params }: { params: Params }) {
               setProductArray(ques);
               setCuration(false);
               console.log("setproductarrayworked: ", productArray);
-            },2000);
+            
            
           }
         }
@@ -254,7 +255,7 @@ export default function Page({ params }: { params: Params }) {
 
   const sendMessage = async (message: string) => {
     setIsLoading(true);
-
+    setFollowupSourcesVisible(false);
     // Check if conversationId exists in session storage
     let conversationId = sessionStorage.getItem("conversationId");
 
@@ -431,8 +432,11 @@ export default function Page({ params }: { params: Params }) {
     });
   };
   function getThemeFromLocalStorage() {
-    const savedTheme = localStorage.getItem("darkmode");
-    return savedTheme === "dark";
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("darkmode");
+      return savedTheme ? savedTheme === "dark" : true; // Default to dark mode
+    }
+    return true; // Default to dark mode
   }
   useEffect(() => {
     const savedTheme = localStorage.getItem("darkmode");
@@ -570,7 +574,7 @@ if (isPageRefreshed) {
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
       
       <Navbar mode={isDarkMode?"dark":"light"} />
-      <div className=" fixed top-[90px] right-4">
+      <div className=" fixed top-[25px] right-4 z-[500]">
       <label className="switch">
         <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
         <span className="slider round"></span>
@@ -599,7 +603,7 @@ if (isPageRefreshed) {
                       <AvatarFallback>bot</AvatarFallback>
                     </Avatar>
 
-                    <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-transparent text-black"}`}>
+                    <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-white text-black"}`}>
                       {/* Render message content */}
                       <div className="response-content">
                         {typeof message.MessageBody === "string" ? (
@@ -673,7 +677,7 @@ if (isPageRefreshed) {
                         <AvatarFallback>bot</AvatarFallback>
                       </Avatar>
 
-                      <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-transparent text-black"}`}>
+                      <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-white text-black"}`}>
                         {typeof message.content === "string" ? (
                           <div className="response-content">
                             {message.content.split("\n").map((paragraph, i) => (
@@ -731,7 +735,7 @@ if (isPageRefreshed) {
             ))}
             {(isLoading  && !curation) && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
-                <GeneralLoader />
+                <GeneralLoader mode={isDarkMode?"dark":"light"} />
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -739,15 +743,16 @@ if (isPageRefreshed) {
               <ProductCarousel products={productArray} />
             )} */}
             
-            {followup&& followup.length > 0 && (
+            {followupSourcesVisible&&followup&& followup.length > 0 && (
               <div>
+{/*                 
               <Sources containerWidth={containerWidth}
               followup={followupques}
               isOpen={isOpen}
               setUserMessage={setUserMessage}
               sendMessage={sendMessage}
               mode={isDarkMode?"dark":"light"}
-              setIsOpen={setIsOpen}/>
+              setIsOpen={setIsOpen}/> */}
               <Followup
                 containerWidth={containerWidth}
                 followup={followupques}

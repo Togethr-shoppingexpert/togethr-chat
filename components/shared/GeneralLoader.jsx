@@ -11,7 +11,7 @@ const steps = [
   "Summarizing Information",
 ];
 
-const GeneralLoader = () => {
+const GeneralLoader = ( {mode}) => {
   const [showUnderstandingWithFlicker, setShowUnderstandingWithFlicker] =
     useState(true);
   const [showUnderstandingWithTick, setShowUnderstandingWithTick] =
@@ -92,7 +92,7 @@ const GeneralLoader = () => {
   ]);
   // useSmoothScrollIntoView(messagesEndRef, [step]);
   return (
-    <div className="flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl  px-3 py-2 text-xs my-2 md:text-base mx-1 md:mx-6">
+    <div className=" flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl  px-3 py-2 text-xs my-2 md:text-base mx-1 md:mx-6">
       <div className="flex flex-row gap-3 items-center">
         {showUnderstandingWithFlicker ? (
           <Image
@@ -113,7 +113,7 @@ const GeneralLoader = () => {
         ) : null}
         <p
           className={`step-text ${
-            showUnderstandingWithTick ? "text-white" : "text-[#999999]"
+            mode==="dark" ? "text-white" : "text-black"
           } mx-2 transition-colors duration-500`}
         >
           {steps[0]}
@@ -129,7 +129,9 @@ const GeneralLoader = () => {
             height={20}
             className="step-icon"
           />
-          <p className="step-text text-[#999999] mx-2 transition-colors duration-500">
+          <p className={`step-text ${
+            mode==="dark" ? "text-white" : "text-black"
+          } mx-2 transition-colors duration-500`}>
             {steps[1]}
           </p>
         </div>
@@ -144,7 +146,9 @@ const GeneralLoader = () => {
             height={20}
             className="step-icon"
           />
-          <p className="step-text text-white mx-2 transition-colors duration-500">
+          <p className={`step-text ${
+            mode==="dark" ? "text-white" : "text-black"
+          } mx-2 transition-colors duration-500`}>
             {steps[1]}
           </p>
         </div>
@@ -159,7 +163,9 @@ const GeneralLoader = () => {
             height={20}
             className="step-icon"
           />
-          <p className="step-text text-[#999999] mx-2 transition-colors duration-500">
+          <p className={`step-text ${
+            mode==="dark" ? "text-white" : "text-black"
+          } mx-2 transition-colors duration-500`}>
             {steps[2]}
           </p>
         </div>
@@ -174,7 +180,9 @@ const GeneralLoader = () => {
             height={20}
             className="step-icon"
           />
-          <p className="step-text text-white mx-2 transition-colors duration-500">
+          <p className={`step-text ${
+            mode==="dark" ? "text-white" : "text-black"
+          } mx-2 transition-colors duration-500`}>
             {steps[2]}
           </p>
         </div>
@@ -189,7 +197,9 @@ const GeneralLoader = () => {
             height={20}
             className="step-icon"
           />
-          <p className="step-text text-[#999999] mx-2 transition-colors duration-500">
+          <p className={`step-text ${
+            mode==="dark" ? "text-white" : "text-black"
+          } mx-2 transition-colors duration-500`}>
             {steps[3]}
           </p>
         </div>

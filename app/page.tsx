@@ -168,9 +168,9 @@ export default function Home() {
   function getThemeFromLocalStorage() {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("darkmode");
-      return savedTheme === "dark";
+      return savedTheme ? savedTheme === "dark" : true; // Default to dark mode
     }
-    return false;
+    return true; // Default to dark mode
   }
   const toggleDarkMode = () => {
     setIsDarkMode((prevTheme) => {
@@ -180,7 +180,7 @@ export default function Home() {
     });
   };
   useEffect(() => {
-    const savedTheme = localStorage.getItem("darkmode");
+    const savedTheme = localStorage.getItem("darkmode")||"dark";
     if (savedTheme) {
       setIsDarkMode(savedTheme === "dark");
     }
@@ -201,7 +201,7 @@ export default function Home() {
       <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
         <Navbar mode={isDarkMode? "dark" : "light"} />
 
-        <div className="fixed top-[90px] right-4">
+        <div className="fixed top-[25px] right-4 z-[500]">
       <label className="switch">
         <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
         <span className="slider round"></span>
