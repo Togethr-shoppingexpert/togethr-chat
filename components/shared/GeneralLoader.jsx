@@ -34,7 +34,7 @@ const GeneralLoader = ( {mode}) => {
       setShowUnderstandingWithFlicker(false);
       setShowUnderstandingWithTick(true);
       setShowThinkingWithFlicker(true);
-    }, 7000);
+    }, 10000);
 
     const thinkingFlickerTimeout = setTimeout(() => {
       // setStep((prevmsg)=>[...prevmsg,"second"]);
@@ -42,7 +42,7 @@ const GeneralLoader = ( {mode}) => {
       setShowThinkingWithFlicker(false);
       setShowThinkingWithTick(true);
       setShowSearchingFlicker(true);
-    }, 14000);
+    }, 20000);
 
     return () => {
       clearTimeout(understandingTickTimeout);
@@ -57,7 +57,7 @@ const GeneralLoader = ( {mode}) => {
       setShowSearchingFlicker(false);
       setShowSearchingTick(true);
       setShowSummarizingFlicker(true);
-    }, 21000);
+    }, 30000);
 
     const summarizingFlickerTimeout = setTimeout(() => {
       // setStep((prevmsg)=>[...prevmsg,"fourth"]);

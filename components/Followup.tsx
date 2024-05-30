@@ -20,11 +20,11 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
     setIsOpen(!isOpen);
   };
 
-  // useEffect(() => {
-  //   if (isAccordionOpen && messagesEndRef.current) {
-  //     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [isAccordionOpen, followup]);
+  useEffect(() => {
+    if (isAccordionOpen && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isAccordionOpen]);
 
   useEffect(() => {
     if (isOpen && messagesEndRef.current) {
