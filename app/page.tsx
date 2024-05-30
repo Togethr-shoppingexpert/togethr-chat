@@ -200,14 +200,14 @@ export default function Home() {
     <>
       <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
         <Navbar mode={isDarkMode? "dark" : "light"} />
-
-        <div className="fixed top-[25px] right-4 z-[500]">
-      <label className="switch">
-        <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
-        <span className="slider round"></span>
-      </label>
-      {/* Your other content here */}
-    </div>
+{/* 
+      <div className="fixed top-[25px] right-4 z-[500]">
+        <label className="switch">
+          <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+          <span className="slider round"></span>
+        </label>
+      </div>
+       */}
         <div className="flex flex-col w-[70%] items-center mt-28 h-screen mx-auto">
           <div className="w-full flex flex-col items-center mb-4 px-4 text-center ">
             <h1 className={`font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl mb-2 ${isDarkMode ? "text-white" : "text-[#080808]"}`}>

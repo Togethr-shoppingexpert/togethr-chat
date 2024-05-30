@@ -73,11 +73,11 @@ const ProductCarousel = ({ products }) => {
           onTouchMove={handleTouchMove}
         >
           {/* Max width for the carousel */}
-          <div className="flex p-2 w-[75%]" style={{ transform: `translateX(-${((currentIndex) * 65)/products.length}%)`, transition: 'transform 0.4s ease-in-out' }}>
+          <div className="flex p-2 w-[75%]" style={{ transform: `translateX(-${((currentIndex) * 80)/products.length}%)`, transition: 'transform 0.4s ease-in-out' }}>
             {products.map((product, index) => (
               product && !product.Error && product.sellers_results && product.sellers_results.online_sellers && (
                 <Link href={product.sellers_results.online_sellers[0]?.link} key={index} target="_blank">
-                  <Card className="w-full max-w-xs rounded-xl border-0 bg-white text-black my-1 p-2 flex-shrink-0 transition-transform">
+                  <Card className="w-full max-w-xs rounded-xl border-0 bg-black text-white my-1 p-2 flex-shrink-0 transition-transform">
                     <div className="flex aspect-video-container rounded-t-xl">
                       <img
                         alt="Thumbnail"
@@ -86,8 +86,8 @@ const ProductCarousel = ({ products }) => {
                       />
                     </div>
                     <CardHeader className="p-4 pb-1">
-                      <p className="font-semibold overflow-hidden mt-3 text-base md:text-lg truncate">
-                        {product.title.length > 22 ? product.title.substring(0, 22) + '....' : product.title}
+                      <p className="font-semibold overflow-hidden mt-3 text-base  truncate">
+                        {product.title.length > 20 ? product.title.substring(0, 20) + '....' : product.title}
                       </p>
                       <div className="font-semibold text-base"> Price : {product.prices[0]}</div>
                     </CardHeader>

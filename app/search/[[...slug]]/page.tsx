@@ -128,6 +128,8 @@ export default function Page({ params }: { params: Params }) {
 
           } 
           else if (eventData.type === "product information") {
+            setTimeout(() => {
+              
             
               let ques = eventData.data;
               const formattedProducts: Product[] = eventData.data.map(
@@ -156,7 +158,7 @@ export default function Page({ params }: { params: Params }) {
               setCuration(false);
               console.log("setproductarrayworked: ", productArray);
             
-           
+            }, 2000);
           }
         }
       };
@@ -574,13 +576,14 @@ if (isPageRefreshed) {
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
       
       <Navbar mode={isDarkMode?"dark":"light"} />
-      <div className=" fixed top-[25px] right-4 z-[500]">
-      <label className="switch">
-        <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
-        <span className="slider round"></span>
-      </label>
-      {/* Your other content here */}
-    </div>
+{/* 
+        <div className=" fixed top-[25px] right-4 z-[500]">
+          <label className="switch">
+            <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+            <span className="slider round"></span>
+          </label>
+        </div> 
+     */}
       <div>
         <section className="flex justify-center h-full mb-16 bp-0  ">
           <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
