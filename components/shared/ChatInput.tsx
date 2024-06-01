@@ -26,7 +26,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mo
         setInputValue(newValue); // Update input value state
         onInputChange(newValue); // Call the onInputChange callback with the new value
     };
-
+    
     const handleClick = () => {
         console.log("Button clicked");
         router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}`);

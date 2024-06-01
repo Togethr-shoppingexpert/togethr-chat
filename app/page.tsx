@@ -4,8 +4,8 @@ import Navbar from "../components/shared/Navbar";
 import { ChatInput } from "@/components/shared/ChatInput";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import { config } from "../constants";
 import { FaSun, FaMoon } from "react-icons/fa"; 
+import { config } from "../constants";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 
@@ -20,50 +20,43 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
-  const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
-  // useEffect(() => {
-  //   localStorage.setItem("darkmode", isDarkMode.toString());
-  // }, [isDarkMode]);
+  
 
-  
-  
-  
+const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+
   // guestsignup and localstorage logic
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
+    const storedConvid = sessionStorage.getItem("conversationId");
 
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);
+      authTokenRef.current = storedToken;
+      if (!storedConvid) {
+        getSessionId(storedToken);
+      } else {
+        setConversationId(storedConvid);
+      }
     } else {
-      // Fetch API only if guestID and token are not stored in local storage
       fetchGuestAuthSignup();
     }
   }, []);
 
   const fetchGuestAuthSignup = async () => {
     try {
-      const response = await fetch(
-        `https://${API_ENDPOINT}/api/guest-auth/signup`
-      );
+      const response = await fetch(`https://${API_ENDPOINT}/api/guest-auth/signup`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      //.guest ---> .User
-      //.guestId ---> UserId
-      // setGuestID(data.guest.GuestId);
-      // setToken(data.token);
-
       setGuestID(data.User.UserId);
       setToken(data.token);
-      // Store guestID and token in local storage
-      // localStorage.setItem('guestID', data.guest.GuestId);
-      localStorage.setItem("UserID", data.User.UserId);
-
-      localStorage.setItem("token", data.token);
       authTokenRef.current = data.token;
+      localStorage.setItem("UserID", data.User.UserId);
+      localStorage.setItem("token", data.token);
+      getSessionId(data.token);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -73,61 +66,36 @@ export default function Home() {
     setSelectedText(newValue);
   };
 
-  useEffect(() => {
-    const fetchAuthToken = async () => {
-      try {
-        const authToken = localStorage.getItem("token");
-        console.log("Retrieved token:", authToken);
-        if (authToken) {
-          authTokenRef.current = authToken;
-        } else {
-          console.log("Token not found in localStorage");
+  const getSessionId = async (authToken: string) => {
+    try {
+      const response = await fetch(
+        `https://${API_ENDPOINT}/api/WebChatbot/conversationId`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            platform: "web",
+          }),
         }
-      } catch (error) {
-        console.error("Error fetching token:", error);
+      );
+      if (response.ok) {
+        const data = await response.json();
+        const newConversationId = data.ConversationId;
+        sessionStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
+        sessionStorage.removeItem("chatstarted");
+        localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
+        localStorage.removeItem("chatstarted");
+        setConversationId(newConversationId);
+      } else {
+        console.error("Failed to fetch conversation ID:", response.statusText);
       }
-    };
-
-    fetchAuthToken();
-  }, []);
-
-  useEffect(() => {
-    const getSessionId = async () => {
-      try {
-        const response = await fetch(
-          `https://${API_ENDPOINT}/api/WebChatbot/conversationId`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokenRef.current}`,
-            },
-            body: JSON.stringify({
-              platform: "web",
-            }),
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          const newConversationId = data.ConversationId;
-          sessionStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
-          sessionStorage.removeItem("chatstarted");
-          localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
-          localStorage.removeItem("chatstarted");
-          setConversationId(newConversationId);
-        } else {
-          console.error(
-            "Failed to fetch conversation ID:",
-            response.statusText
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching conversation ID:", error);
-      }
-    };
-
-    getSessionId();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching conversation ID:", error);
+    }
+  };
 
   console.log(token);
 
@@ -221,6 +189,7 @@ export default function Home() {
               onInputChange={handleInputChange}
               searchQuery={userId}
               convnId={convnId}
+             
               mode={isDarkMode? "dark" : "light"}
             />
           </div>
