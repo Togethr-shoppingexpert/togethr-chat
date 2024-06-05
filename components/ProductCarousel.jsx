@@ -59,7 +59,7 @@ const ProductCarousel = ({ products }) => {
       <Button
           className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-[#0C8CE9] text-xl md:text-xl lg:text-2xl text-white p-2 rounded-md focus:outline-none z-10"
           onClick={handlePrev}
-          disabled={currentIndex === 0}
+          // disabled={currentIndex === 0}
 
         >
           &lt;
@@ -106,7 +106,7 @@ const ProductCarousel = ({ products }) => {
         <Button
           className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-[#0C8CE9] text-xl md:text-xl lg:text-2xl text-white p-2 rounded-md z-10"
           onClick={handleNext}
-          disabled={currentIndex === products.length - 1}
+          // disabled={currentIndex === products.length - 1}
 
         >
           &gt;
