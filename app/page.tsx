@@ -28,17 +28,17 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
-    const storedConvid = sessionStorage.getItem("conversationId");
+    // const storedConvid = sessionStorage.getItem("conversationId");
 
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);
       authTokenRef.current = storedToken;
-      if (!storedConvid) {
+      // if (!storedConvid) {
         getSessionId(storedToken);
-      } else {
-        setConversationId(storedConvid);
-      }
+      // } else {
+        // setConversationId(storedConvid);
+      // }
     } else {
       fetchGuestAuthSignup();
     }
