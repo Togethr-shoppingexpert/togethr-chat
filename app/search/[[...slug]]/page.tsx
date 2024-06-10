@@ -577,6 +577,7 @@ export default function Page({ params }: { params: Params }) {
       setIsLoading(false);
       console.log("checked indices", checkedIndices);
       setCheckedIndices(new Set());
+      setUserMessage("");
     }
     
     
@@ -585,6 +586,7 @@ export default function Page({ params }: { params: Params }) {
   useEffect(() => {
     // Set options text in the input box when options change
     // setUserMessage(currentOptions.join(', '));
+    setUserMessage("");
   }, [currentOptions]);
   useEffect(() => {
     // This useEffect will run whenever checkedIndices changes to update the appearance
