@@ -211,3 +211,8 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.selected {
+  background-color:#0C8CE9;
+  padding: 8px;
+  border-radius: 5px; /* Change text color to red when selected */
+}

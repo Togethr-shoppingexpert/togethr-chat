@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     
-    <html lang="en" className="bg-[#dde7eb]">
+    <html lang="en" className="bg-[#202222]">
      
       <body className= {dm.className} > 
       {children}

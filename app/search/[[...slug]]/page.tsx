@@ -10,6 +10,7 @@ import {
   ReactElement,
   ReactNode,
   ReactPortal,
+  use,
 } from "react";
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -76,6 +77,7 @@ export default function Page({ params }: { params: Params }) {
   const [guestID, setGuestID] = useState("");
   const [token, setToken] = useState("");
   const [prevConvId, setPrevConvId] = useState("");
+  const [latestMessageIndex, setLatestMessageIndex] = useState(-1);
   const [conversationHistorydata, setConversationHistorydata] = useState<any[]>(
     []
   );
@@ -91,7 +93,20 @@ export default function Page({ params }: { params: Params }) {
 
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(true);
+  const [checkedIndices, setCheckedIndices] = useState(new Set());
+  const latestMessageRef = useRef<HTMLDivElement>(null);
+  const [currentQuestion, setCurrentQuestion] = useState('');
+  const [currentOptions, setCurrentOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [currentoptionvisible,setCurrentoptionvisible]=useState(false);
+  const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
+    setCurrentQuestion(question);
+    setCurrentOptions(options);
+  };
 
+  // const handleOptionClick = (option: string) => {
+  //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
+  // };
   const WebSocketSingleton = (() => {
     let instance: WebSocket | null = null;
     // Callback function to update loading state
@@ -258,6 +273,8 @@ export default function Page({ params }: { params: Params }) {
   const sendMessage = async (message: string) => {
     setIsLoading(true);
     setFollowupSourcesVisible(false);
+    setCheckedIndices(new Set());
+    setCurrentoptionvisible(false);
     // Check if conversationId exists in session storage
     let conversationId = sessionStorage.getItem("conversationId");
 
@@ -279,7 +296,125 @@ export default function Page({ params }: { params: Params }) {
     const newMessage: Message = { sender: "user", content: message };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
+    setCheckedIndices(new Set());
 
+
+    // try {
+    //   const response = await fetch(
+    //     `https://${API_ENDPOINT}/api/WebChatbot/message`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${authTokenRef.current}`,
+    //       },
+    //       body: JSON.stringify({
+    //         userMessage: message,
+    //         id: conversationId,
+    //       }),
+    //     }
+    //   );
+
+    //   // Handle response
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     console.log("Response from backend:", data);
+
+    //     const aiResponse = data.AI_Response;
+    //     console.log("AI Response:", aiResponse);
+
+    //     const isCurationRequired = data.curration; // Corrected spelling
+    //     const isPdtFlag = data.productFlag;
+    //     setCuration(isCurationRequired);
+    //     setPdt(isPdtFlag);
+
+    //     console.log("Is Curation Required:", isCurationRequired);
+    //     console.log("Is Product Flag:", isPdtFlag);
+
+    //     const newAiMessage: Message = { sender: "AI", content: aiResponse };
+    //     setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+
+    //     if (isCurationRequired) {
+    //       // if (!isPdtFlag && aiResponse.products === undefined) {
+    //         // const productResponse = await fetch(
+    //         //   `https://${API_ENDPOINT}/api/WebChatbot/product`,
+    //         //   {
+    //         //     method: "POST",
+    //         //     headers: {
+    //         //       "Content-Type": "application/json",
+    //         //       Authorization: `Bearer ${authTokenRef.current}`,
+    //         //     },
+    //         //     body: JSON.stringify({
+    //         //       MessageId: data.MessageId,
+    //         //     }),
+    //         //   }
+    //         // );
+
+
+
+    //       //   if (productArray&&productArray.length>0) {
+    //       //     // const productData = await productResponse.json();
+    //       //     console.log("product data :", productArray);
+    //       //     // setCuration(false);
+    //       //     const formattedProducts: Product[] = productArray.map(
+    //       //       (product: any) => ({
+    //       //         title: product.title,
+    //       //         rating: product.rating,
+    //       //         prices: product.prices,
+    //       //         media: product.media,
+    //       //         sellers_results: product.sellers_results,
+    //       //       })
+    //       //     );
+
+    //       //     const productAiMessage: Message = {
+    //       //       sender: "AI",
+    //       //       content: <ProductCarousel products={formattedProducts} />,
+    //       //     };
+    //       //     setMessages((prevMessages) => [
+    //       //       ...prevMessages,
+    //       //       productAiMessage,
+    //       //     ]);
+    //       //     setProductArray([]);
+    //       //     setCuration(false);
+    //       //   } else {
+    //       //     console.error(
+    //       //       "Failed to fetch products:",
+    //       //       // productResponse.statusText
+    //       //     );
+    //       //     setCuration(false);
+
+    //       //   }
+    //       // } else
+    //       setCuration(false);
+    //        if (isPdtFlag || data.products !== undefined) {
+    //         const productsFromAI = data.products || [];
+    //         console.log("ai response : ", aiResponse.products);
+    //         console.log("products from ai: ", productsFromAI);
+    //         const formattedProducts: Product[] = productsFromAI.map(
+    //           (product: any) => ({
+    //             title: product.title,
+    //             rating: product.rating,
+    //             prices: product.prices,
+    //             media: product.media,
+    //             sellers_results: product.sellers_results,
+    //           })
+    //         );
+    //         const productAiMessage: Message = {
+    //           sender: "AI",
+    //           content: <ProductCarousel products={formattedProducts} />,
+    //         };
+    //         setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+    //       }
+    //     }
+    //   } else {
+    //     console.error("Failed to send message:", response.statusText);
+    //   }
+    // } catch (error) {
+    //   console.error("Error sending message:", error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
+    
     try {
       const response = await fetch(
         `https://${API_ENDPOINT}/api/WebChatbot/message`,
@@ -295,84 +430,130 @@ export default function Page({ params }: { params: Params }) {
           }),
         }
       );
-
+    
       // Handle response
       if (response.ok) {
         const data = await response.json();
         console.log("Response from backend:", data);
-
-        const aiResponse = data.AI_Response;
-        console.log("AI Response:", aiResponse);
-
+    
+        const segments = data.segments; // Assuming segments is part of the response
+        console.log("Segments:", segments);
+        const ai_response = data.AI_Response;
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
         setCuration(isCurationRequired);
         setPdt(isPdtFlag);
-
+        setCheckedIndices(new Set());
+    
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
-
-        const newAiMessage: Message = { sender: "AI", content: aiResponse };
-        setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
+    
+        const handleCheckboxChange = (index: unknown) => {
+          setCheckedIndices((prev) => {
+            const newChecked = new Set(prev);
+            if (newChecked.has(index)) {
+              newChecked.delete(index);
+            } else {
+              newChecked.add(index);
+            }
+    
+            // Update userMessage based on checked checkboxes
+            const updatedMessage = segments
+              .filter((segment: { tag: string; }, idx: unknown) => newChecked.has(idx) && segment.tag === 'o')
+              .map((segment: { value: any; }) => segment.value)
+              .join(', ');
+    
+            setUserMessage(updatedMessage);
+    
+            return newChecked;
+          });
+        };
+    
+        
+    
+        if (!segments) {
+          const newAiMessage = { sender: "AI", content: ai_response };
+          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          setLatestMessageIndex(messages.length);
+        } else {
+          // Combine all segments into a single JSX element
+          if (segments && segments.length > 0) {
+            const questionSegment = segments.find((segment: { tag: string; }) => segment.tag === "q");
+            const optionsSegments = segments.filter(
+              (segment: { tag: string; }) => segment.tag === "o"
+            );
+      
+            if (questionSegment && optionsSegments.length > 0) {
+              const question = questionSegment.value;
+              const options = optionsSegments.map((segment: { value: any; }) => segment.value);
+              setCurrentoptionvisible(true);
+              setCurrentQuestion(question);
+              setCurrentOptions(options);
+            }
+          }
+          const combinedSegments = segments.map((segment: { tag: string; value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | PromiseLikeOfReactNode | null | undefined; }, index: number) => {
+            const keyIndex = index as Key;
+            const isLastSegment = index === segments.length;
+            const isSelected = checkedIndices.has(index); 
+            if (segment.tag === 'o') {
+              return (
+                <div
+                  key={keyIndex}
+                  className={`segment ${isSelected ? 'selected' : ''}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    margin: '10px',
+                    // cursor: 'pointer' // Make the cursor a pointer to indicate it is clickable
+                  }}
+                  // onClick={() => handleCheckboxChange(index)}
+                >
+                  {/* <input
+                    type="checkbox"
+                    checked={checkedIndices.has(index)}
+                    onClick={(e) => e.stopPropagation()} // Prevent onClick event from firing when the checkbox itself is clicked
+                    onChange={() => handleCheckboxChange(index)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      marginRight: '10px',
+                      borderRadius: '50%', // Make the checkbox perfectly round
+                      border: '2px solid #2e2f2f',
+                      cursor: 'pointer',
+                      appearance: 'none', // Remove default checkbox appearance
+                      WebkitAppearance: 'none', // For older browsers
+                      MozAppearance: 'none', // For older browsers
+                    }}
+                  /> */}
+                   {segment.value}
+                </div>
+              );
+            } else if (segment.tag === 'q') {
+              return (
+                <div key={keyIndex} >
+                  <div className="mb-[10px]">{segment.value}</div>
+                </div>
+              );
+            } else {
+              return <div key={keyIndex}>{segment.value}</div>;
+            }
+          });
+        
+          // Create a single AI message with combined segments
+          const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
+          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          setLatestMessageIndex(messages.length);
+          setCheckedIndices(new Set());
+        }
+        
+    
         if (isCurationRequired) {
-          // if (!isPdtFlag && aiResponse.products === undefined) {
-            // const productResponse = await fetch(
-            //   `https://${API_ENDPOINT}/api/WebChatbot/product`,
-            //   {
-            //     method: "POST",
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //       Authorization: `Bearer ${authTokenRef.current}`,
-            //     },
-            //     body: JSON.stringify({
-            //       MessageId: data.MessageId,
-            //     }),
-            //   }
-            // );
-
-
-
-          //   if (productArray&&productArray.length>0) {
-          //     // const productData = await productResponse.json();
-          //     console.log("product data :", productArray);
-          //     // setCuration(false);
-          //     const formattedProducts: Product[] = productArray.map(
-          //       (product: any) => ({
-          //         title: product.title,
-          //         rating: product.rating,
-          //         prices: product.prices,
-          //         media: product.media,
-          //         sellers_results: product.sellers_results,
-          //       })
-          //     );
-
-          //     const productAiMessage: Message = {
-          //       sender: "AI",
-          //       content: <ProductCarousel products={formattedProducts} />,
-          //     };
-          //     setMessages((prevMessages) => [
-          //       ...prevMessages,
-          //       productAiMessage,
-          //     ]);
-          //     setProductArray([]);
-          //     setCuration(false);
-          //   } else {
-          //     console.error(
-          //       "Failed to fetch products:",
-          //       // productResponse.statusText
-          //     );
-          //     setCuration(false);
-
-          //   }
-          // } else
           setCuration(false);
-           if (isPdtFlag || data.products !== undefined) {
+          if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
-            console.log("ai response : ", aiResponse.products);
             console.log("products from ai: ", productsFromAI);
-            const formattedProducts: Product[] = productsFromAI.map(
-              (product: any) => ({
+            const formattedProducts = productsFromAI.map(
+              (product: { title: any; rating: any; prices: any; media: any; sellers_results: any; }) => ({
                 title: product.title,
                 rating: product.rating,
                 prices: product.prices,
@@ -380,7 +561,7 @@ export default function Page({ params }: { params: Params }) {
                 sellers_results: product.sellers_results,
               })
             );
-            const productAiMessage: Message = {
+            const productAiMessage = {
               sender: "AI",
               content: <ProductCarousel products={formattedProducts} />,
             };
@@ -394,18 +575,54 @@ export default function Page({ params }: { params: Params }) {
       console.error("Error sending message:", error);
     } finally {
       setIsLoading(false);
+      console.log("checked indices", checkedIndices);
+      setCheckedIndices(new Set());
     }
+    
+    
   };
 
+  useEffect(() => {
+    // Set options text in the input box when options change
+    // setUserMessage(currentOptions.join(', '));
+  }, [currentOptions]);
+  useEffect(() => {
+    // This useEffect will run whenever checkedIndices changes to update the appearance
+    if (latestMessageRef.current) {
+      const checkboxes = latestMessageRef.current.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((checkbox, index) => {
+        const inputElement = checkbox as HTMLInputElement; // Assert the type to HTMLInputElement
+        const parentDiv = inputElement.parentElement; // Get the parent div
+        if (inputElement && checkedIndices.has(index+1)) {
+          inputElement.style.backgroundColor = '#2e2f2f'; // Change to red when selected
+          if (parentDiv) {
+            parentDiv.classList.add('selected'); // Add 'selected' class to parent div
+          }
+        } else {
+          inputElement.style.backgroundColor = 'transparent';
+          if (parentDiv) {
+            parentDiv.classList.remove('selected'); // Remove 'selected' class from parent div
+          }
+        }
+      });
+    }
+  }, [checkedIndices]);
+
+  useEffect(() => {
+    console.log("Checked indices changed:", checkedIndices);
+    // Any other side effects related to checkedIndices changes can be handled here
+  }, [checkedIndices]);
   //function to trigger send message on pressing enter button
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter" && userMessage.trim() !== "") {
         sendMessage(userMessage);
+        setCurrentoptionvisible(false);
         // setMessageSent(true);
+    setCheckedIndices(new Set());
+
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -425,7 +642,7 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []);
 
-
+ 
   const toggleDarkMode = () => {
     setIsDarkMode((prevTheme) => {
       const newTheme = !prevTheme; // Toggle between true (dark) and false (light)
@@ -571,9 +788,30 @@ if (isPageRefreshed) {
       fetchGuestAuthSignup();
     }
   }, []);
-  
+  const handleOptionClick = (option: string) => {
+    setSelectedOptions(prevOptions => {
+      if (prevOptions.includes(option)) {
+        // Deselect the option
+        const updatedOptions = prevOptions.filter(item => item !== option);
+        setUserMessage(updatedOptions.join(' ').trim());
+        return updatedOptions;
+      } else {
+        // Select the option
+        const updatedOptions = [...prevOptions, option];
+        setUserMessage(updatedOptions.join(' ').trim());
+        return updatedOptions;
+      }
+    });
+  };
+  useEffect(() => {
+    // Logic to handle the clicked options
+    console.log('Selected Options:', selectedOptions);
+
+    // Update the currentOptions based on selectedOptions or any other logic
+    // setCurrentOptions(selectedOptions);
+  }, [selectedOptions]);
   return (
-    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[100] min-h-[100vh]`}>
+    <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `} >
       
       <Navbar mode={isDarkMode?"dark":"light"} />
 {/* 
@@ -584,7 +822,7 @@ if (isPageRefreshed) {
           </label>
         </div> 
      */}
-      <div>
+      <div className="mb-[120px]">
         <section className="flex justify-center h-full mb-16 bp-0  ">
           <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
             {/* attempt 1 */}
@@ -607,6 +845,8 @@ if (isPageRefreshed) {
                     </Avatar>
 
                     <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-white text-black"}`}>
+                    {/* <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  text-white bg-[#242424] border-[2px] border-[#2e2f2f]`}> */}
+                      
                       {/* Render message content */}
                       <div className="response-content">
                         {typeof message.MessageBody === "string" ? (
@@ -671,6 +911,8 @@ if (isPageRefreshed) {
                     message.sender === "AI" ? "justify-start" : "justify-end"
                   }`}
                 >
+            
+
                   {/* atempt 2 */}
                   {/* Render AI messages */}
                   {message.sender === "AI" ? (
@@ -681,6 +923,9 @@ if (isPageRefreshed) {
                       </Avatar>
 
                       <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${isDarkMode?"bg-[#3c3b3b] text-white":"bg-white text-black"}`}>
+                      {/* <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  bg-[#242424] border-[2px] border-[#2e2f2f] text-white`}> */}
+            
+                        
                         {typeof message.content === "string" ? (
                           <div className="response-content">
                             {message.content.split("\n").map((paragraph, i) => (
@@ -709,6 +954,8 @@ if (isPageRefreshed) {
                           </div>
                         ) : (
                           <div>
+            
+
                             {Array.isArray(message.content) &&
                             message.content.length > 0 ? (
                               // Render ProductCarousel
@@ -741,11 +988,10 @@ if (isPageRefreshed) {
                 <GeneralLoader mode={isDarkMode?"dark":"light"} />
               </div>
             )}
-            <div ref={messagesEndRef} />
             {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )} */}
-            
+            <div ref={messagesEndRef}  />
             {followupSourcesVisible&&followup&& followup.length > 0 && (
               <div>
 {/*                 
@@ -789,43 +1035,41 @@ if (isPageRefreshed) {
           
 
         </section>
-        
         <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}  z-10 `}>
-          <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ?"h-[60px]":"h-[56px]"} ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"}  px-[6px] py-1 rounded-xl items-center  z-1200 relative`}>
-            
-            <div
-              className={`flex w-full max-w-2xl  h-[50px] ${isDarkMode ? "bg-[#242424]" : "bg-white"}   items-center space-x-2  px-[0px] py-2 rounded-xl 
-              `}
-            >
-              <Input
-                ref={inputRef}
-                type="email"
-                placeholder="Find your product"
-                className={`${isDarkMode? "bg-[#242424] text-white" : "bg-white text-black"} transition  border-none outline-none focus:outline-none focus:border-none   rounded-xl  font-semibold `}
-                value={userMessage}
-                onChange={(e) => handleInputChange(e.target.value)}
-              />
-              {/* {followup && followup.length > 0 && (
-                <Button
-                  onClick={toggleFollowup}
-                  className="font-medium text-2xl md:text-2xl lg:text-3xl rounded-xl h-[58px] w-[58px] md:w-[65px] m-1"
-                >
-                  <FaRegLightbulb className="w-[50%] h-[50%]" />
-                </Button>
-              )} */}
-              <Button
-                type="submit"
-                className="bg-[#0C8CE9] flex justify-center items-center  cursor-pointer text-2xl h-[45px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl border-none  w-[45px] md:w-[45px]"
-                onClick={() => sendMessage(userMessage)}
-                disabled={!userMessage.trim() || isLoading}
-              >
-                <div className='flex items-center justify-center mb-1' >
-                          &gt;
-                          </div>
-              </Button>
-            </div>
+      <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"} px-2  rounded-xl items-center z-1200 relative`}>
+        <div className="flex w-[100%]">
+          <input
+            type="text"
+            placeholder="Type your message..."
+            className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className="bg-blue-500 text-white px-4 py-2 mt-2 rounded-xl hover:bg-blue-600"
+            onClick={() => sendMessage(userMessage)}
+            disabled={!userMessage.trim() || isLoading}
+          >
+            <div className='flex items-center justify-center mb-1' >
+          &gt;
           </div>
-        </footer>
+          </button>
+          </div>
+          <div className="flex justify-evenly mt-2 w-full overflow-x-auto whitespace-nowrap" style={{ overflowY: 'hidden', scrollbarWidth: 'thin' }}>
+          {currentoptionvisible&&currentOptions.map((option, index) => (
+          <div
+          key={index}
+          className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
+          onClick={() => handleOptionClick(option)}
+        >
+          {option && option.length > 15 ? option.slice(0, 15) + '...' : option}
+        </div>
+       ))}
+        </div>
+      </div>
+    </footer>
       </div>
     </main>
   );
