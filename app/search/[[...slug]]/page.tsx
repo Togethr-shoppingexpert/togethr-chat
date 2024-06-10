@@ -586,6 +586,7 @@ export default function Page({ params }: { params: Params }) {
   useEffect(() => {
     // Set options text in the input box when options change
     // setUserMessage(currentOptions.join(', '));
+    setSelectedOptions([]);
     setUserMessage("");
   }, [currentOptions]);
   useEffect(() => {
