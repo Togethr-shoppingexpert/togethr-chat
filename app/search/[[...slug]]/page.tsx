@@ -540,7 +540,9 @@ export default function Page({ params }: { params: Params }) {
           });
         
           // Create a single AI message with combined segments
-          const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
+          // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
+          // setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          const newAiMessage = { sender: "AI", content: ai_response };
           setMessages((prevMessages) => [...prevMessages, newAiMessage]);
           setLatestMessageIndex(messages.length);
           setCheckedIndices(new Set());
