@@ -130,6 +130,7 @@ export default function Page({ params }: { params: Params }) {
         console.log("event : ", event.data);
         const eventData = JSON.parse(event.data);
         console.log("eventdatatype:", eventData.type);
+      
         if (updateLoadingStateCallback && eventData) {
           if (eventData.type === "research_flag") {
             updateLoadingStateCallback(true);
@@ -140,12 +141,9 @@ export default function Page({ params }: { params: Params }) {
             followupques = messages;
             setFollowup(messages);
             setFollowupSourcesVisible(true);
-
-          } 
-          else if (eventData.type === "product information") {
+      
+          } else if (eventData.type === "product information") {
             setTimeout(() => {
-              
-            
               let ques = eventData.data;
               const formattedProducts: Product[] = eventData.data.map(
                 (product: any) => ({
@@ -156,7 +154,7 @@ export default function Page({ params }: { params: Params }) {
                   sellers_results: product.sellers_results,
                 })
               );
-  
+      
               const productAiMessage: Message = {
                 sender: "AI",
                 content: <ProductCarousel products={formattedProducts} />,
@@ -172,11 +170,29 @@ export default function Page({ params }: { params: Params }) {
               setProductArray(ques);
               setCuration(false);
               console.log("setproductarrayworked: ", productArray);
-            
+      
             }, 2000);
+      
+          } else if (eventData.type === "segments") {
+            const { data } = eventData;
+            if (data && data.length > 0) {
+              const questionSegment = data.find((segment: { tag: string; }) => segment.tag === "q");
+              const optionsSegments = data.filter(
+                (segment: { tag: string; }) => segment.tag === "o"
+              );
+      
+              if (questionSegment && optionsSegments.length > 0) {
+                const question = questionSegment.value;
+                const options = optionsSegments.map((segment: { value: any; }) => segment.value);
+                setCurrentoptionvisible(true);
+                setCurrentQuestion(question);
+                setCurrentOptions(options);
+              }
+            }
           }
         }
       };
+      
 
       ws.onerror = (event) => {
         console.log("LOG:: Error", event);
@@ -477,67 +493,67 @@ export default function Page({ params }: { params: Params }) {
           setLatestMessageIndex(messages.length);
         } else {
           // Combine all segments into a single JSX element
-          if (segments && segments.length > 0) {
-            const questionSegment = segments.find((segment: { tag: string; }) => segment.tag === "q");
-            const optionsSegments = segments.filter(
-              (segment: { tag: string; }) => segment.tag === "o"
-            );
+          // if (segments && segments.length > 0) {
+          //   const questionSegment = segments.find((segment: { tag: string; }) => segment.tag === "q");
+          //   const optionsSegments = segments.filter(
+          //     (segment: { tag: string; }) => segment.tag === "o"
+          //   );
       
-            if (questionSegment && optionsSegments.length > 0) {
-              const question = questionSegment.value;
-              const options = optionsSegments.map((segment: { value: any; }) => segment.value);
-              setCurrentoptionvisible(true);
-              setCurrentQuestion(question);
-              setCurrentOptions(options);
-            }
-          }
-          const combinedSegments = segments.map((segment: { tag: string; value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | PromiseLikeOfReactNode | null | undefined; }, index: number) => {
-            const keyIndex = index as Key;
-            const isLastSegment = index === segments.length;
-            const isSelected = checkedIndices.has(index); 
-            if (segment.tag === 'o') {
-              return (
-                <div
-                  key={keyIndex}
-                  className={`segment ${isSelected ? 'selected' : ''}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    margin: '10px',
-                    // cursor: 'pointer' // Make the cursor a pointer to indicate it is clickable
-                  }}
-                  // onClick={() => handleCheckboxChange(index)}
-                >
-                  {/* <input
-                    type="checkbox"
-                    checked={checkedIndices.has(index)}
-                    onClick={(e) => e.stopPropagation()} // Prevent onClick event from firing when the checkbox itself is clicked
-                    onChange={() => handleCheckboxChange(index)}
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      marginRight: '10px',
-                      borderRadius: '50%', // Make the checkbox perfectly round
-                      border: '2px solid #2e2f2f',
-                      cursor: 'pointer',
-                      appearance: 'none', // Remove default checkbox appearance
-                      WebkitAppearance: 'none', // For older browsers
-                      MozAppearance: 'none', // For older browsers
-                    }}
-                  /> */}
-                   {segment.value}
-                </div>
-              );
-            } else if (segment.tag === 'q') {
-              return (
-                <div key={keyIndex} >
-                  <div className="mb-[10px]">{segment.value}</div>
-                </div>
-              );
-            } else {
-              return <div key={keyIndex}>{segment.value}</div>;
-            }
-          });
+          //   if (questionSegment && optionsSegments.length > 0) {
+          //     const question = questionSegment.value;
+          //     const options = optionsSegments.map((segment: { value: any; }) => segment.value);
+          //     setCurrentoptionvisible(true);
+          //     setCurrentQuestion(question);
+          //     setCurrentOptions(options);
+          //   }
+          // }
+          // const combinedSegments = segments.map((segment: { tag: string; value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | PromiseLikeOfReactNode | null | undefined; }, index: number) => {
+          //   const keyIndex = index as Key;
+          //   const isLastSegment = index === segments.length;
+          //   const isSelected = checkedIndices.has(index); 
+          //   if (segment.tag === 'o') {
+          //     return (
+          //       <div
+          //         key={keyIndex}
+          //         className={`segment ${isSelected ? 'selected' : ''}`}
+          //         style={{
+          //           display: 'flex',
+          //           alignItems: 'center',
+          //           margin: '10px',
+          //           // cursor: 'pointer' // Make the cursor a pointer to indicate it is clickable
+          //         }}
+          //         // onClick={() => handleCheckboxChange(index)}
+          //       >
+          //         {/* <input
+          //           type="checkbox"
+          //           checked={checkedIndices.has(index)}
+          //           onClick={(e) => e.stopPropagation()} // Prevent onClick event from firing when the checkbox itself is clicked
+          //           onChange={() => handleCheckboxChange(index)}
+          //           style={{
+          //             width: '20px',
+          //             height: '20px',
+          //             marginRight: '10px',
+          //             borderRadius: '50%', // Make the checkbox perfectly round
+          //             border: '2px solid #2e2f2f',
+          //             cursor: 'pointer',
+          //             appearance: 'none', // Remove default checkbox appearance
+          //             WebkitAppearance: 'none', // For older browsers
+          //             MozAppearance: 'none', // For older browsers
+          //           }}
+          //         /> */}
+          //          {segment.value}
+          //       </div>
+          //     );
+          //   } else if (segment.tag === 'q') {
+          //     return (
+          //       <div key={keyIndex} >
+          //         <div className="mb-[10px]">{segment.value}</div>
+          //       </div>
+          //     );
+          //   } else {
+          //     return <div key={keyIndex}>{segment.value}</div>;
+          //   }
+          // });
         
           // Create a single AI message with combined segments
           // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
@@ -1040,41 +1056,45 @@ if (isPageRefreshed) {
           
 
         </section>
-        <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}  z-10 `}>
-      <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"} px-2  rounded-xl items-center z-1200 relative`}>
-        <div className="flex w-[100%]">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
-            value={userMessage}
-            onChange={(e) => setUserMessage(e.target.value)}
-          />
+        <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-10`}>
+  <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"} px-2 rounded-xl z-1200 relative`}>
+    <div className="flex w-[100%]">
+      <input
+        type="text"
+        placeholder="Type your message..."
+        className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+        value={userMessage}
+        onChange={(e) => setUserMessage(e.target.value)}
+      />
 
-          <button
-            type="button"
-            className="bg-blue-500 text-white px-4 py-2 mt-2 rounded-xl hover:bg-blue-600"
-            onClick={() => sendMessage(userMessage)}
-            disabled={!userMessage.trim() || isLoading}
-          >
-            <div className='flex items-center justify-center mb-1' >
+      <button
+        type="button"
+        className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+        onClick={() => sendMessage(userMessage)}
+        disabled={!userMessage.trim() || isLoading}
+      >
+        <div className="flex items-center justify-center mb-1 font-bold text-lg">
           &gt;
-          </div>
-          </button>
-          </div>
-          <div className="flex justify-evenly mt-2 w-full overflow-x-auto whitespace-nowrap" style={{ overflowY: 'hidden', scrollbarWidth: 'thin' }}>
-          {currentoptionvisible&&currentOptions.map((option, index) => (
-          <div
+        </div>
+      </button>
+    </div>
+
+    <div className="flex mt-2 overflow-x-auto whitespace-nowrap" style={{ overflowY: 'hidden', scrollbarWidth: 'thin', width: '100%' }}>
+      {currentoptionvisible && currentOptions.map((option, index) => (
+        <div
           key={index}
           className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
           onClick={() => handleOptionClick(option)}
+          style={{ flex: '0 0 calc(31.5% - 10px)' }} 
         >
-          {option && option.length > 15 ? option.slice(0, 15) + '...' : option}
+          {option && option.length > 30 ? option.slice(0, 30) + '...' : option}
         </div>
-       ))}
-        </div>
-      </div>
-    </footer>
+      ))}
+    </div>
+  </div>
+</footer>
+
+
       </div>
     </main>
   );
