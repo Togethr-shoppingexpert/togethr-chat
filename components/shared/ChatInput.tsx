@@ -11,10 +11,11 @@ interface ChatInputProps {
     onInputChange: (newValue: string) => void; // Define onInputChange prop
     searchQuery : string;
     convnId:string;
+    mode:"light"|"dark"
 }
 
 
-export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: ChatInputProps) {
+export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mode }: ChatInputProps) {
     // Define a state to manage the input value
     const [inputValue, setInputValue] = useState(initialText);
     const router = useRouter();
@@ -25,7 +26,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: 
         setInputValue(newValue); // Update input value state
         onInputChange(newValue); // Call the onInputChange callback with the new value
     };
-
+    
     const handleClick = () => {
         console.log("Button clicked");
         router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}`);
@@ -46,12 +47,12 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: 
     }, [initialText, searchQuery]); // Add initialText and searchQuery as dependencies
 
     return (
-        <div className="w-full md:max-w-2xl xl:max-w-2xl lg:max-w-2xl sm:max-w-2xl h-[65px] items-center space-x-2 bg-[#1A1A1A] px-[6px] py-1 rounded-xl ">
-            <div className="flex w-full max-w-2xl  h-[56px] bg-black items-center space-x-2  px-[6px] py-2 rounded-xl">
+        <div className={`w-full md:max-w-2xl xl:max-w-2xl lg:max-w-2xl sm:max-w-2xl  ${mode==="dark"?"h-[60px]":"h-[56px]"} flex justify-center items-center space-x-2 ${mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"} px-[6px]  rounded-lg `}>
+            <div className={`flex w-full max-w-2xl justify-between  h-[49px] ${mode === "dark" ? "bg-[#242424]" : "bg-white"}    items-center space-x-2  px-[6px]  rounded-xl`}>
             <Input
                 type="email"
                 placeholder="Find your product"
-                className="transition border-none bg-black shadow-lg rounded-xl text-white h-full"
+                className={`${mode === "dark" ? "bg-[#242424] text-white" : "bg-white text-black"} transition  border-none outline-none focus:outline-none focus:border-none   rounded-xl  font-semibold `}
                 value={initialText} // Bind input value to state
                 onChange={handleInputChange} // Call handleInputChange function on input change
                 
@@ -59,12 +60,13 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId }: 
 
             <Button
                 type="button"
-                className="bg-[#0C8CE9] cursor-pointer text-2xl h-[50px] md:text-2xl lg:text-3xl hover:bg-[#0f7dcb]  rounded-xl focus:border-pink-600   w-[50px] md:w-[50px]"
+                className="bg-[#2196F3] flex justify-center items-center opacity-100 cursor-pointer text-2xl h-[45px] md:text-2xl lg:text-3xl hover:bg-[#568bf6]  rounded-xl border-none  w-[45px] md:w-[45px]"
                 onClick={handleClick}
                 disabled={!initialText.trim()}
             >
+                <div className='flex items-center justify-center mb-1' >
                           &gt;
-
+                          </div>
             </Button>
             </div>
         </div>
