@@ -1082,13 +1082,18 @@ if (isPageRefreshed) {
     <div className="flex mt-2 overflow-x-auto whitespace-nowrap" style={{ overflowY: 'hidden', scrollbarWidth: 'thin', width: '100%' }}>
       {currentoptionvisible && currentOptions.map((option, index) => (
         <div
-          key={index}
-          className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
-          onClick={() => handleOptionClick(option)}
-          style={{ flex: '0 0 calc(31.5% - 10px)' }} 
-        >
-          {option && option.length > 30 ? option.slice(0, 30) + '...' : option}
-        </div>
+        key={index}
+        className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
+        onClick={() => handleOptionClick(option)}
+        style={{
+         
+          transition: 'background-color 0.3s ease',
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedOptions.includes(option) ? '#5a5b5c' : '#4e4f4c'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedOptions.includes(option) ? '#444545' : '#202222'}
+      >
+        {option && option.length > 30 ? option.slice(0, 30) + '...' : option}
+      </div>
       ))}
     </div>
   </div>
