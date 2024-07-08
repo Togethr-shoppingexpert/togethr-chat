@@ -99,10 +99,10 @@ export default function Page({ params }: { params: Params }) {
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [currentoptionvisible,setCurrentoptionvisible]=useState(false);
-  const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
-    setCurrentQuestion(question);
-    setCurrentOptions(options);
-  };
+  // const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
+  //   setCurrentQuestion(question);
+  //   setCurrentOptions(options);
+  // };
 
   // const handleOptionClick = (option: string) => {
   //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
@@ -279,12 +279,14 @@ export default function Page({ params }: { params: Params }) {
                 (segment: { tag: string }) => segment.tag === "o"
               );
   
-              if (questionSegment && optionsSegments.length > 0) {
-                const question = questionSegment.value;
+              if(optionsSegments&&optionsSegments.length>0){
                 const options = optionsSegments.map((segment: { value: any }) => segment.value);
                 setCurrentoptionvisible(true);
-                setCurrentQuestion(question);
                 setCurrentOptions(options);
+              }
+              if (questionSegment&&questionSegment.length>0) {
+                const question = questionSegment.value;
+                setCurrentQuestion(question);
               }
             }
           }
@@ -549,8 +551,9 @@ export default function Page({ params }: { params: Params }) {
         const data = await response.json();
         console.log("Response from backend:", data);
     
-        const segments = data.segments; // Assuming segments is part of the response
-        console.log("Segments:", segments);
+        const segments = data?.segments; // Assuming segments is part of the response
+        {segments&&console.log("Segments:", segments);
+                }        // currentOptions(segments)
         const ai_response = data.AI_Response;
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
