@@ -99,38 +99,143 @@ export default function Page({ params }: { params: Params }) {
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [currentoptionvisible,setCurrentoptionvisible]=useState(false);
-  const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
-    setCurrentQuestion(question);
-    setCurrentOptions(options);
-  };
+  // const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
+  //   setCurrentQuestion(question);
+  //   setCurrentOptions(options);
+  // };
 
   // const handleOptionClick = (option: string) => {
   //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
   // };
+  // const WebSocketSingleton = (() => {
+  //   let instance: WebSocket | null = null;
+  //   // Callback function to update loading state
+  //   let updateLoadingStateCallback: ((isLoading: boolean) => void) | null =
+  //     null;
+
+  //   // Function to create WebSocket instance
+  //   function createInstance(id: string) {
+  //     const ws = new WebSocket(`wss://${API_ENDPOINT}/ws/${id}`);
+  //     // WebSocket setup
+  //     ws.onopen = (event) => {
+  //       console.log("LOG:: Connected ", event);
+  //     };
+
+  //     ws.onclose = (event) => {
+  //       console.log("LOG:: Closed ", event);
+  //     };
+
+  //     ws.onmessage = (event) => {
+  //       console.log("LOG:: onMessage ", event);
+  //       console.log("event : ", event.data);
+  //       const eventData = JSON.parse(event.data);
+  //       console.log("eventdatatype:", eventData.type);
+      
+  //       if (updateLoadingStateCallback && eventData) {
+  //         if (eventData.type === "research_flag") {
+  //           updateLoadingStateCallback(true);
+  //         } else if (eventData.data === "Preparing Response") {
+  //           updateLoadingStateCallback(false);
+  //         } else if (eventData.type === "follow_up_questions") {
+  //           let messages = eventData.data;
+  //           followupques = messages;
+  //           setFollowup(messages);
+  //           setFollowupSourcesVisible(true);
+      
+  //         } else if (eventData.type === "product information") {
+  //           setTimeout(() => {
+  //             let ques = eventData.data;
+  //             const formattedProducts: Product[] = eventData.data.map(
+  //               (product: any) => ({
+  //                 title: product.title,
+  //                 rating: product.rating,
+  //                 prices: product.prices,
+  //                 media: product.media,
+  //                 sellers_results: product.sellers_results,
+  //               })
+  //             );
+      
+  //             const productAiMessage: Message = {
+  //               sender: "AI",
+  //               content: <ProductCarousel products={formattedProducts} />,
+  //             };
+  //             setMessages((prevMessages) => [
+  //               ...prevMessages,
+  //               productAiMessage,
+  //             ]);
+  //             setProductArray([]);
+  //             setCuration(false);
+  //             console.log("followupques: ", followup);
+  //             console.log("followupques: ", followupques);
+  //             setProductArray(ques);
+  //             setCuration(false);
+  //             console.log("setproductarrayworked: ", productArray);
+      
+  //           }, 2000);
+      
+  //         } else if (eventData.type === "segments") {
+  //           const { data } = eventData;
+  //           if (data && data.length > 0) {
+  //             const questionSegment = data.find((segment: { tag: string; }) => segment.tag === "q");
+  //             const optionsSegments = data.filter(
+  //               (segment: { tag: string; }) => segment.tag === "o"
+  //             );
+      
+  //             if (questionSegment && optionsSegments.length > 0) {
+  //               const question = questionSegment.value;
+  //               const options = optionsSegments.map((segment: { value: any; }) => segment.value);
+  //               setCurrentoptionvisible(true);
+  //               setCurrentQuestion(question);
+  //               setCurrentOptions(options);
+  //             }
+  //           }
+  //         }
+  //       }
+  //     };
+      
+
+  //     ws.onerror = (event) => {
+  //       console.log("LOG:: Error", event);
+  //     };
+
+  //     return ws;
+  //   }
+
+  //   return {
+  //     getInstance: (id: string, callback: (isLoading: boolean) => void) => {
+  //       // Set the loading state update callback
+  //       updateLoadingStateCallback = callback;
+
+  //       if (!instance) {
+  //         instance = createInstance(id);
+  //       }
+  //       return instance;
+  //     },
+  //   };
+  // })();
+  
   const WebSocketSingleton = (() => {
     let instance: WebSocket | null = null;
-    // Callback function to update loading state
-    let updateLoadingStateCallback: ((isLoading: boolean) => void) | null =
-      null;
-
-    // Function to create WebSocket instance
+    let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
+    let isConnected = false;
+  
     function createInstance(id: string) {
       const ws = new WebSocket(`wss://${API_ENDPOINT}/ws/${id}`);
-      // WebSocket setup
+  
       ws.onopen = (event) => {
         console.log("LOG:: Connected ", event);
+        isConnected = true;
       };
-
+  
       ws.onclose = (event) => {
         console.log("LOG:: Closed ", event);
+        isConnected = false;
+        instance = null;  // Clear the instance on close
       };
-
+  
       ws.onmessage = (event) => {
         console.log("LOG:: onMessage ", event);
-        console.log("event : ", event.data);
         const eventData = JSON.parse(event.data);
-        console.log("eventdatatype:", eventData.type);
-      
         if (updateLoadingStateCallback && eventData) {
           if (eventData.type === "research_flag") {
             updateLoadingStateCallback(true);
@@ -141,10 +246,8 @@ export default function Page({ params }: { params: Params }) {
             followupques = messages;
             setFollowup(messages);
             setFollowupSourcesVisible(true);
-      
           } else if (eventData.type === "product information") {
             setTimeout(() => {
-              let ques = eventData.data;
               const formattedProducts: Product[] = eventData.data.map(
                 (product: any) => ({
                   title: product.title,
@@ -154,7 +257,7 @@ export default function Page({ params }: { params: Params }) {
                   sellers_results: product.sellers_results,
                 })
               );
-      
+  
               const productAiMessage: Message = {
                 sender: "AI",
                 content: <ProductCarousel products={formattedProducts} />,
@@ -165,55 +268,51 @@ export default function Page({ params }: { params: Params }) {
               ]);
               setProductArray([]);
               setCuration(false);
-              console.log("followupques: ", followup);
-              console.log("followupques: ", followupques);
-              setProductArray(ques);
+              setProductArray(eventData.data);
               setCuration(false);
-              console.log("setproductarrayworked: ", productArray);
-      
             }, 2000);
-      
           } else if (eventData.type === "segments") {
             const { data } = eventData;
             if (data && data.length > 0) {
-              const questionSegment = data.find((segment: { tag: string; }) => segment.tag === "q");
+              const questionSegment = data.find((segment: { tag: string }) => segment.tag === "q");
               const optionsSegments = data.filter(
-                (segment: { tag: string; }) => segment.tag === "o"
+                (segment: { tag: string }) => segment.tag === "o"
               );
-      
-              if (questionSegment && optionsSegments.length > 0) {
-                const question = questionSegment.value;
-                const options = optionsSegments.map((segment: { value: any; }) => segment.value);
+  
+              if(optionsSegments&&optionsSegments.length>0){
+                const options = optionsSegments.map((segment: { value: any }) => segment.value);
                 setCurrentoptionvisible(true);
-                setCurrentQuestion(question);
                 setCurrentOptions(options);
+              }
+              if (questionSegment&&questionSegment.length>0) {
+                const question = questionSegment.value;
+                setCurrentQuestion(question);
               }
             }
           }
         }
       };
-      
-
+  
       ws.onerror = (event) => {
         console.log("LOG:: Error", event);
+        isConnected = false;
+        instance = null;  // Clear the instance on error
       };
-
+  
       return ws;
     }
-
+  
     return {
       getInstance: (id: string, callback: (isLoading: boolean) => void) => {
-        // Set the loading state update callback
         updateLoadingStateCallback = callback;
-
-        if (!instance) {
+  
+        if (!instance || !isConnected) {
           instance = createInstance(id);
         }
         return instance;
       },
     };
   })();
-
   const toggleFollowup = () => {
     setIsOpen(!isOpen);
   };
@@ -452,8 +551,9 @@ export default function Page({ params }: { params: Params }) {
         const data = await response.json();
         console.log("Response from backend:", data);
     
-        const segments = data.segments; // Assuming segments is part of the response
-        console.log("Segments:", segments);
+        const segments = data?.segments; // Assuming segments is part of the response
+        {segments&&console.log("Segments:", segments);
+                }        // currentOptions(segments)
         const ai_response = data.AI_Response;
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
@@ -1082,13 +1182,18 @@ if (isPageRefreshed) {
     <div className="flex mt-2 overflow-x-auto whitespace-nowrap" style={{ overflowY: 'hidden', scrollbarWidth: 'thin', width: '100%' }}>
       {currentoptionvisible && currentOptions.map((option, index) => (
         <div
-          key={index}
-          className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
-          onClick={() => handleOptionClick(option)}
-          style={{ flex: '0 0 calc(31.5% - 10px)' }} 
-        >
-          {option && option.length > 30 ? option.slice(0, 30) + '...' : option}
-        </div>
+        key={index}
+        className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${selectedOptions.includes(option) ? 'bg-[#444545]' : 'bg-[#202222]'}`}
+        onClick={() => handleOptionClick(option)}
+        style={{
+         
+          transition: 'background-color 0.3s ease',
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedOptions.includes(option) ? '#5a5b5c' : '#4e4f4c'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedOptions.includes(option) ? '#444545' : '#202222'}
+      >
+        {option && option.length > 30 ? option.slice(0, 30) + '...' : option}
+      </div>
       ))}
     </div>
   </div>
