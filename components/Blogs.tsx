@@ -1,0 +1,147 @@
+import React, { useState, useCallback, ReactNode, useRef } from "react";
+//@ts-ignore
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Image from "next/image";
+import ArrowLeft from "../public/arrow-left.png";
+import ArrowRight from "../public/arrow-right.png";
+
+interface CustomSliderProps {
+  children: ReactNode;
+  onPrevClick: () => void;
+  onNextClick: () => void;
+  sliderRef: React.RefObject<Slider>;
+}
+
+const CustomSlider: React.FC<CustomSliderProps> = ({
+  children,
+  onPrevClick,
+  onNextClick,
+  sliderRef,
+}) => {
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+
+  const handleBeforeChange = useCallback((current: number, next: number) => {
+    setCurrentSlide(next);
+  }, []);
+
+  const settings = {
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: false,
+    beforeChange: handleBeforeChange,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
+  return (
+    <div>
+      <Slider ref={sliderRef} {...settings}>
+        {children}
+      </Slider>
+      <div className="flex items-center justify-end gap-x-2 mt-4">
+        <div className="w-14 cursor-pointer" onClick={onPrevClick}>
+          <Image src={ArrowLeft} alt="arrow-left" />
+        </div>
+        <div className="w-14 cursor-pointer" onClick={onNextClick}>
+          <Image src={ArrowRight} alt="arrow-right" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface MockData {
+  title: string;
+  description: string;
+  speciality: string;
+}
+
+export default function Blogs() {
+  const sliderRef = useRef<Slider>(null);
+
+  const goToPrev = () => {
+    sliderRef.current?.slickPrev();
+  };
+
+  const goToNext = () => {
+    sliderRef.current?.slickNext();
+  };
+
+  const mockdata: MockData[] = [
+    {
+      title: "Wireless",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia! bawhb dhagwrhgawhg rahwgeu gawur gyuawfruawfruafwurf auwfruawfugrfawgufrgawfrufawurWURuwrgauwgruawu",
+      speciality: "Specs",
+    },
+    {
+      title: "Wireless",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia! bawhb dhagwrhgawhg rahwgeu gawur gyuawfruawfruafwurf auwfruawfugrfawgufrgawfrufawurWURuwrgauwgruawu",
+      speciality: "Specs",
+    },
+    {
+      title: "Earbuds",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicctetur adipisicing elit. Voluptatem, quia!",
+      speciality: "Concepts Blog",
+    },
+    {
+      title: "Wired",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
+      speciality: "Performance Blog",
+    },
+    {
+      title: "Earphones",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
+      speciality: "Performance Blog",
+    },
+  ];
+
+  const truncateDescription = (description: string) => {
+    if (description.length > 50) {
+      return description.slice(0, 50) + "...";
+    }
+    return description;
+  };
+  return (
+    <div className="w-full lg:w-full mt-20">
+      <div className="text-2xl font-bold text-white">Blogs</div>
+      <CustomSlider
+        onPrevClick={goToPrev}
+        onNextClick={goToNext}
+        sliderRef={sliderRef}
+      >
+        {mockdata.map((item, index) => (
+          <div className="p-2" key={index}>
+            <div className="bg-[#191919] p-4 rounded-xl">
+              <div className="w-full flex flex-col lg:flex-row gap-x-4 lg:gap-y-2">
+                <div className="w-full h-32 uppercase mr-4 rounded-2xl flex justify-center items-center italic text-xl p-4 text-white bg-custom-gradient-cards"></div>
+                <div className="flex flex-col h-max gap-y-2">
+                  <div className="text-white text-xl mt-6">{item.title}</div>
+                  <div className="text-white text-sm">
+                    {truncateDescription(item.description)}
+                  </div>
+                </div>
+              </div>
+              <div className="w-max h-max p-1.5 px-3 rounded-xl bg-[#E8DEF8] mt-8">
+                <div>{item.speciality}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </CustomSlider>
+    </div>
+  );
+}

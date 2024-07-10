@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-
 import { config } from "../../constants";
 const API_ENDPOINT = config.url;
 interface NavbarProps {
@@ -16,18 +15,47 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
   };
 
   return (
-    <nav className={`sticky left-0 top-0 z-50 ${mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"}`}>
-      <div className="max-w-6xl mx-auto px-4">
+    <nav
+      className={`sticky left-0 top-0 z-50 ${
+        mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"
+      }`}
+    >
+      <div className="px-[4%] lg:px-[6%]">
         <div className="flex justify-between items-center">
           {/* Website Logo */}
           <Link href="/" className="flex items-center py-4 px-2">
-            <Image src={`${mode==="dark"?"/icon2.png":"/favicon.png"}`} alt="togethr" width={40} height={40} />
-            <span className={`font-bold ${mode === "dark" ? "text-white" : "text-[#080808]"} rounded-md p-2 text-lg md:text-xl lg:text-2xl`}>
+            <Image
+              src={`${mode === "dark" ? "/icon2.png" : "/favicon.png"}`}
+              alt="togethr"
+              width={40}
+              height={40}
+            />
+            <span
+              className={`font-bold ${
+                mode === "dark" ? "text-white" : "text-[#080808]"
+              } rounded-md p-2 text-lg md:text-xl lg:text-2xl`}
+            >
               Togethr
             </span>
           </Link>
-          
+          <div className="lg:hidden w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+            Heart
+          </div>
           {/* Other Navbar Elements */}
+          <div className="items-center gap-x-4 hidden md:flex">
+            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+              Discover
+            </div>
+            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all dureation-500">
+              Buying Guide
+            </div>{" "}
+            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+              Wishlist
+            </div>{" "}
+            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+              Content
+            </div>
+          </div>
         </div>
 
         {/* Side Drawer */}

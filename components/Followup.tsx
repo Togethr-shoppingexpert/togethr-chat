@@ -52,7 +52,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
           {followup && followup.map((ques, index) => (
             <div key={index}>
               <div className='flex justify-between items-center w-full cursor-pointer' onClick={() => { sendMessage(ques);setIsOpen(!isOpen);  setIsAccordionOpen(!isAccordionOpen)}}>
-                <div  className=' p-1 cursor-pointer' key={index}><h4>{ques}</h4></div>
+                <div  className='p-1 cursor-pointer' key={index}><h4>{ques}</h4></div>
                 <div className='font-semibold'><h4>+</h4></div>
               </div>
               {index !== followup.length - 1 &&

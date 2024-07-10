@@ -835,10 +835,10 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
-      <div className="mb-[120px]">
-        <section className="flex justify-center h-full mb-16 bp-0">
+      <div className="mb-[120px] lg:px-[6%]">
+        <section className="w-full flex flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
           <HeroResult />
-          <div className="md:max-w-2xl md:min-w-[42rem] top-20 sticky sm-w-[75%] w-[90%] h-[60vh] overflow-y-auto p-0">
+          <div className="lg:top-28 sticky lg:w-[120%] lg:h-[70vh] overflow-y-auto p-0 lg:bg-[#191919] scrollbar-margin lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;
@@ -1070,7 +1070,7 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </section>
         <footer
-          className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${
+          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center mt-6 p-5 ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
           } z-10`}
         >
@@ -1128,6 +1128,12 @@ export default function Page({ params }: { params: Params }) {
             </div>
           </div>
         </footer>
+      </div>
+      <div className="w-full fixed bottom-0 flex justify-between py-2 px-4 bg-[#202222] lg:hidden z-[999999999]">
+        <div className="text-sm font-bold text-white">Discover</div>
+        <div className="text-sm font-bold text-white">Buying Guide</div>{" "}
+        <div className="text-sm font-bold text-white">Content</div>{" "}
+        <div className="text-sm font-bold text-white">Chat</div>
       </div>
     </main>
   );
