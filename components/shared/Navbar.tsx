@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Heart from "../../public/icons/HeartIcon";
+import HeartFill from "../../public/icons/HeartFilledIcon";
 
 import { config } from "../../constants";
 const API_ENDPOINT = config.url;
@@ -20,8 +22,8 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
         mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"
       }`}
     >
-      <div className="px-[4%] lg:px-[6%]">
-        <div className="flex h-max justify-between items-center">
+      <div className="px-[4%] lg:px-[6%] flex justify-center">
+        <div className="w-full flex h-max justify-between items-center">
           {/* Website Logo */}
           <Link href="/" className="flex items-center py-1 lg:py-4 px-2">
             <div className="w-6 lg:w-10">
@@ -40,13 +42,13 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
               Togethr
             </span>
           </Link>
-          <div className="lg:hidden w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
-            Heart
+          <div className="lg:hidden">
+            <Heart width={24} height={24} color="currentColor" />
           </div>
           {/* Other Navbar Elements */}
           <div className="items-center gap-x-4 hidden md:flex">
             <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
-              Discover
+              Discover{" "}
             </div>
             <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all dureation-500">
               Buying Guide

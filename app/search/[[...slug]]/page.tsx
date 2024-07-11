@@ -30,6 +30,14 @@ import { useRouter } from "next/navigation";
 import { config } from "../../../constants";
 import Sources from "@/components/Sources";
 import HeroResult from "@/components/HeroResult";
+import Heart from "../../../public/icons/HeartIcon";
+import HeartFill from "../../../public/icons/HeartFilledIcon";
+import Message from "../../../public/icons/MessageIcon";
+import ContentIcon from "../../../public/icons/ContentIcon";
+import DiscoverIcon from "../../../public/icons/DiscoverIcon";
+import BuyingIcon from "../../../public/icons/BuyingGuideIcon";
+import BuyingGuideIcon from "../../../public/icons/BuyingGuideIcon";
+
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 let followupques: [];
@@ -1129,11 +1137,19 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </footer>
       </div>
-      <div className="w-full fixed bottom-0 flex justify-between py-2 px-4 bg-[#202222] lg:hidden z-[999999999]">
-        <div className="text-sm font-bold text-white">Discover</div>
-        <div className="text-sm font-bold text-white">Buying Guide</div>{" "}
-        <div className="text-sm font-bold text-white">Content</div>{" "}
-        <div className="text-sm font-bold text-white">Chat</div>
+      <div className="w-full fixed bottom-0 flex justify-between py-2 px-8 bg-[#202222] lg:hidden z-[999999999]">
+        <div>
+          <BuyingGuideIcon width={24} height={24} color="currentColor" />
+        </div>
+        <div>
+          <DiscoverIcon width={24} height={24} color="currentColor" />
+        </div>
+        <div>
+          <Message width={24} height={24} color="currentColor" />
+        </div>
+        <div>
+          <ContentIcon width={24} height={24} color="currentColor" />
+        </div>
       </div>
     </main>
   );
