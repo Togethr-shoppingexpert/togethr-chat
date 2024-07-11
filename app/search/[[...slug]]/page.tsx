@@ -133,7 +133,7 @@ export default function Page({ params }: { params: Params }) {
       // WebSocket setup
       ws.onopen = (event) => {
         console.log("LOG:: Connected ", event);
-        isConnected = true;
+        let isConnected = true;
       };
 
       ws.onclose = (event) => {
