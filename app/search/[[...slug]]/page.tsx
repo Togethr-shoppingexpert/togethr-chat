@@ -12,6 +12,7 @@ import {
   ReactPortal,
   use,
 } from "react";
+
 import Navbar from "@/components/shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ import ContentIcon from "../../../public/icons/ContentIcon";
 import DiscoverIcon from "../../../public/icons/DiscoverIcon";
 import BuyingIcon from "../../../public/icons/BuyingGuideIcon";
 import BuyingGuideIcon from "../../../public/icons/BuyingGuideIcon";
+import FooterNav from "@/components/FooterNav";
 
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
@@ -1137,20 +1139,7 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </footer>
       </div>
-      <div className="w-full fixed bottom-0 flex justify-between py-2 px-8 bg-[#202222] lg:hidden z-[999999999]">
-        <div>
-          <BuyingGuideIcon width={24} height={24} color="currentColor" />
-        </div>
-        <div>
-          <DiscoverIcon width={24} height={24} color="currentColor" />
-        </div>
-        <div>
-          <Message width={24} height={24} color="currentColor" />
-        </div>
-        <div>
-          <ContentIcon width={24} height={24} color="currentColor" />
-        </div>
-      </div>
+      <FooterNav />
     </main>
   );
 }

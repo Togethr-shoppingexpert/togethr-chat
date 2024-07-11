@@ -47,18 +47,26 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
           </div>
           {/* Other Navbar Elements */}
           <div className="items-center gap-x-4 hidden md:flex">
-            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
-              Discover{" "}
-            </div>
-            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all dureation-500">
-              Buying Guide
-            </div>{" "}
-            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
-              Wishlist
-            </div>{" "}
-            <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
-              Content
-            </div>
+            {/* <Link href="/discover"> */}
+              <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+                Discover{" "}
+              </div>
+            {/* </Link> */}
+            <Link href="/guide">
+              <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all dureation-500">
+                Buying Guide
+              </div>
+            </Link>
+            <Link href="/wishlist">
+              <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+                Wishlist
+              </div>
+            </Link>
+            <Link href="/content">
+              <div className="w-max text-lg text-[#a7a7a7] hover:text-black cursor-pointer font-semibold px-4 p-1 rounded-lg hover:bg-[#f5f5f58a] transition-all duration-500">
+                Content
+              </div>
+            </Link>
           </div>
         </div>
 
