@@ -836,9 +836,9 @@ export default function Page({ params }: { params: Params }) {
         </div> 
      */}
       <div className="mb-[120px] lg:px-[6%]">
-        <section className="w-full flex flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
+        <section className="w-full flex relative flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
           <HeroResult />
-          <div className="lg:top-28 sticky lg:w-[120%] lg:h-[70vh] overflow-y-auto p-0 lg:bg-[#191919] scrollbar-margin lg:rounded-xl lg:mt-8">
+          <div className="lg:top-20 z-[9999999] lg:right-0 lg:fixed lg:w-[30%] lg:mr-[6%] lg:h-[80vh] overflow-y-auto p-0 lg:bg-[#191919] lg:border-[3px] lg:border-[#FFFFFF1F] scrollbar-margin lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;
@@ -1070,12 +1070,12 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </section>
         <footer
-          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center mt-6 p-5 ${
+          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center lg:justify-start mt-6 p-5 z-[9999] ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
           } z-10`}
         >
           <div
-            className={`flex flex-col w-full max-w-2xl ${
+            className={`flex flex-col w-full lg:w-[52%] ${
               isDarkMode ? "bg-[#2e2f2f]" : "bg-white"
             } px-2 rounded-xl z-1200 relative`}
           >

@@ -16,20 +16,22 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
 
   return (
     <nav
-      className={`sticky left-0 top-0 z-50 ${
+      className={`sticky left-0 top-0 z-[999999999999999999999999] ${
         mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"
       }`}
     >
       <div className="px-[4%] lg:px-[6%]">
-        <div className="flex justify-between items-center">
+        <div className="flex h-max justify-between items-center">
           {/* Website Logo */}
-          <Link href="/" className="flex items-center py-4 px-2">
-            <Image
-              src={`${mode === "dark" ? "/icon2.png" : "/favicon.png"}`}
-              alt="togethr"
-              width={40}
-              height={40}
-            />
+          <Link href="/" className="flex items-center py-1 lg:py-4 px-2">
+            <div className="w-6 lg:w-10">
+              <Image
+                src={`${mode === "dark" ? "/icon2.png" : "/favicon.png"}`}
+                alt="togethr"
+                width={40}
+                height={40}
+              />
+            </div>
             <span
               className={`font-bold ${
                 mode === "dark" ? "text-white" : "text-[#080808]"

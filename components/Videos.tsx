@@ -43,17 +43,21 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   };
 
   return (
-    <div>
+    <div className="relative px-4">
+      <div
+        className="w-14 cursor-pointer absolute z-50 top-[40%] -left-0.5"
+        onClick={onPrevClick}
+      >
+        <Image src={ArrowLeft} alt="arrow-left" />
+      </div>
       <Slider ref={sliderRef} {...settings}>
         {children}
       </Slider>
-      <div className="flex items-center justify-end gap-x-2 mt-4">
-        <div className="w-14 cursor-pointer" onClick={onPrevClick}>
-          <Image src={ArrowLeft} alt="arrow-left" />
-        </div>
-        <div className="w-14 cursor-pointer" onClick={onNextClick}>
-          <Image src={ArrowRight} alt="arrow-right" />
-        </div>
+      <div
+        className="w-14 cursor-pointer absolute z-50 right-0 top-[40%]"
+        onClick={onNextClick}
+      >
+        <Image src={ArrowRight} alt="arrow-right" />
       </div>
     </div>
   );
@@ -104,7 +108,7 @@ export default function Videos() {
   ];
 
   return (
-    <div className="w-full lg:w-full mt-20">
+    <div className="w-full lg:w-full mt-10">
       <div className="text-2xl font-bold text-white">Videos</div>
       <CustomSlider
         onPrevClick={goToPrev}

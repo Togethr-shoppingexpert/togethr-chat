@@ -36,13 +36,13 @@ const mockdata = [
 export default function HeroResult() {
   return (
     <>
-      <div className="lg:w-max overflow-hidden flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
+      <div className="lg:w-[60%] overflow-hidden flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
         {mockdata.map((item, index) => (
           <div
             key={index}
             className="lg:w-full flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
           >
-            <div className="w-40 lg:w-80 p-4 rounded-xl bg-custom-gradient-cards">
+            <div className="w-40 p-4 rounded-xl bg-custom-gradient-cards">
               <Image src={item.image} alt={`test${index + 1}`} />
             </div>
             <div className="flex flex-col gap-y-2">
