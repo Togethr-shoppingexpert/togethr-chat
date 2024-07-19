@@ -39,7 +39,7 @@ import DiscoverIcon from "../../../public/icons/DiscoverIcon";
 import BuyingIcon from "../../../public/icons/BuyingGuideIcon";
 import BuyingGuideIcon from "../../../public/icons/BuyingGuideIcon";
 import FooterNav from "@/components/FooterNav";
-
+import { useContentContext } from "@/ContentContext";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 let followupques: [];
@@ -62,6 +62,18 @@ interface Product {
   prices: number[];
   media: { link: string }[];
   sellers_results: { online_sellers: { link: string }[] };
+}
+
+interface BlogContent {
+  title: string;
+  // content: string;
+  description: string;
+  speciality:string;
+}
+
+interface VideoContent {
+  title: string;
+  description: string;
 }
 
 const item = {
@@ -117,10 +129,21 @@ export default function Page({ params }: { params: Params }) {
     setCurrentQuestion(question);
     setCurrentOptions(options);
   };
-
+  // const [blogsContent, setBlogsContent] = useState<BlogContent[]>([]);
+  // const [buyingGuide, setBuyingGuide] = useState<string>('');
+  // const [videoContent, setVideoContent] = useState<VideoContent[]>([]);
   // const handleOptionClick = (option: string) => {
   //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
   // };
+
+
+  const {
+    setVideoContent,
+    setBlogsContent,
+    setBuyingGuide,
+  } = useContentContext();
+
+
   const WebSocketSingleton = (() => {
     let instance: WebSocket | null = null;
     // Callback function to update loading state
@@ -200,6 +223,16 @@ export default function Page({ params }: { params: Params }) {
                 setCurrentOptions(options);
               }
             }
+          }
+          else if (eventData.type === "blog") {
+            console.log("blog_content", eventData.blog_content);
+            setBlogsContent(eventData.blog_content);
+          } else if (eventData.type === "buying_guide") {
+            console.log("buying_guide", eventData.text);
+            setBuyingGuide(eventData.text);
+          } else if (eventData.type === "video_content") {
+            console.log("video_content", eventData.videos);
+            setVideoContent(eventData.videos);
           }
         }
       };
@@ -847,7 +880,7 @@ export default function Page({ params }: { params: Params }) {
      */}
       <div className="mb-[120px] lg:px-[6%]">
         <section className="w-full flex relative flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
-          <HeroResult />
+          <HeroResult  />
           <div className="lg:top-20 z-[9999999] lg:right-0 lg:fixed lg:w-[30%] lg:mr-[6%] lg:h-[80vh] overflow-y-auto p-0 lg:bg-[#191919] lg:border-[3px] lg:border-[#FFFFFF1F] scrollbar-margin lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
@@ -1128,7 +1161,7 @@ export default function Page({ params }: { params: Params }) {
                         : "bg-[#202222]"
                     }`}
                     onClick={() => handleOptionClick(option)}
-                    style={{ flex: "0 0 calc(31.5% - 10px)" }}
+                    // style={{ flex: "0 0 calc(31.5% - 10px)" }}
                   >
                     {option && option.length > 30
                       ? option.slice(0, 30) + "..."

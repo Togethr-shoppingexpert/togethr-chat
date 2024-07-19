@@ -6,6 +6,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import ArrowLeft from "../public/arrow-left.png";
 import ArrowRight from "../public/arrow-right.png";
+import { useContentContext } from "@/ContentContext";
+
+
 
 interface CustomSliderProps {
   children: ReactNode;
@@ -63,12 +66,15 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-interface MockData {
+interface Video {
   title: string;
   description: string;
+  // Add other video-related fields here
 }
 
-export default function Videos() {
+
+
+const Videos= () => {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -78,34 +84,9 @@ export default function Videos() {
   const goToNext = () => {
     sliderRef.current?.slickNext();
   };
+ 
 
-  const mockdata: MockData[] = [
-    {
-      title: "Noise Cancelling",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-    },
-    {
-      title: "Wireless",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-    },
-    {
-      title: "Earbuds",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-    },
-    {
-      title: "Wired",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-    },
-    {
-      title: "Earphones",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-    },
-  ];
+  const {videoContent}=useContentContext();
 
   return (
     <div className="w-full lg:w-full pt-10">
@@ -115,7 +96,7 @@ export default function Videos() {
         onNextClick={goToNext}
         sliderRef={sliderRef}
       >
-        {mockdata.map((item, index) => (
+        {videoContent.map((item, index) => (
           <div className="p-2" key={index}>
             <div className="bg-[#191919] p-4 rounded-xl">
               <div className="w-full h-40 uppercase rounded-xl flex justify-center items-center italic text-xl p-4 text-white bg-custom-gradient-cards"></div>
@@ -129,4 +110,6 @@ export default function Videos() {
       </CustomSlider>
     </div>
   );
-}
+};
+
+export default Videos;

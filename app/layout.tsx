@@ -4,7 +4,7 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import { Analytics } from "@vercel/analytics/react"
-
+import { ContentProvider } from "@/ContentContext";
 // const inter = Inter({ subsets: ["latin"] });
 const dm = DM_Sans({ subsets: ["latin"] });
 
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
+    <ContentProvider>
     <html lang="en" className="bg-[#202222]">
      
       <body className= {dm.className} > 
@@ -27,5 +27,6 @@ export default function RootLayout({
       <Analytics />
       </body>
     </html>
+    </ContentProvider>
   );
 }

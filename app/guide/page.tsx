@@ -4,8 +4,10 @@ import FooterNav from "@/components/FooterNav";
 import Videos from "@/components/Videos";
 import Navbar from "@/components/shared/Navbar";
 import React from "react";
-
+import { useContentContext } from "@/ContentContext";
 export default function page() {
+  const {videoContent}=useContentContext();
+  const {blogsContent}=useContentContext();
   return (
     <>
       <Navbar mode="dark" />

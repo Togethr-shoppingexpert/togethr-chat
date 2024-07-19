@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import ArrowLeft from "../public/arrow-left.png";
 import ArrowRight from "../public/arrow-right.png";
-
+import { useContentContext } from "@/ContentContext";
 interface CustomSliderProps {
   children: ReactNode;
   onPrevClick: () => void;
@@ -63,13 +63,15 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-interface MockData {
+interface Blog {
   title: string;
   description: string;
   speciality: string;
 }
 
-export default function Blogs() {
+
+
+const Blogs = () => {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -80,45 +82,13 @@ export default function Blogs() {
     sliderRef.current?.slickNext();
   };
 
-  const mockdata: MockData[] = [
-    {
-      title: "Wireless",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia! bawhb dhagwrhgawhg rahwgeu gawur gyuawfruawfruafwurf auwfruawfugrfawgufrgawfrufawurWURuwrgauwgruawu",
-      speciality: "Specs",
-    },
-    {
-      title: "Wireless",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia! bawhb dhagwrhgawhg rahwgeu gawur gyuawfruawfruafwurf auwfruawfugrfawgufrgawfrufawurWURuwrgauwgruawu",
-      speciality: "Specs",
-    },
-    {
-      title: "Earbuds",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicctetur adipisicing elit. Voluptatem, quia!",
-      speciality: "Concepts Blog",
-    },
-    {
-      title: "Wired",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-      speciality: "Performance Blog",
-    },
-    {
-      title: "Earphones",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
-      speciality: "Performance Blog",
-    },
-  ];
-
   const truncateDescription = (description: string) => {
     if (description.length > 50) {
       return description.slice(0, 50) + "...";
     }
     return description;
   };
+  const {blogsContent}=useContentContext();
   return (
     <div className="w-full lg:w-full mt-10">
       <div className="text-2xl font-bold text-white">Blogs</div>
@@ -127,7 +97,7 @@ export default function Blogs() {
         onNextClick={goToNext}
         sliderRef={sliderRef}
       >
-        {mockdata.map((item, index) => (
+        {blogsContent.map((item, index) => (
           <div className="p-2" key={index}>
             <div className="bg-[#191919] p-4 rounded-xl">
               <div className="w-full flex flex-col lg:flex-row gap-x-4 lg:gap-y-2">
@@ -140,7 +110,7 @@ export default function Blogs() {
                 </div>
               </div>
               <div className="w-max h-max p-1.5 px-3 rounded-xl bg-[#E8DEF8] mt-8">
-                <div>{item.speciality}</div>
+                {/* <div>{item.speciality}</div> */}
               </div>
             </div>
           </div>
@@ -148,4 +118,6 @@ export default function Blogs() {
       </CustomSlider>
     </div>
   );
-}
+};
+
+export default Blogs;

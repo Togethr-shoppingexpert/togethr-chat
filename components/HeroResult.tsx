@@ -33,19 +33,36 @@ const mockdata = [
     image: TestOne,
   },
 ];
-
-export default function HeroResult() {
-  return (
-    <>
-      <div className="lg:w-[60%] overflow-hidden flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
-        <WishlistUI />
-        <div className="w-full flex">
-          <Videos />
-        </div>
-        <div className="w-full flex justify-end">
-          <Blogs />
-        </div>
-      </div>
-    </>
-  );
+interface Blog {
+  title: string;
+  description: string;
+  speciality: string;
 }
+
+interface Video {
+  title: string;
+  description: string;
+  // Add other video-related fields here
+}
+
+export interface HeroResultProps {
+  blogs: Blog[];
+  videos: Video[];
+  buyingguide: string;
+}
+
+const HeroResult = () => {
+  return (
+    <div className="lg:w-[60%] overflow-hidden flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
+      <WishlistUI />
+      <div className="w-full flex">
+        <Videos/>
+      </div>
+      <div className="w-full flex justify-end">
+        <Blogs />
+      </div>
+    </div>
+  );
+};
+
+export default HeroResult;

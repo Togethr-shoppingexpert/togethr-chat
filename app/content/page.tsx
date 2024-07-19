@@ -9,7 +9,7 @@ import ArrowLeft from "../../public/arrow-left.png";
 import ArrowRight from "../../public/arrow-right.png";
 import Navbar from "@/components/shared/Navbar";
 import FooterNav from "@/components/FooterNav";
-
+import { useContentContext } from "@/ContentContext";
 interface CustomSliderProps {
   children: ReactNode;
   onPrevClick: () => void;
@@ -44,7 +44,6 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
       },
     ],
   };
-
   return (
     <div className="relative px-4">
       <div
@@ -109,6 +108,7 @@ export default function ContentComponent() {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
     },
   ];
+  const {videoContent}=useContentContext();
 
   return (
     <>
@@ -121,7 +121,7 @@ export default function ContentComponent() {
           onNextClick={goToNext}
           sliderRef={sliderRef}
         >
-          {mockdata.map((item, index) => (
+          {videoContent.map((item, index) => (
             <div className="p-2" key={index}>
               <div className="bg-[#191919] p-4 rounded-xl">
                 <div className="w-full h-40 uppercase rounded-xl flex justify-center items-center italic text-xl p-4 text-white bg-custom-gradient-cards"></div>
