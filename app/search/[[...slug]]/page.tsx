@@ -81,6 +81,12 @@ const item = {
   content: "Content for section 1",
 };
 
+interface Product {
+  product_name: string;
+  product_id: string;
+  recommendation_reason: string;
+}
+
 export default function Page({ params }: { params: Params }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState("");
@@ -129,6 +135,9 @@ export default function Page({ params }: { params: Params }) {
     setCurrentQuestion(question);
     setCurrentOptions(options);
   };
+  const [bestProducts,setBestProducts]=useState<Product[]>([]);
+  // const bestProductsRef = useRef<Product[]>([]);
+  // const [airesponse,setAiResponse]=useState()
   // const [blogsContent, setBlogsContent] = useState<BlogContent[]>([]);
   // const [buyingGuide, setBuyingGuide] = useState<string>('');
   // const [videoContent, setVideoContent] = useState<VideoContent[]>([]);
@@ -485,12 +494,25 @@ export default function Page({ params }: { params: Params }) {
 
       // Handle response
       if (response.ok) {
+        
         const data = await response.json();
+        // if(data.curration===true){
+          setCuration(data.curration);
+          console.log(data.curration);
+          console.log(curation);
+        // }
         console.log("Response from backend:", data);
 
         const segments = data.segments; // Assuming segments is part of the response
         console.log("Segments:", segments);
         const ai_response = data.AI_Response;
+        if(data.curration){
+          setBestProducts(JSON.parse(ai_response));
+        }
+        // console.log("bestproduct: ",bestProductsRef.current);
+        console.log("ai_response: ",ai_response);
+        // console.log("bestproducts",bestProducts);
+
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
         setCuration(isCurationRequired);
@@ -833,6 +855,9 @@ export default function Page({ params }: { params: Params }) {
     }
   };
 
+
+
+
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
@@ -860,6 +885,11 @@ export default function Page({ params }: { params: Params }) {
       }
     });
   };
+
+  // useEffect(() => {
+  //   console.log("Best Products Ref Updated:", bestProductsRef.current);
+  // }, [bestProductsRef.current]);
+
   useEffect(() => {
     // Logic to handle the clicked options
     console.log("Selected Options:", selectedOptions);
@@ -878,10 +908,10 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
-      <div className="mb-[120px] lg:px-[6%]">
+      <div className="mb-[120px] lg:px-[6%] z-10">
         <section className="w-full flex relative flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
-          <HeroResult  />
-          <div className="lg:top-20 z-[9999999] lg:right-0 lg:fixed lg:w-[30%] lg:mr-[6%] lg:h-[80vh] overflow-y-auto p-0 lg:bg-[#191919] lg:border-[3px] lg:border-[#FFFFFF1F] scrollbar-margin lg:rounded-xl lg:mt-8">
+          <HeroResult bestProducts={bestProducts}  />
+          <div className="lg:top-20 z-[9] lg:right-0 lg:fixed lg:w-[30%] lg:mr-[6%] lg:h-[80vh] overflow-y-auto p-0 lg:bg-[#191919] lg:border-[3px] lg:border-[#FFFFFF1F] scrollbar-margin lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;
