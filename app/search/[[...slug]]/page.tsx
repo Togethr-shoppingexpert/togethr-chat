@@ -152,7 +152,8 @@ export default function Page({ params }: { params: Params }) {
     setBuyingGuide,
     setIsChatStarted,
     setBestProducts,
-    setProductInfo
+    setProductInfo,
+    
   } = useContentContext();
 
 

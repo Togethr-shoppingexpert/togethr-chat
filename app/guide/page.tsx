@@ -6,12 +6,16 @@ import Navbar from "@/components/shared/Navbar";
 import React from "react";
 import { useContentContext } from "@/ContentContext";
 export default function page() {
-  const {videoContent}=useContentContext();
-  const {blogsContent}=useContentContext();
+  // const {videoContent}=useContentContext();
+  // const {blogsContent}=useContentContext();
+  const {buyingGuide}=useContentContext();
   return (
     <>
       <Navbar mode="dark" />
       <div className="bg-[#202222] px-6 lg:px-[6%]">
+        <div className="text-white">
+            {buyingGuide}
+        </div>
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos />
         </div>
