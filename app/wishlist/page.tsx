@@ -7,6 +7,7 @@ import Navbar from "@/components/shared/Navbar";
 import React, { use } from "react";
 
 export default function page() {
+  console.log("wishlist");
   return (
     <>
       <Navbar mode="dark" />

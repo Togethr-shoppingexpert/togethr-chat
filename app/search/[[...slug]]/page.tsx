@@ -135,7 +135,7 @@ export default function Page({ params }: { params: Params }) {
     setCurrentQuestion(question);
     setCurrentOptions(options);
   };
-  const [bestProducts,setBestProducts]=useState<Product[]>([]);
+  // const [bestProducts,setBestProducts]=useState<Product[]>([]);
   // const bestProductsRef = useRef<Product[]>([]);
   // const [airesponse,setAiResponse]=useState()
   // const [blogsContent, setBlogsContent] = useState<BlogContent[]>([]);
@@ -150,6 +150,9 @@ export default function Page({ params }: { params: Params }) {
     setVideoContent,
     setBlogsContent,
     setBuyingGuide,
+    setIsChatStarted,
+    setBestProducts,
+    setProductInfo
   } = useContentContext();
 
 
@@ -233,15 +236,18 @@ export default function Page({ params }: { params: Params }) {
               }
             }
           }
-          else if (eventData.type === "blog") {
-            console.log("blog_content", eventData.blog_content);
-            setBlogsContent(eventData.blog_content);
+          else if (eventData.type === "discover_article_content") {
+            console.log("blog_content", eventData.data);
+            setBlogsContent(eventData.data);
           } else if (eventData.type === "buying_guide") {
             console.log("buying_guide", eventData.text);
             setBuyingGuide(eventData.text);
-          } else if (eventData.type === "video_content") {
-            console.log("video_content", eventData.videos);
-            setVideoContent(eventData.videos);
+          } else if (eventData.type === "discover_video_content") {
+            console.log("video_content", eventData.links);
+            setVideoContent(eventData.links);
+          } else if(eventData.type==="product information"){
+              console.log("product_Information",eventData.data);
+              setProductInfo(eventData.data);
           }
         }
       };
@@ -293,6 +299,7 @@ export default function Page({ params }: { params: Params }) {
       sendMessage(decodeURIComponent(searchQuery));
       // setUserMessage(decodeURIComponent(searchQuery));
       sessionStorage.setItem("chatstarted", "true");
+      setIsChatStarted(true);
       localStorage.setItem("chatstarted", "true");
 
       messageSentRef.current = true; // Update the flag
@@ -908,10 +915,10 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
-      <div className="mb-[120px] lg:px-[6%] z-10">
-        <section className="w-full flex relative flex-col-reverse lg:flex-row lg:justify-between gap-x-6 h-full mb-16 bp-0">
-          <HeroResult bestProducts={bestProducts}  />
-          <div className="lg:top-20 z-[9] lg:right-0 lg:fixed lg:w-[30%] lg:mr-[6%] lg:h-[80vh] overflow-y-auto p-0 lg:bg-[#191919] lg:border-[3px] lg:border-[#FFFFFF1F] scrollbar-margin lg:rounded-xl lg:mt-8">
+      <div className="  flex items-center justify-center h-full mb-[120px]   z-10">
+        <section className="max-w-2xl   flex-col-reverse    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
+          
+          <div className="lg:top-20 z-[9]  p-0 lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;
@@ -1106,6 +1113,7 @@ export default function Page({ params }: { params: Params }) {
             {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )} */}
+            <HeroResult />
             <div ref={messagesEndRef} />
             {followupSourcesVisible && followup && followup.length > 0 && (
               <div>
@@ -1143,7 +1151,7 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </section>
         <footer
-          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center lg:justify-start mt-6 p-5 z-[9999] ${
+          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center  mt-6 p-5 z-[9999] ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
           } z-10`}
         >

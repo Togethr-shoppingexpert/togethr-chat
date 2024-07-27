@@ -9,6 +9,12 @@ interface ContentContextData {
   setVideoContent: (videos: any[]) => void;
   setBlogsContent: (blogs: any[]) => void;
   setBuyingGuide: (guide: string) => void;
+  isChatStarted:boolean;
+  setIsChatStarted: (started: boolean) => void;
+  bestProducts:any[];
+  setBestProducts:(bestproducts:any[])=>void;
+  productInfo:any[];
+  setProductInfo:(productInfo:any[])=>void;
 }
 
 // Create the context with default values
@@ -27,9 +33,12 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [videoContent, setVideoContent] = useState<any[]>([]);
   const [blogsContent, setBlogsContent] = useState<any[]>([]);
   const [buyingGuide, setBuyingGuide] = useState<string>('');
+  const [isChatStarted,setIsChatStarted]=useState(false);
+  const [bestProducts,setBestProducts]=useState<any[]>([]);
+  const [productInfo,setProductInfo]=useState<any[]>([]);
 
   return (
-    <ContentContext.Provider value={{ videoContent, blogsContent, buyingGuide, setVideoContent, setBlogsContent, setBuyingGuide }}>
+    <ContentContext.Provider value={{ videoContent, blogsContent, buyingGuide, setVideoContent, setBlogsContent, setBuyingGuide,isChatStarted,setIsChatStarted ,bestProducts,setBestProducts,productInfo,setProductInfo}}>
       {children}
     </ContentContext.Provider>
   );

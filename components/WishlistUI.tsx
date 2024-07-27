@@ -9,6 +9,7 @@ import NameCards from "./NameCards";
 import Videos from "./Videos";
 import Blogs from "./Blogs";
 import Navbar from "./shared/Navbar";
+import { useContentContext } from "@/ContentContext";
 
 const mockdata = [
   {
@@ -43,13 +44,18 @@ interface WishlistUIProps{
   bestProducts?:Product[]
 }
 
-export default function WishlistUI({ bestProducts=[] }: WishlistUIProps){
-  console.log(bestProducts);
-  console.log(Array.isArray(bestProducts));
+export default function WishlistUI(){
+  // console.log(bestProducts);
+  // console.log(Array.isArray(bestProducts));
   // if (!Array.isArray(bestProducts)) {
   //   console.error("Expected bestProducts to be an array, but got:", bestProducts);
   //   return null; // Or some fallback UI
   // }
+
+  const {
+    productInfo,
+    bestProducts
+  } = useContentContext();
   return (
     <>
     {console.log("bestproductswishlist",bestProducts)}
@@ -79,7 +85,7 @@ export default function WishlistUI({ bestProducts=[] }: WishlistUIProps){
                   <Image src={Favourite} alt="favourite" />
                 </div>
               </div>
-              <div className="text-lg text-gray-300">{item.recommendation_reason}</div>
+              {/* <div className="text-lg text-gray-300">{item.recommendation_reason}</div> */}
             </div>
           </div>
         ))}

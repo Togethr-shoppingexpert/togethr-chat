@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { FaSun, FaMoon } from "react-icons/fa"; 
 import { config } from "../constants";
+import { useContentContext } from "@/ContentContext";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 
@@ -22,6 +23,16 @@ export default function Home() {
   });
   
 
+
+  const {
+    setVideoContent,
+    setBlogsContent,
+    setBuyingGuide,
+    setIsChatStarted,
+    setBestProducts
+  } = useContentContext();
+
+
 const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
 
   // guestsignup and localstorage logic
@@ -29,7 +40,11 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
     // const storedConvid = sessionStorage.getItem("conversationId");
-
+    setIsChatStarted(false);
+    setBuyingGuide("");
+    setBlogsContent([]);
+    setVideoContent([]);
+    setBestProducts([]);
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);

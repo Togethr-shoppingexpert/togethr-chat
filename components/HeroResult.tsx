@@ -44,22 +44,22 @@ interface Video {
   description: string;
   // Add other video-related fields here
 }
-interface Product {
-  product_name: string;
-  product_id: string;
-  recommendation_reason: string;
-}
-export interface HeroResultProps {
-  // blogs: Blog[];
-  // videos: Video[];
-  // buyingguide: string;
-  bestProducts:Product[];
-}
+// interface Product {
+//   product_name: string;
+//   product_id: string;
+//   recommendation_reason: string;
+// }
+// export interface HeroResultProps {
+//   // blogs: Blog[];
+//   // videos: Video[];
+//   // buyingguide: string;
+//   bestProducts:Product[];
+// }
 
-const HeroResult: React.FC<HeroResultProps> = ({ bestProducts }) => {
+const HeroResult = () => {
   return (
-    <div className="lg:w-[60%] overflow-hidden flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
-      <WishlistUI bestProducts={bestProducts} />
+    <div className="max-w-2xl justify-center mb-[120px]  flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
+      <WishlistUI  />
       <div className="w-full flex">
         <Videos />
       </div>
