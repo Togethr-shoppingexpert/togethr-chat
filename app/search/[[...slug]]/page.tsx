@@ -245,7 +245,7 @@ export default function Page({ params }: { params: Params }) {
           } else if (eventData.type === "discover_video_content") {
             console.log("video_content", eventData.links);
             setVideoContent(eventData.links);
-          } else if(eventData.type==="product information"){
+          } else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
           }
@@ -918,7 +918,7 @@ export default function Page({ params }: { params: Params }) {
       <div className="  flex items-center justify-center h-full mb-[120px]   z-10">
         <section className="max-w-2xl   flex-col-reverse    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
           
-          <div className="lg:top-20 z-[9]  p-0 lg:rounded-xl lg:mt-8">
+          <div className="lg:top-20 z-[9] max-w-[50vw]  p-0 lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;
