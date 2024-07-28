@@ -159,11 +159,11 @@ export default function WishlistUI() {
 
   const getProductPrice = (productId: string) => {
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
-    return product ? product.prices.join(", ") : "Price not available";
+    return product ? product.prices[0] : "Price not available";
   };
   const getImageUrl=(productId:string)=>{
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
-    return product?product.media[0].link:"No image availabel";
+    return product?product.media[0].link:"";
   }
 
   return (
@@ -178,13 +178,19 @@ export default function WishlistUI() {
               key={index}
               className="lg:w-full flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
             >
-              <div className="w-40 p-4 rounded-xl bg-custom-gradient-cards">
-                <Image src={imageurl} width={100} height={100} alt={`test${index + 1}`} />
-              </div>
+              <div className="w-full h-50 relative rounded-xl bg-custom-gradient-cards">
+                  <Image
+                    src={imageurl} 
+                    alt={`test${index + 1}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-xl"
+                  />
+                </div>
               <div className="flex flex-col gap-y-2">
                 <div className="flex justify-between items-center">
-                  <div className="flex flex-col lg:flex-row h-max gap-y-2 gap-x-4 items-start lg:items-center">
-                    <div className="text-xl text-white mt-2 lg:mt-0">
+                  <div className="flex flex-col lg:flex-row justify-between h-max gap-y-2 gap-x-4 items-start lg:items-center">
+                    <div className="text-[17px] text-white mt-2 lg:mt-0">
                       {item.product_name}
                     </div>
                     <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
@@ -199,7 +205,7 @@ export default function WishlistUI() {
                     <Image src={Favourite} alt="favourite" />
                   </div>
                 </div>
-                <div className="text-lg text-gray-300">{item.recommendation_reason}</div>
+                <div className=" text-gray-400 text-[15px]">{item.recommendation_reason}</div>
               </div>
             </div>
           );

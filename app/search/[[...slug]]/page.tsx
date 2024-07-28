@@ -293,6 +293,16 @@ export default function Page({ params }: { params: Params }) {
     fetchAuthToken();
   }, []);
 
+
+   const storeCurrentPageUrl = () => {
+    const currentPageUrl = window.location.href;
+    sessionStorage.setItem('currentPageUrl', currentPageUrl);
+  };
+  useEffect(() => {
+    storeCurrentPageUrl();
+  }, []);
+
+
   // decoding the user query from URL and setting in the input field as soon as we come on this page
   useEffect(() => {
     const chatstarted = localStorage.getItem("chatstarted");
@@ -510,7 +520,7 @@ export default function Page({ params }: { params: Params }) {
           console.log(curation);
         // }
         console.log("Response from backend:", data);
-
+        const bestproductset=false;
         const segments = data.segments; // Assuming segments is part of the response
         console.log("Segments:", segments);
         const ai_response = data.AI_Response;
@@ -554,7 +564,7 @@ export default function Page({ params }: { params: Params }) {
           });
         };
 
-        if (!segments) {
+        if (!segments&&data.curration==false) {
           const newAiMessage = { sender: "AI", content: ai_response };
           setMessages((prevMessages) => [...prevMessages, newAiMessage]);
           setLatestMessageIndex(messages.length);
@@ -625,8 +635,10 @@ export default function Page({ params }: { params: Params }) {
           // Create a single AI message with combined segments
           // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
           // setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          if(data.curration==false){
           const newAiMessage = { sender: "AI", content: ai_response };
           setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          }
           setLatestMessageIndex(messages.length);
           setCheckedIndices(new Set());
         }
@@ -916,10 +928,10 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
-      <div className="  flex items-center justify-center h-full mb-[120px]   z-10">
-        <section className="max-w-2xl   flex-col-reverse    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
+      <div className="  flex items-center justify-center h-full  mt-7   z-10">
+        <section className="max-w-2xl   flex-col    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
           
-          <div className="lg:top-20 z-[9] max-w-[50vw]  p-0 lg:rounded-xl lg:mt-8">
+          <div className="lg:top-20 z-[9]  min-w-[50vw] lg:max-w-[50vw] md:min-w-[50vw] sm:min-w-[90vw] p-0 lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
               let productIndex = 0;

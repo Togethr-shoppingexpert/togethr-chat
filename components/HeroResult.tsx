@@ -58,7 +58,8 @@ interface Video {
 
 const HeroResult = () => {
   return (
-    <div className="max-w-2xl justify-center mb-[120px]  flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
+    
+    <div className="max-w-2xl justify-center   flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
       <WishlistUI  />
       <div className="w-full flex">
         <Videos />

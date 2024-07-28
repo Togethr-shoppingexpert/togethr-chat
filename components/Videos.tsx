@@ -8,8 +8,6 @@ import ArrowLeft from "../public/arrow-left.png";
 import ArrowRight from "../public/arrow-right.png";
 import { useContentContext } from "@/ContentContext";
 
-
-
 interface CustomSliderProps {
   children: ReactNode;
   onPrevClick: () => void;
@@ -66,15 +64,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-interface Video {
-  title: string;
-  description: string;
-  // Add other video-related fields here
-}
-
-
-
-const Videos= () => {
+const Videos = () => {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -84,32 +74,46 @@ const Videos= () => {
   const goToNext = () => {
     sliderRef.current?.slickNext();
   };
- 
 
-  const {videoContent}=useContentContext();
+  const { videoContent } = useContentContext();
 
-  return (
-    <div className="w-full lg:w-full pt-10">
-      <div className="text-2xl font-bold text-white">Videos</div>
-      <CustomSlider
-        onPrevClick={goToPrev}
-        onNextClick={goToNext}
-        sliderRef={sliderRef}
-      >
-        {videoContent.map((item, index) => (
-          <div className="p-2" key={index}>
-            <div className="bg-[#191919] p-4 rounded-xl">
-              <div className="w-full h-40 uppercase rounded-xl flex justify-center items-center italic text-xl p-4 text-white bg-custom-gradient-cards"></div>
-              <div className="flex flex-col gap-y-2">
-                <div className="text-white text-xl mt-6">{item}</div>
-                {/* <div className="text-white text-sm">{item.description}</div> */}
+  // Function to extract video ID from YouTube URL
+  const getVideoId = (url: string | URL) => {
+    const urlObj = new URL(url);
+    return urlObj.searchParams.get("v");
+  };
+
+  if (videoContent.length > 0) {
+    return (
+      <div className="w-full lg:w-full pt-10">
+        <div className="text-2xl font-bold text-white">Videos</div>
+        <CustomSlider onPrevClick={goToPrev} onNextClick={goToNext} sliderRef={sliderRef}>
+          {videoContent.map((item, index) => {
+            const videoId = getVideoId(item);
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+            return (
+              <div className="p-2" key={index}>
+                <div className="bg-[#191919] p-4 rounded-xl">
+                  <div className="w-full h-40 uppercase rounded-xl flex justify-center items-center italic text-xl  text-white bg-custom-gradient-cards">
+                    <img src={thumbnailUrl} alt="YouTube Thumbnail" className="w-full h-full object-cover rounded-xl" />
+                  </div>
+                  <div className="flex flex-col h-max gap-y-2">
+                    <a href={item} target="_blank" rel="noopener noreferrer">
+                      <div className="text-white text-[13px] mt-6 hover:text-[#0C8CE9]">Watch video</div>
+                    </a>
+                    {/* <div className="text-white text-sm">{item.description}</div> */}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </CustomSlider>
-    </div>
-  );
+            );
+          })}
+        </CustomSlider>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default Videos;

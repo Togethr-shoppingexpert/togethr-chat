@@ -33,7 +33,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
   }, [isOpen]);
 
   return (
-    <div className={`relative w-full ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
+    <div className={`mb-[100px] relative w-full ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
       <div className={`flex justify-between items-center cursor-pointer p-2 ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"}`} onClick={toggleAccordion}>
         <div>
         <h3 className="text-left font-bold ">FAQ</h3>

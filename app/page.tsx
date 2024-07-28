@@ -101,6 +101,7 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
         const newConversationId = data.ConversationId;
         sessionStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         sessionStorage.removeItem("chatstarted");
+        sessionStorage.removeItem("currentPageUrl");
         localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         localStorage.removeItem("chatstarted");
         setConversationId(newConversationId);
