@@ -66,14 +66,16 @@ interface Product {
 
 interface BlogContent {
   title: string;
-  // content: string;
-  description: string;
-  speciality:string;
+  link: string;
+  favicon: string;
+  source: string;
 }
 
 interface VideoContent {
+  link: string;
   title: string;
   description: string;
+  length: number;
 }
 
 const item = {
@@ -239,13 +241,26 @@ export default function Page({ params }: { params: Params }) {
           }
           else if (eventData.type === "discover_article_content") {
             console.log("blog_content", eventData.data);
-            setBlogsContent(eventData.data);
+            const UpdatedBlogContent = eventData.data.map((blog: any) => ({
+              link: blog.link,
+              title: blog.title, 
+              favicon: blog.favicon,
+              source: blog.source,
+            }));
+            console.log('data',UpdatedBlogContent)
+            setBlogsContent(UpdatedBlogContent);
           } else if (eventData.type === "buying_guide") {
             console.log("buying_guide", eventData.text);
             setBuyingGuide(eventData.text);
           } else if (eventData.type === "discover_video_content") {
             console.log("video_content", eventData.links);
-            setVideoContent(eventData.links);
+            const UpdatedVideoContent: VideoContent[] = eventData.links.map((video: any) => ({
+              link: video.link,
+              title: video.title, 
+              description: video.description, 
+              length: video.length,
+            }));
+            setVideoContent(UpdatedVideoContent);
           } else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
@@ -830,7 +845,7 @@ export default function Page({ params }: { params: Params }) {
           const { conversationHistory, products } = data;
           console.log("history: ", data);
           setConversationHistorydata(conversationHistory);
-          setProductsHistory(products[0]);
+          //setProductsHistory(products[0]);
           setConversationId(storedConversationId);
           // console.log("products:",products[0][0]);
           console.log("response: ", response);
@@ -917,6 +932,19 @@ export default function Page({ params }: { params: Params }) {
     // Update the currentOptions based on selectedOptions or any other logic
     // setCurrentOptions(selectedOptions);
   }, [selectedOptions]);
+
+  const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
+
+  useEffect(() => {
+    const hasMessages = Array.isArray(messages) && messages.length > 0;
+    const hasFollowups = Array.isArray(followupques) && followupques.length > 0;
+
+    if (hasMessages || hasFollowups) {
+      setShowHeroAndFollowup(true);
+    } else {
+      setShowHeroAndFollowup(false);
+    }
+  }, [messages, followupques]);
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
       <Navbar mode={isDarkMode ? "dark" : "light"} />
@@ -929,11 +957,24 @@ export default function Page({ params }: { params: Params }) {
         </div> 
      */}
       <div className="  flex items-center justify-center h-full  mt-7   z-10">
-        <section className="max-w-2xl   flex-col    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
+          
+          <section className="max-w-2xl   flex-col    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
           
           <div className="lg:top-20 z-[9]  min-w-[50vw] lg:max-w-[50vw] md:min-w-[50vw] sm:min-w-[90vw] p-0 lg:rounded-xl lg:mt-8">
             {/* attempt 1 */}
             {conversationHistorydata.map((message, index) => {
+              console.log('Historymessage',message);
+              function isJSON(str: string): boolean {
+                try {
+                    JSON.parse(str);
+                } catch (e) {
+                    return false;
+                }
+                return true;
+            }
+              if(isJSON(message.MessageBody) ){
+                return;
+              }
               let productIndex = 0;
               return (
                 <div
@@ -996,7 +1037,7 @@ export default function Page({ params }: { params: Params }) {
                                         </span>
                                       );
                                     })}
-                                    {message.containsProduct &&
+                                   {/*} {message.containsProduct &&
                                       Array.isArray(
                                         productsHistory[0][productIndex]
                                       ) && (
@@ -1005,7 +1046,7 @@ export default function Page({ params }: { params: Params }) {
                                             productsHistory[0][productIndex++]
                                           }
                                         />
-                                      )}
+                                      )}*/}
                                   </div>
                                 )
                               )}
@@ -1013,7 +1054,7 @@ export default function Page({ params }: { params: Params }) {
                           ) : (
                             <div>{message.MessageBody}</div>
                           )}
-                        </div>
+                        </div> 
                       </div>
                     </>
                   ) : (
@@ -1151,7 +1192,7 @@ export default function Page({ params }: { params: Params }) {
             )}
 
             {/* <GeneralLoader />
-<ResearchLoader /> */}
+              <ResearchLoader /> */}
 
             {/* message loader */}
 
@@ -1163,6 +1204,9 @@ export default function Page({ params }: { params: Params }) {
           )} */}
           </div>
         </section>
+        
+
+
         <footer
           className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center  mt-6 p-5 z-[9999] ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"

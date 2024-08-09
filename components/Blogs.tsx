@@ -47,7 +47,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   return (
     <div className="relative px-4">
       <div
-        className="w-14 cursor-pointer absolute z-50 top-[40%] -left-0.5"
+        className="w-12 h-12 cursor-pointer absolute z-50 top-[33.3%] -left-0.5"
         onClick={onPrevClick}
       >
         <Image src={ArrowLeft} alt="arrow-left" />
@@ -56,7 +56,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
         {children}
       </Slider>
       <div
-        className="w-14 cursor-pointer absolute z-50 right-0 top-[40%]"
+        className="w-12 h-12 cursor-pointer absolute z-50 right-0 top-[33.3%]"
         onClick={onNextClick}
       >
         <Image src={ArrowRight} alt="arrow-right" />
@@ -99,12 +99,15 @@ const Blogs: React.FC = () => {
       >
         {blogsContent.map((item, index) => (
           <div className="p-2" key={index}>
-            <div className="bg-[#191919] p-4 rounded-xl">
-              <div className="w-full h-40 uppercase rounded-xl flex justify-center items-center italic text-xl p-4 text-white bg-custom-gradient-cards"></div>
+            <div className="bg-[#191919] p-2 rounded-xl h-32">
               <div className="flex flex-col h-max gap-y-2">
-                <a href={item} target="_blank" rel="noopener noreferrer">
-                  <div className="text-white text-[13px] mt-6 hover:text-[#0C8CE9]">Read blog</div>
+                <a href={item.link} target="_blank"  rel="noopener noreferrer" >
+                  <div className="text-white text-[13px] flex align-top p-1 h-14 mt-0 hover:text-[#0C8CE9]">{item.title}</div>
                 </a>
+                <div className="text-white flex flex-row justify-start items-center mt-2">
+                  <img className="h-6 w-6 p-0.5" src={item.favicon} alt="favicon" />
+                  <div className="text-xs p-1 text-[#767676]">{item.source}</div>
+                </div>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import Navbar from "@/components/shared/Navbar";
 import FooterNav from "@/components/FooterNav";
 import { useContentContext } from "@/ContentContext";
 import Videos from "@/components/Videos";
+import Blogs from "@/components/Blogs";
 interface CustomSliderProps {
   children: ReactNode;
   onPrevClick: () => void;
@@ -118,6 +119,7 @@ export default function ContentComponent() {
         
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos />
+          <Blogs />
         </div>
         
       </div>
