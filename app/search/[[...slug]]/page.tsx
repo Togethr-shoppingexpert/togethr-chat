@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { config } from "../../../constants";
 import Sources from "@/components/Sources";
 import HeroResult from "@/components/HeroResult";
+import Chat from "@/components/Chat";
 import Heart from "../../../public/icons/HeartIcon";
 import HeartFill from "../../../public/icons/HeartFilledIcon";
 import Message from "../../../public/icons/MessageIcon";
@@ -90,7 +91,7 @@ interface Product {
 }
 
 export default function Page({ params }: { params: Params }) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  //const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
@@ -109,10 +110,8 @@ export default function Page({ params }: { params: Params }) {
   const [token, setToken] = useState("");
   const [prevConvId, setPrevConvId] = useState("");
   const [latestMessageIndex, setLatestMessageIndex] = useState(-1);
-  const [conversationHistorydata, setConversationHistorydata] = useState<any[]>(
-    []
-  );
-  const [productsHistory, setProductsHistory] = useState<any[]>([]);
+  //const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
+  //const [productsHistory, setProductsHistory] = useState<any[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
@@ -155,6 +154,9 @@ export default function Page({ params }: { params: Params }) {
     setIsChatStarted,
     setBestProducts,
     setProductInfo,
+    setConversationHistorydata,
+    setMessages,
+    setProductsHistory
     
   } = useContentContext();
 
@@ -532,7 +534,7 @@ export default function Page({ params }: { params: Params }) {
         // if(data.curration===true){
           setCuration(data.curration);
           console.log(data.curration);
-          console.log(curation);
+          console.log('dataCuratiob' ,curation);
         // }
         console.log("Response from backend:", data);
         const bestproductset=false;
@@ -549,12 +551,13 @@ export default function Page({ params }: { params: Params }) {
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
         setCuration(isCurationRequired);
+        
         setPdt(isPdtFlag);
         setCheckedIndices(new Set());
 
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
-
+        console.log('curationforproducts', curation);
         const handleCheckboxChange = (index: unknown) => {
           setCheckedIndices((prev) => {
             const newChecked = new Set(prev);
@@ -581,8 +584,11 @@ export default function Page({ params }: { params: Params }) {
 
         if (!segments&&data.curration==false) {
           const newAiMessage = { sender: "AI", content: ai_response };
-          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-          setLatestMessageIndex(messages.length);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, newAiMessage];
+            setLatestMessageIndex(updatedMessages.length - 1);
+            return updatedMessages;
+          });
         } else {
           // Combine all segments into a single JSX element
           // if (segments && segments.length > 0) {
@@ -650,11 +656,16 @@ export default function Page({ params }: { params: Params }) {
           // Create a single AI message with combined segments
           // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
           // setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-          if(data.curration==false){
-          const newAiMessage = { sender: "AI", content: ai_response };
-          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
+          if (data.curration === false) {
+            const newAiMessage = { sender: "AI", content: ai_response };
+            
+            setMessages((prevMessages) => {
+              const updatedMessages = [...prevMessages, newAiMessage];
+              setLatestMessageIndex(updatedMessages.length - 1); // Set the index based on the updated messages
+              return updatedMessages;
+            });
           }
-          setLatestMessageIndex(messages.length);
+        
           setCheckedIndices(new Set());
         }
 
@@ -750,7 +761,7 @@ export default function Page({ params }: { params: Params }) {
   }, [userMessage]); // Include messageSent in the dependency array
 
   // Call the custom hook to enable smooth auto-scrolling
-  useSmoothScrollIntoView(messagesEndRef, [messages]);
+  //useSmoothScrollIntoView(messagesEndRef, [messages]);
   // Trigger auto-scrolling whenever messages change
 
   //set followupcomponent width
@@ -849,8 +860,8 @@ export default function Page({ params }: { params: Params }) {
           setConversationId(storedConversationId);
           // console.log("products:",products[0][0]);
           console.log("response: ", response);
-          console.log("conversationHistory: ", conversationHistorydata);
-          console.log("producthistory: ", productsHistory);
+          //console.log("conversationHistory: ", conversationHistorydata);
+          //console.log("producthistory: ", productsHistory);
           setConversationId(storedConversationId);
         } catch (error) {
           console.error("Error fetching conversation data:", error);
@@ -936,15 +947,13 @@ export default function Page({ params }: { params: Params }) {
   const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
 
   useEffect(() => {
-    const hasMessages = Array.isArray(messages) && messages.length > 0;
-    const hasFollowups = Array.isArray(followupques) && followupques.length > 0;
-
-    if (hasMessages || hasFollowups) {
+    const hasFollowups = Array.isArray(followup) && followup.length > 0;
+    if (hasFollowups) {
       setShowHeroAndFollowup(true);
     } else {
       setShowHeroAndFollowup(false);
     }
-  }, [messages, followupques]);
+  }, [followup]);
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
       <Navbar mode={isDarkMode ? "dark" : "light"} />
@@ -956,229 +965,86 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
-      <div className="  flex items-center justify-center h-full  mt-7   z-10">
+      <div className=" w-full flex items-center justify-end   z-10">
+        <section className="w-[100%]">
           
-          <section className="max-w-2xl   flex-col    flex items-center justify-center h-full gap-x-6  mb-16 bp-0">
-          
-          <div className="lg:top-20 z-[9]  min-w-[50vw] lg:max-w-[50vw] md:min-w-[50vw] sm:min-w-[90vw] p-0 lg:rounded-xl lg:mt-8">
+          <div className="flex w-full mb-16  h-screent">
+            <div className="fixed right-0 top-0 w-[35%] overflow-y-scroll order-2 products-height">
+            
             {/* attempt 1 */}
-            {conversationHistorydata.map((message, index) => {
-              console.log('Historymessage',message);
-              function isJSON(str: string): boolean {
-                try {
-                    JSON.parse(str);
-                } catch (e) {
-                    return false;
-                }
-                return true;
-            }
-              if(isJSON(message.MessageBody) ){
-                return;
-              }
-              let productIndex = 0;
-              return (
-                <div
-                  key={index}
-                  className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${
-                    message.role === "AI" ? "justify-start" : "justify-end"
-                  }`}
-                >
-                  {/* Render AI messages */}
-                  {message.role === "AI" ? (
-                    <>
-                      <Avatar className="shadow-md z-10">
-                        <AvatarImage
-                          src={`${isDarkMode ? "/icon2.png" : "/favicon.png"}`}
-                        />
-                        <AvatarFallback>bot</AvatarFallback>
-                      </Avatar>
+            <Chat />
 
-                      <div
-                        className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${
-                          isDarkMode
-                            ? "bg-[#3c3b3b] text-white"
-                            : "bg-white text-black"
-                        }`}
-                      >
-                        {/* <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  text-white bg-[#242424] border-[2px] border-[#2e2f2f]`}> */}
+            <footer
+          className={`fixed right-3 bottom-8 lg:bottom-0 w-96 flex justify-center overflow-hidden mt-6 p-5 z-[9999] ${
+            isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
+          } z-10`}
+        >
+          <div
+            className={`flex flex-col w-full lg:w-[100%] ${
+              isDarkMode ? "bg-[#2e2f2f]" : "bg-white"
+            } px-2 rounded-xl z-1200 relative`}
+          >
+            <div className="flex w-[100%]">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+              />
 
-                        {/* Render message content */}
-                        <div className="response-content">
-                          {typeof message.MessageBody === "string" ? (
-                            <div>
-                              {message.MessageBody.split("\n").map(
-                                (
-                                  paragraph: string,
-                                  i: Key | null | undefined
-                                ) => (
-                                  <div key={i}>
-                                    {paragraph.split("\n").map((line, idx) => {
-                                      const boldRegex = /\*\*([^*]*)\*\*/g;
-                                      let parts = line.split(boldRegex);
-                                      parts = parts.filter(Boolean); // Remove empty parts
-
-                                      return (
-                                        <span key={idx}>
-                                          {parts.map((part, index) => {
-                                            return boldRegex.test(
-                                              `**${part}**`
-                                            ) ? (
-                                              <span key={index}>{part}</span>
-                                            ) : (
-                                              <strong
-                                                key={index}
-                                                className="font-bold"
-                                              >
-                                                {part}
-                                              </strong>
-                                            );
-                                          })}
-                                          <br />
-                                        </span>
-                                      );
-                                    })}
-                                   {/*} {message.containsProduct &&
-                                      Array.isArray(
-                                        productsHistory[0][productIndex]
-                                      ) && (
-                                        <ProductCarousel
-                                          products={
-                                            productsHistory[0][productIndex++]
-                                          }
-                                        />
-                                      )}*/}
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          ) : (
-                            <div>{message.MessageBody}</div>
-                          )}
-                        </div> 
-                      </div>
-                    </>
-                  ) : (
-                    // Render user messages
-                    <>
-                      <div className="flex w-max max-w-[75%] flex-col items-center justify-center font-medium  gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
-                        {message.MessageBody}
-                      </div>
-                      <Avatar className="shadow-lg z-10">
-                        <AvatarImage src="/user.png" className="z-10" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </>
-                  )}
+              <button
+                type="button"
+                className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                onClick={() => sendMessage(userMessage)}
+                disabled={!userMessage.trim() || isLoading}
+              >
+                <div className="flex items-center justify-center mb-1 font-bold text-lg">
+                  &gt;
                 </div>
-              );
-            })}
-            {messages.map((message, index) => (
-              <>
-                <div
-                  key={index}
-                  className={`flex flex-row gap-4 mx-1 md:mx-6 my-5 ${
-                    message.sender === "AI" ? "justify-start" : "justify-end"
-                  }`}
-                >
-                  {/* atempt 2 */}
-                  {/* Render AI messages */}
-                  {message.sender === "AI" ? (
-                    <>
-                      <Avatar className="shadow-md z-10">
-                        <AvatarImage
-                          src={`${isDarkMode ? "/icon2.png" : "/favicon.png"}`}
-                        />
-                        <AvatarFallback>bot</AvatarFallback>
-                      </Avatar>
+              </button>
+            </div>
 
-                      <div
-                        className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  ${
-                          isDarkMode
-                            ? "bg-[#3c3b3b] text-white"
-                            : "bg-white text-black"
-                        }`}
-                      >
-                        {/* <div className={`flex w-max max-w-[75%] font-medium flex-col gap-2 rounded-xl  px-3 py-2 text-xs md:text-sm  bg-[#242424] border-[2px] border-[#2e2f2f] text-white`}> */}
-
-                        {typeof message.content === "string" ? (
-                          <div className="response-content">
-                            {message.content.split("\n").map((paragraph, i) => (
-                              <div key={i}>
-                                {paragraph.split("\n").map((line, idx) => {
-                                  const boldRegex = /\*\*([^*]*)\*\*/g;
-                                  let parts = line.split(boldRegex);
-                                  parts = parts.filter(Boolean); // Remove empty parts
-
-                                  return (
-                                    <span key={idx}>
-                                      {parts.map((part, index) => {
-                                        return boldRegex.test(`**${part}**`) ? (
-                                          <span key={index}>{part}</span>
-                                        ) : (
-                                          <strong
-                                            key={index}
-                                            className="font-bold"
-                                          >
-                                            {part}
-                                          </strong>
-                                        );
-                                      })}
-                                      <br />
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div>
-                            {Array.isArray(message.content) &&
-                            message.content.length > 0 ? (
-                              // Render ProductCarousel
-                              <div>{message.content}</div>
-                            ) : (
-                              // Render other types of content
-                              <div>{message.content}</div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    // Render user messages
-                    <>
-                      <div className="flex w-max max-w-[75%] flex-col items-center justify-center font-medium  gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
-                        {message.content}
-                      </div>
-                      <Avatar className="shadow-lg z-10">
-                        <AvatarImage src="/user.png" className="z-10" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </>
-                  )}
-                </div>
-              </>
-            ))}
+            <div
+              className="flex mt-2 overflow-x-scroll whitespace-nowrap"
+              style={{
+                overflowY: "hidden",
+                scrollbarWidth: "thin",
+                width: "100%",
+              }}
+            >
+              {currentoptionvisible &&
+                currentOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${
+                      selectedOptions.includes(option)
+                        ? "bg-[#444545]"
+                        : "bg-[#202222]"
+                    }`}
+                    onClick={() => handleOptionClick(option)}
+                    // style={{ flex: "0 0 calc(31.5% - 10px)" }}
+                  >
+                    {option && option.length > 30
+                      ? option.slice(0, 30) + "..."
+                      : option}
+                  </div>
+                ))}
+            </div>
+          </div>
+            </footer>
+           
+            </div>
+            <div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             {isLoading && !curation && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
                 <GeneralLoader mode={isDarkMode ? "dark" : "light"} />
               </div>
             )}
-            {/* { productArray.length > 0 && (
-              <ProductCarousel products={productArray} />
-            )} */}
             <HeroResult />
             <div ref={messagesEndRef} />
             {followupSourcesVisible && followup && followup.length > 0 && (
               <div>
-                {/*                 
-              <Sources containerWidth={containerWidth}
-              followup={followupques}
-              isOpen={isOpen}
-              setUserMessage={setUserMessage}
-              sendMessage={sendMessage}
-              mode={isDarkMode?"dark":"light"}
-              setIsOpen={setIsOpen}/> */}
                 <Followup
                   containerWidth={containerWidth}
                   followup={followupques}
@@ -1190,24 +1056,12 @@ export default function Page({ params }: { params: Params }) {
                 />
               </div>
             )}
-
-            {/* <GeneralLoader />
-              <ResearchLoader /> */}
-
-            {/* message loader */}
-
-            {/* <ResearchComponent/> */}
-            {/* {isLoadingResearch && isLoading && (
-            <div className="flex items-center space-x-4 mx-1 md:mx-6">
-              <ResearchLoader />
             </div>
-          )} */}
           </div>
         </section>
         
 
-
-        <footer
+     {/*   <footer
           className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center  mt-6 p-5 z-[9999] ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
           } z-10`}
@@ -1265,7 +1119,7 @@ export default function Page({ params }: { params: Params }) {
                 ))}
             </div>
           </div>
-        </footer>
+        </footer>*/}
       </div>
       <FooterNav />
     </main>

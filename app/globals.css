@@ -248,3 +248,8 @@ input:checked + .slider:before {
   background: #888; /* Adjust color as needed */
   border-radius: 5px;
 }
+
+.products-height{
+height: 80%;
+padding-top: 60px;
+}

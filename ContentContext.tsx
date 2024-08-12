@@ -1,6 +1,11 @@
 "use client"
 import React, { createContext, useState, useContext, ReactNode, FC } from 'react';
 
+interface Message {
+  sender: string;
+  // content: string;
+  content: JSX.Element | string | null;
+}
 // Define the shape of your context data
 interface ContentContextData {
   videoContent: any[];
@@ -15,6 +20,13 @@ interface ContentContextData {
   setBestProducts:(bestproducts:any[])=>void;
   productInfo:any[];
   setProductInfo:(productInfo:any[])=>void;
+  conversationHistorydata: any[];
+  setConversationHistorydata: (conversationHistory: any[]) => void;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>; // Updated here
+  productsHistory: any[];
+  setProductsHistory: (productsHistory: any[]) => void;
+
 }
 
 // Create the context with default values
@@ -36,9 +48,30 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isChatStarted,setIsChatStarted]=useState(false);
   const [bestProducts,setBestProducts]=useState<any[]>([]);
   const [productInfo,setProductInfo]=useState<any[]>([]);
+  const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [productsHistory, setProductsHistory] = useState<any[]>([]);
 
   return (
-    <ContentContext.Provider value={{ videoContent, blogsContent, buyingGuide, setVideoContent, setBlogsContent, setBuyingGuide,isChatStarted,setIsChatStarted ,bestProducts,setBestProducts,productInfo,setProductInfo}}>
+    <ContentContext.Provider value={{ videoContent, 
+                                      blogsContent, 
+                                      buyingGuide, 
+                                      setVideoContent, 
+                                      setBlogsContent, 
+                                      setBuyingGuide,
+                                      isChatStarted,
+                                      setIsChatStarted ,
+                                      bestProducts,
+                                      setBestProducts,
+                                      productInfo,
+                                      setProductInfo,
+                                      conversationHistorydata,
+                                      setConversationHistorydata,
+                                      messages,
+                                      setMessages,
+                                      productsHistory,
+                                      setProductsHistory,
+                                    }}>
       {children}
     </ContentContext.Provider>
   );

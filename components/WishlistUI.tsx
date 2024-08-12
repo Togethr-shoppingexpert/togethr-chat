@@ -169,7 +169,7 @@ export default function WishlistUI() {
   return (
     <>
       {console.log("bestproductswishlist", bestProducts)}
-      <div className="flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
+      <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
         {bestProducts.map((item, index) => {
           const productPrice = getProductPrice(item.product_id);
           const imageurl=getImageUrl(item.product_id);

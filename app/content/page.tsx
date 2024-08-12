@@ -12,6 +12,7 @@ import FooterNav from "@/components/FooterNav";
 import { useContentContext } from "@/ContentContext";
 import Videos from "@/components/Videos";
 import Blogs from "@/components/Blogs";
+import Chat from "@/components/Chat";
 interface CustomSliderProps {
   children: ReactNode;
   onPrevClick: () => void;
@@ -116,7 +117,7 @@ export default function ContentComponent() {
     <>
      <Navbar mode="dark" />
       <div className="bg-[#202222] px-6 lg:px-[6%]">
-        
+         <Chat />
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos />
           <Blogs />
