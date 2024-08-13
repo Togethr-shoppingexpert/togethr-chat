@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useState, useContext, ReactNode, FC } from 'react';
+import React, { createContext, useState, useContext, ReactNode, FC, SetStateAction } from 'react';
 
 interface Message {
   sender: string;
@@ -26,7 +26,16 @@ interface ContentContextData {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>; // Updated here
   productsHistory: any[];
   setProductsHistory: (productsHistory: any[]) => void;
-
+  isLoading:boolean;
+  setIsLoading: (started: boolean) => void;
+  userMessage:string;
+  setUserMessage: (userMessage: string) => void;
+  currentoptionvisible:boolean;
+  setCurrentoptionvisible: (started: boolean) => void;
+  curation:boolean;
+  setCuration: (started: boolean) => void;
+  currentOptions:string[];
+  setCurrentOptions:(currentoptions:SetStateAction<string[]>)=>void;
 }
 
 // Create the context with default values
@@ -51,6 +60,11 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [productsHistory, setProductsHistory] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userMessage, setUserMessage] = useState("");
+  const [currentoptionvisible, setCurrentoptionvisible] = useState(false);
+  const [curation, setCuration] = useState(false);
+  const [currentOptions, setCurrentOptions] = useState<string[]>([]);
 
   return (
     <ContentContext.Provider value={{ videoContent, 
@@ -71,6 +85,16 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       setMessages,
                                       productsHistory,
                                       setProductsHistory,
+                                      isLoading,
+                                      setIsLoading,
+                                      userMessage,
+                                      setUserMessage,
+                                      currentoptionvisible,
+                                      setCurrentoptionvisible,
+                                      curation,
+                                      setCuration,
+                                      currentOptions,
+                                      setCurrentOptions,
                                     }}>
       {children}
     </ContentContext.Provider>

@@ -92,15 +92,15 @@ interface Product {
 
 export default function Page({ params }: { params: Params }) {
   //const [messages, setMessages] = useState<Message[]>([]);
-  const [userMessage, setUserMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  //const [userMessage, setUserMessage] = useState("");
+  //const [isLoading, setIsLoading] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
   const [isLoadingResearch, setIsLoadingResearch] = useState(false);
   const [followup, setFollowup] = useState([]);
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
-  const [curation, setCuration] = useState(false);
+  //const [curation, setCuration] = useState(false);
   const [pdt, setPdt] = useState(false);
   const [nextsearch, setNextSearch] = useState(false);
   const [convnId, setConversationId] = useState("");
@@ -126,9 +126,9 @@ export default function Page({ params }: { params: Params }) {
   const [checkedIndices, setCheckedIndices] = useState(new Set());
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [currentOptions, setCurrentOptions] = useState<string[]>([]);
+  //const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [currentoptionvisible, setCurrentoptionvisible] = useState(false);
+  //const [currentoptionvisible, setCurrentoptionvisible] = useState(false);
   const handleNewQuestion = (
     question: SetStateAction<string>,
     options: SetStateAction<string[]>
@@ -156,8 +156,14 @@ export default function Page({ params }: { params: Params }) {
     setProductInfo,
     setConversationHistorydata,
     setMessages,
-    setProductsHistory
-    
+    setProductsHistory,
+    setIsLoading,
+    setUserMessage,
+    setCurrentoptionvisible,
+    setCuration,
+    userMessage,
+    currentOptions,
+    setCurrentOptions,
   } = useContentContext();
 
 
@@ -204,8 +210,11 @@ export default function Page({ params }: { params: Params }) {
                   prices: product.prices,
                   media: product.media,
                   sellers_results: product.sellers_results,
+                  link: product.sellers_results.online_sellers[0].link ,
                 })
               );
+
+              console.log('formattedProducts', formattedProducts);
 
               const productAiMessage: Message = {
                 sender: "AI",
@@ -369,7 +378,7 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []); // Empty dependency array to run once on component mount
 
-  const sendMessage = async (message: string) => {
+   const sendMessage = async (message: string) => {
     setIsLoading(true);
     setFollowupSourcesVisible(false);
     setCheckedIndices(new Set());
@@ -534,7 +543,7 @@ export default function Page({ params }: { params: Params }) {
         // if(data.curration===true){
           setCuration(data.curration);
           console.log(data.curration);
-          console.log('dataCuratiob' ,curation);
+          //console.log('dataCuratiob' ,curation);
         // }
         console.log("Response from backend:", data);
         const bestproductset=false;
@@ -557,7 +566,7 @@ export default function Page({ params }: { params: Params }) {
 
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
-        console.log('curationforproducts', curation);
+        //console.log('curationforproducts', curation);
         const handleCheckboxChange = (index: unknown) => {
           setCheckedIndices((prev) => {
             const newChecked = new Set(prev);
@@ -708,6 +717,7 @@ export default function Page({ params }: { params: Params }) {
       setUserMessage("");
     }
   };
+
 
   useEffect(() => {
     // Set options text in the input box when options change
@@ -916,7 +926,7 @@ export default function Page({ params }: { params: Params }) {
       fetchGuestAuthSignup();
     }
   }, []);
-  const handleOptionClick = (option: string) => {
+ {/* const handleOptionClick = (option: string) => {
     setSelectedOptions((prevOptions) => {
       if (prevOptions.includes(option)) {
         // Deselect the option
@@ -930,19 +940,19 @@ export default function Page({ params }: { params: Params }) {
         return updatedOptions;
       }
     });
-  };
+  };*/}
 
   // useEffect(() => {
   //   console.log("Best Products Ref Updated:", bestProductsRef.current);
   // }, [bestProductsRef.current]);
 
-  useEffect(() => {
+{/*  useEffect(() => {
     // Logic to handle the clicked options
     console.log("Selected Options:", selectedOptions);
 
     // Update the currentOptions based on selectedOptions or any other logic
     // setCurrentOptions(selectedOptions);
-  }, [selectedOptions]);
+  }, [selectedOptions]); */}
 
   const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
 
@@ -972,7 +982,13 @@ export default function Page({ params }: { params: Params }) {
             <div className="fixed right-0 top-0 w-[35%] overflow-y-scroll order-2 products-height">
             
             {/* attempt 1 */}
-            <Chat />
+            <Chat sendMessage={sendMessage} />
+
+          {/*  {isLoading && !curation && (
+              <div className="flex items-center space-x-4 mx-1 md:mx-6">
+                <GeneralLoader mode={isDarkMode ? "dark" : "light"} />
+              </div>
+            )}
 
             <footer
           className={`fixed right-3 bottom-8 lg:bottom-0 w-96 flex justify-center overflow-hidden mt-6 p-5 z-[9999] ${
@@ -1032,15 +1048,11 @@ export default function Page({ params }: { params: Params }) {
                 ))}
             </div>
           </div>
-            </footer>
+            </footer>*/}
            
             </div>
             <div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
-            {isLoading && !curation && (
-              <div className="flex items-center space-x-4 mx-1 md:mx-6">
-                <GeneralLoader mode={isDarkMode ? "dark" : "light"} />
-              </div>
-            )}
+            
             <HeroResult />
             <div ref={messagesEndRef} />
             {followupSourcesVisible && followup && followup.length > 0 && (

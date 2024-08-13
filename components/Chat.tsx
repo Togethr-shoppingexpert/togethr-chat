@@ -1,14 +1,66 @@
-import React, { Key } from "react";
+import React, { Key, useState,useEffect, SetStateAction } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import ProductCarousel from "./ProductCarousel";
+import GeneralLoader from "./shared/GeneralLoader";
 import { useContentContext } from "@/ContentContext";
 
-export default function Chat() {
-  const { conversationHistorydata, messages, productsHistory } = useContentContext();
+
+export default function Chat({ sendMessage }) {
+  const { conversationHistorydata, 
+          messages, 
+          productsHistory, 
+          isLoading, 
+          userMessage, 
+          currentoptionvisible,
+          curation,
+          setUserMessage,
+          currentOptions,
+        } = useContentContext();
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const handleClick = () => {
+    sendMessage(userMessage);
+  };
+
+
+  useEffect(() => {
+    // Set options text in the input box when options change
+    // setUserMessage(currentOptions.join(', '));
+    setSelectedOptions([]);
+    setUserMessage("");
+  }, [currentOptions]);
+
+  const handleOptionClick = (option: string) => {
+    setSelectedOptions((prevOptions) => {
+      if (prevOptions.includes(option)) {
+        // Deselect the option
+        const updatedOptions = prevOptions.filter((item) => item !== option);
+        setUserMessage(updatedOptions.join(" ").trim());
+        return updatedOptions;
+      } else {
+        // Select the option
+        const updatedOptions = [...prevOptions, option];
+        setUserMessage(updatedOptions.join(" ").trim());
+        return updatedOptions;
+      }
+    });
+  };
+
+  useEffect(() => {
+    // Logic to handle the clicked options
+    console.log("Selected Options:", selectedOptions);
+
+    // Update the currentOptions based on selectedOptions or any other logic
+    // setCurrentOptions(selectedOptions);
+  }, [selectedOptions]);
 
   return (
     <div className="w-[100%] h-full overflow-y-scroll">
-        {conversationHistorydata.map((message, index) => {
+      <div>
+      { false &&
+          <>
+      {conversationHistorydata.map((message, index) => {
           console.log('Historymessage', message);
           function isJSON(str: string): boolean {
             try {
@@ -85,7 +137,7 @@ export default function Chat() {
               )}
             </div>
           );
-        })}
+        })}  </>}
         {messages.map((message, index) => (
           <div
             key={index}
@@ -153,6 +205,67 @@ export default function Chat() {
             )}
           </div>
         ))}
+       </div>
+       {isLoading && !curation && (
+          <div className="flex items-center space-x-4 mx-1 md:mx-6">
+            <GeneralLoader mode="dark" />
+          </div>
+        )}
+        <footer
+          className={`fixed right-3 bottom-8 lg:bottom-0 w-96 flex justify-center overflow-hidden mt-6 p-5 z-[9999]  bg-[#202222]`}
+        >
+          <div
+            className={`flex flex-col w-full lg:w-[100%] bg-[#2e2f2f] px-2 rounded-xl z-1200 relative`}
+          >
+            <div className="flex w-[100%]">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                onClick={handleClick}
+                disabled={!userMessage.trim() || isLoading}
+              >
+                <div className="flex items-center justify-center mb-1 font-bold text-lg">
+                  &gt;
+                </div>
+              </button>
+            </div>
+
+            <div
+              className="flex mt-2 overflow-x-scroll whitespace-nowrap"
+              style={{
+                overflowY: "hidden",
+                scrollbarWidth: "thin",
+                width: "100%",
+              }}
+            >
+              {currentoptionvisible &&
+                currentOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${
+                      selectedOptions.includes(option)
+                        ? "bg-[#444545]"
+                        : "bg-[#202222]"
+                    }`}
+                    onClick={() => handleOptionClick(option)}
+                    // style={{ flex: "0 0 calc(31.5% - 10px)" }}
+                  >
+                    {option && option.length > 30
+                      ? option.slice(0, 30) + "..."
+                      : option}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </footer>
     </div>
   );
 }

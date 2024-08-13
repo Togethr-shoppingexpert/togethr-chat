@@ -111,13 +111,13 @@ export default function ContentComponent() {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, quia!",
     },
   ];
-  const {videoContent}=useContentContext();
+  //const {videoContent}=useContentContext();
 
   return (
     <>
      <Navbar mode="dark" />
       <div className="bg-[#202222] px-6 lg:px-[6%]">
-         <Chat />
+          <Chat />
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos />
           <Blogs />
