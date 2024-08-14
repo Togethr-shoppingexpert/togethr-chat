@@ -44,7 +44,7 @@ export default function page() {
                     followup={followupques}
                     isOpen={isOpen}
                     setUserMessage={setUserMessage}
-                    sendMessage={sendMessage}
+                    sendMessage={sendMessage} 
                     setIsOpen={setIsOpen}
                     mode="dark" 
                   />

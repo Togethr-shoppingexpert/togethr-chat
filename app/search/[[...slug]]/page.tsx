@@ -32,6 +32,8 @@ import { config } from "../../../constants";
 import Sources from "@/components/Sources";
 import HeroResult from "@/components/HeroResult";
 import Chat from "@/components/Chat";
+import Layout from "@/components/layout";
+import Discover from "../../discover/discover";
 import Heart from "../../../public/icons/HeartIcon";
 import HeartFill from "../../../public/icons/HeartFilledIcon";
 import Message from "../../../public/icons/MessageIcon";
@@ -122,7 +124,7 @@ export default function Page({ params }: { params: Params }) {
   const router = useRouter();
 
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [checkedIndices, setCheckedIndices] = useState(new Set());
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [currentQuestion, setCurrentQuestion] = useState("");
@@ -378,7 +380,7 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []); // Empty dependency array to run once on component mount
 
-   const sendMessage = async (message: string) => {
+  const sendMessage = async (message: string) => {
     setIsLoading(true);
     setFollowupSourcesVisible(false);
     setCheckedIndices(new Set());
@@ -966,8 +968,8 @@ export default function Page({ params }: { params: Params }) {
   }, [followup]);
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
-      <Navbar mode={isDarkMode ? "dark" : "light"} />
-      {/* 
+     {/* <Navbar mode={isDarkMode ? "dark" : "light"} />
+     
         <div className=" fixed top-[25px] right-4 z-[500]">
           <label className="switch">
             <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
@@ -975,14 +977,15 @@ export default function Page({ params }: { params: Params }) {
           </label>
         </div> 
      */}
+     
       <div className=" w-full flex items-center justify-end   z-10">
         <section className="w-[100%]">
           
           <div className="flex w-full mb-16  h-screent">
-            <div className="fixed right-0 top-0 w-[35%] overflow-y-scroll order-2 products-height">
+             {/*<div className="fixed right-0 top-0 w-[370px] overflow-y-scroll order-2  products-height">
             
-            {/* attempt 1 */}
-            <Chat sendMessage={sendMessage} />
+            attempt 1 
+            <Chat />
 
           {/*  {isLoading && !curation && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
@@ -1048,32 +1051,35 @@ export default function Page({ params }: { params: Params }) {
                 ))}
             </div>
           </div>
-            </footer>*/}
-           
-            </div>
-            <div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
+            </footer>
+
+            </div>*/}
+          <Layout>
+            <Discover />
+            {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
-            <HeroResult />
-            <div ref={messagesEndRef} />
-            {followupSourcesVisible && followup && followup.length > 0 && (
-              <div>
-                <Followup
-                  containerWidth={containerWidth}
-                  followup={followupques}
-                  isOpen={isOpen}
-                  setUserMessage={setUserMessage}
-                  sendMessage={sendMessage}
-                  setIsOpen={setIsOpen}
-                  mode={isDarkMode ? "dark" : "light"}
-                />
-              </div>
-            )}
-            </div>
+              <HeroResult />
+              <div ref={messagesEndRef} />
+              {followupSourcesVisible && followup && followup.length > 0 && (
+                <div>
+                  <Followup
+                    containerWidth={containerWidth}
+                    followup={followupques}
+                    isOpen={isOpen}
+                    setUserMessage={setUserMessage}
+                    sendMessage={sendMessage}
+                    setIsOpen={setIsOpen}
+                    mode={isDarkMode ? "dark" : "light"}
+                  />
+                </div>
+              )}
+            </div>*/}
+          </Layout>
           </div>
         </section>
         
 
-     {/*   <footer
+        {/*   <footer
           className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center  mt-6 p-5 z-[9999] ${
             isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
           } z-10`}
@@ -1133,7 +1139,9 @@ export default function Page({ params }: { params: Params }) {
           </div>
         </footer>*/}
       </div>
+      
       <FooterNav />
+      
     </main>
   );
 }

@@ -250,6 +250,7 @@ input:checked + .slider:before {
 }
 
 .products-height{
-height: 80%;
+height: 100%;
 padding-top: 60px;
 }
+

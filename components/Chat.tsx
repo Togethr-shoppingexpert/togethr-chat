@@ -1,11 +1,12 @@
-import React, { Key, useState,useEffect, SetStateAction } from "react";
+import React, { Key, useState,useEffect, SetStateAction, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import useSmoothScrollIntoView from "@/hooks/autoscroll";
 import ProductCarousel from "./ProductCarousel";
 import GeneralLoader from "./shared/GeneralLoader";
 import { useContentContext } from "@/ContentContext";
 
 
-export default function Chat({ sendMessage }) {
+export default function Chat() {
   const { conversationHistorydata, 
           messages, 
           productsHistory, 
@@ -22,7 +23,8 @@ export default function Chat({ sendMessage }) {
   const handleClick = () => {
     sendMessage(userMessage);
   };
-
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useSmoothScrollIntoView(messagesEndRef, [messages]);
 
   useEffect(() => {
     // Set options text in the input box when options change
@@ -56,7 +58,7 @@ export default function Chat({ sendMessage }) {
   }, [selectedOptions]);
 
   return (
-    <div className="w-[100%] h-full overflow-y-scroll">
+    <div className="w-[100%] h-full overflow-y-scroll pb-[100px]">
       <div>
       { false &&
           <>
@@ -205,14 +207,14 @@ export default function Chat({ sendMessage }) {
             )}
           </div>
         ))}
-       </div>
+       
        {isLoading && !curation && (
           <div className="flex items-center space-x-4 mx-1 md:mx-6">
             <GeneralLoader mode="dark" />
           </div>
-        )}
+        )}</div>
         <footer
-          className={`fixed right-3 bottom-8 lg:bottom-0 w-96 flex justify-center overflow-hidden mt-6 p-5 z-[9999]  bg-[#202222]`}
+          className={` right-0 bottom-0 absolute w-[100%] h-[100px] flex justify-center overflow-hidden mt-5 p-3 z-[9999]  bg-[#202222]`}
         >
           <div
             className={`flex flex-col w-full lg:w-[100%] bg-[#2e2f2f] px-2 rounded-xl z-1200 relative`}

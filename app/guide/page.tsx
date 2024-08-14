@@ -18,7 +18,7 @@ export default function Page() {
   
   return (
     <>
-      <Navbar mode="dark" />
+      <div>This is buying guide</div>
       <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10 ">
         <div className="text-white text-left max-w-[60vw] mb-6">
           {formattedBuyingGuide}

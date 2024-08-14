@@ -115,9 +115,9 @@ export default function ContentComponent() {
 
   return (
     <>
-     <Navbar mode="dark" />
+     <div>This is Content</div>
       <div className="bg-[#202222] px-6 lg:px-[6%]">
-          <Chat />
+        
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos />
           <Blogs />

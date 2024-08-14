@@ -36,6 +36,12 @@ interface ContentContextData {
   setCuration: (started: boolean) => void;
   currentOptions:string[];
   setCurrentOptions:(currentoptions:SetStateAction<string[]>)=>void;
+  followupSourcesVisible:boolean;
+  setFollowupSourcesVisible: (started: boolean) => void;
+  followup:any[];
+  setFollowup:(followup:SetStateAction<never[]>)=>void;
+  isOpen:boolean;
+  setIsOpen: (started: boolean) => void;
 }
 
 // Create the context with default values
@@ -65,6 +71,9 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [currentoptionvisible, setCurrentoptionvisible] = useState(false);
   const [curation, setCuration] = useState(false);
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
+  const [followupSourcesVisible, setFollowupSourcesVisible] = useState(false);
+  const [followup, setFollowup] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <ContentContext.Provider value={{ videoContent, 
@@ -95,6 +104,12 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       setCuration,
                                       currentOptions,
                                       setCurrentOptions,
+                                      followupSourcesVisible,
+                                      setFollowupSourcesVisible,
+                                      followup,
+                                      setFollowup,
+                                      isOpen,
+                                      setIsOpen,
                                     }}>
       {children}
     </ContentContext.Provider>
