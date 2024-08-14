@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ mode }) => {
   };
 
   return (
-    <nav className={`sticky left-0 top-0 z-50 ${mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"}`}>
+    <nav className={`sticky left-0 top-0 z-[999999999999999999999999] ${mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"}`}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Website Logo */}

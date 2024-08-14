@@ -22,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
 import useSmoothScrollIntoView from "@/hooks/autoscroll";
 import Followup from "@/components/Followup";
+import HeroResult from "@/components/HeroResult";
 import { ResearchComponent } from "@/components/ResearchComponent";
 import ResearchLoader from "@/components/shared/ResearchLoader";
 import GeneralLoader from "@/components/shared/GeneralLoader";
@@ -29,6 +30,8 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { config } from "../../../constants";
 import Sources from "@/components/Sources";
+import { useContentContext } from "@/ContentContext";
+import WishlistUI from "@/components/WishlistUI";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 let followupques: [];
@@ -51,6 +54,20 @@ interface Product {
   prices: number[];
   media: { link: string }[];
   sellers_results: { online_sellers: { link: string }[] };
+}
+
+interface BlogContent {
+  title: string;
+  link: string;
+  favicon: string;
+  source: string;
+}
+
+interface VideoContent {
+  link: string;
+  title: string;
+  description: string;
+  length: number;
 }
 
 const item = {
@@ -92,150 +109,48 @@ export default function Page({ params }: { params: Params }) {
   const router = useRouter();
 
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [checkedIndices, setCheckedIndices] = useState(new Set());
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [currentQuestion, setCurrentQuestion] = useState('');
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [currentoptionvisible,setCurrentoptionvisible]=useState(false);
-  // const handleNewQuestion = (question: SetStateAction<string>, options: SetStateAction<string[]>) => {
-  //   setCurrentQuestion(question);
-  //   setCurrentOptions(options);
-  // };
 
-  // const handleOptionClick = (option: string) => {
-  //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
-  // };
-  // const WebSocketSingleton = (() => {
-  //   let instance: WebSocket | null = null;
-  //   // Callback function to update loading state
-  //   let updateLoadingStateCallback: ((isLoading: boolean) => void) | null =
-  //     null;
+  const {
+    setVideoContent,
+    setBlogsContent,
+    setBuyingGuide,
+    setIsChatStarted,
+    setBestProducts,
+    setProductInfo,
+    
+  } = useContentContext();
 
-  //   // Function to create WebSocket instance
-  //   function createInstance(id: string) {
-  //     const ws = new WebSocket(`wss://${API_ENDPOINT}/ws/${id}`);
-  //     // WebSocket setup
-  //     ws.onopen = (event) => {
-  //       console.log("LOG:: Connected ", event);
-  //     };
-
-  //     ws.onclose = (event) => {
-  //       console.log("LOG:: Closed ", event);
-  //     };
-
-  //     ws.onmessage = (event) => {
-  //       console.log("LOG:: onMessage ", event);
-  //       console.log("event : ", event.data);
-  //       const eventData = JSON.parse(event.data);
-  //       console.log("eventdatatype:", eventData.type);
-      
-  //       if (updateLoadingStateCallback && eventData) {
-  //         if (eventData.type === "research_flag") {
-  //           updateLoadingStateCallback(true);
-  //         } else if (eventData.data === "Preparing Response") {
-  //           updateLoadingStateCallback(false);
-  //         } else if (eventData.type === "follow_up_questions") {
-  //           let messages = eventData.data;
-  //           followupques = messages;
-  //           setFollowup(messages);
-  //           setFollowupSourcesVisible(true);
-      
-  //         } else if (eventData.type === "product information") {
-  //           setTimeout(() => {
-  //             let ques = eventData.data;
-  //             const formattedProducts: Product[] = eventData.data.map(
-  //               (product: any) => ({
-  //                 title: product.title,
-  //                 rating: product.rating,
-  //                 prices: product.prices,
-  //                 media: product.media,
-  //                 sellers_results: product.sellers_results,
-  //               })
-  //             );
-      
-  //             const productAiMessage: Message = {
-  //               sender: "AI",
-  //               content: <ProductCarousel products={formattedProducts} />,
-  //             };
-  //             setMessages((prevMessages) => [
-  //               ...prevMessages,
-  //               productAiMessage,
-  //             ]);
-  //             setProductArray([]);
-  //             setCuration(false);
-  //             console.log("followupques: ", followup);
-  //             console.log("followupques: ", followupques);
-  //             setProductArray(ques);
-  //             setCuration(false);
-  //             console.log("setproductarrayworked: ", productArray);
-      
-  //           }, 2000);
-      
-  //         } else if (eventData.type === "segments") {
-  //           const { data } = eventData;
-  //           if (data && data.length > 0) {
-  //             const questionSegment = data.find((segment: { tag: string; }) => segment.tag === "q");
-  //             const optionsSegments = data.filter(
-  //               (segment: { tag: string; }) => segment.tag === "o"
-  //             );
-      
-  //             if (questionSegment && optionsSegments.length > 0) {
-  //               const question = questionSegment.value;
-  //               const options = optionsSegments.map((segment: { value: any; }) => segment.value);
-  //               setCurrentoptionvisible(true);
-  //               setCurrentQuestion(question);
-  //               setCurrentOptions(options);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     };
-      
-
-  //     ws.onerror = (event) => {
-  //       console.log("LOG:: Error", event);
-  //     };
-
-  //     return ws;
-  //   }
-
-  //   return {
-  //     getInstance: (id: string, callback: (isLoading: boolean) => void) => {
-  //       // Set the loading state update callback
-  //       updateLoadingStateCallback = callback;
-
-  //       if (!instance) {
-  //         instance = createInstance(id);
-  //       }
-  //       return instance;
-  //     },
-  //   };
-  // })();
-  
   const WebSocketSingleton = (() => {
     let instance: WebSocket | null = null;
-    let updateLoadingStateCallback: ((isLoading: boolean) => void) | null = null;
-    let isConnected = false;
-  
+    // Callback function to update loading state
+    let updateLoadingStateCallback: ((isLoading: boolean) => void) | null =
+      null;
+
+    // Function to create WebSocket instance
     function createInstance(id: string) {
       const ws = new WebSocket(`wss://${API_ENDPOINT}/ws/${id}`);
-  
+      // WebSocket setup
       ws.onopen = (event) => {
         console.log("LOG:: Connected ", event);
-        isConnected = true;
+        let isConnected = true;
       };
-  
+
       ws.onclose = (event) => {
         console.log("LOG:: Closed ", event);
-        isConnected = false;
-        instance = null;  // Clear the instance on close
       };
-  
+
       ws.onmessage = (event) => {
         console.log("LOG:: onMessage ", event);
         const eventData = JSON.parse(event.data);
+        console.log("eventdatatype:", eventData.type);
+
         if (updateLoadingStateCallback && eventData) {
           if (eventData.type === "research_flag") {
             updateLoadingStateCallback(true);
@@ -255,9 +170,12 @@ export default function Page({ params }: { params: Params }) {
                   prices: product.prices,
                   media: product.media,
                   sellers_results: product.sellers_results,
+                  link: product.sellers_results.online_sellers[0].link ,
                 })
               );
-  
+
+              console.log('formattedProducts', formattedProducts);
+
               const productAiMessage: Message = {
                 sender: "AI",
                 content: <ProductCarousel products={formattedProducts} />,
@@ -270,43 +188,69 @@ export default function Page({ params }: { params: Params }) {
               setCuration(false);
               setProductArray(eventData.data);
               setCuration(false);
+              console.log("setproductarrayworked: ", productArray);
             }, 2000);
           } else if (eventData.type === "segments") {
             const { data } = eventData;
             if (data && data.length > 0) {
-              const questionSegment = data.find((segment: { tag: string }) => segment.tag === "q");
+              const questionSegment = data.find(
+                (segment: { tag: string }) => segment.tag === "q"
+              );
               const optionsSegments = data.filter(
                 (segment: { tag: string }) => segment.tag === "o"
               );
-  
-              if(optionsSegments&&optionsSegments.length>0){
-                const options = optionsSegments.map((segment: { value: any }) => segment.value);
+
+              if (questionSegment && optionsSegments.length > 0) {
+                const question = questionSegment.value;
+                const options = optionsSegments.map(
+                  (segment: { value: any }) => segment.value
+                );
                 setCurrentoptionvisible(true);
                 setCurrentOptions(options);
               }
-              if (questionSegment&&questionSegment.length>0) {
-                const question = questionSegment.value;
-                setCurrentQuestion(question);
-              }
             }
+          }
+          else if (eventData.type === "discover_article_content") {
+            console.log("blog_content", eventData.data);
+            const UpdatedBlogContent = eventData.data.map((blog: any) => ({
+              link: blog.link,
+              title: blog.title, 
+              favicon: blog.favicon,
+              source: blog.source,
+            }));
+            console.log('data',UpdatedBlogContent)
+            setBlogsContent(UpdatedBlogContent);
+          } else if (eventData.type === "buying_guide") {
+            console.log("buying_guide", eventData.text);
+            setBuyingGuide(eventData.text);
+          } else if (eventData.type === "discover_video_content") {
+            console.log("video_content", eventData.links);
+            const UpdatedVideoContent: VideoContent[] = eventData.links.map((video: any) => ({
+              link: video.link,
+              title: video.title, 
+              description: video.description, 
+              length: video.length,
+            }));
+            setVideoContent(UpdatedVideoContent);
+          } else if(eventData.type==="product_information"){
+              console.log("product_Information",eventData.data);
+              setProductInfo(eventData.data);
           }
         }
       };
-  
+
       ws.onerror = (event) => {
         console.log("LOG:: Error", event);
-        isConnected = false;
-        instance = null;  // Clear the instance on error
       };
-  
+
       return ws;
     }
-  
+
     return {
       getInstance: (id: string, callback: (isLoading: boolean) => void) => {
         updateLoadingStateCallback = callback;
-  
-        if (!instance || !isConnected) {
+
+        if (!instance) {
           instance = createInstance(id);
         }
         return instance;
@@ -413,7 +357,6 @@ export default function Page({ params }: { params: Params }) {
     setUserMessage("");
     setCheckedIndices(new Set());
 
-
     // try {
     //   const response = await fetch(
     //     `https://${API_ENDPOINT}/api/WebChatbot/message`,
@@ -464,8 +407,6 @@ export default function Page({ params }: { params: Params }) {
     //         //     }),
     //         //   }
     //         // );
-
-
 
     //       //   if (productArray&&productArray.length>0) {
     //       //     // const productData = await productResponse.json();
@@ -529,7 +470,7 @@ export default function Page({ params }: { params: Params }) {
     // } finally {
     //   setIsLoading(false);
     // }
-    
+
     try {
       const response = await fetch(
         `https://${API_ENDPOINT}/api/WebChatbot/message`,
@@ -545,25 +486,38 @@ export default function Page({ params }: { params: Params }) {
           }),
         }
       );
-    
+
       // Handle response
       if (response.ok) {
+        
         const data = await response.json();
+        // if(data.curration===true){
+          setCuration(data.curration);
+          console.log(data.curration);
+          //console.log('dataCuratiob' ,curation);
+        // }
         console.log("Response from backend:", data);
-    
-        const segments = data?.segments; // Assuming segments is part of the response
-        {segments&&console.log("Segments:", segments);
-                }        // currentOptions(segments)
+        const bestproductset=false;
+        const segments = data.segments; // Assuming segments is part of the response
+        console.log("Segments:", segments);
         const ai_response = data.AI_Response;
+        if(data.curration){
+          setBestProducts(JSON.parse(ai_response));
+        }
+        // console.log("bestproduct: ",bestProductsRef.current);
+        console.log("ai_response: ",ai_response);
+        // console.log("bestproducts",bestProducts);
+
         const isCurationRequired = data.curration; // Corrected spelling
         const isPdtFlag = data.productFlag;
         setCuration(isCurationRequired);
+        
         setPdt(isPdtFlag);
         setCheckedIndices(new Set());
-    
+
         console.log("Is Curation Required:", isCurationRequired);
         console.log("Is Product Flag:", isPdtFlag);
-    
+        //console.log('curationforproducts', curation);
         const handleCheckboxChange = (index: unknown) => {
           setCheckedIndices((prev) => {
             const newChecked = new Set(prev);
@@ -572,25 +526,29 @@ export default function Page({ params }: { params: Params }) {
             } else {
               newChecked.add(index);
             }
-    
+
             // Update userMessage based on checked checkboxes
             const updatedMessage = segments
-              .filter((segment: { tag: string; }, idx: unknown) => newChecked.has(idx) && segment.tag === 'o')
-              .map((segment: { value: any; }) => segment.value)
-              .join(', ');
-    
+              .filter(
+                (segment: { tag: string }, idx: unknown) =>
+                  newChecked.has(idx) && segment.tag === "o"
+              )
+              .map((segment: { value: any }) => segment.value)
+              .join(", ");
+
             setUserMessage(updatedMessage);
-    
+
             return newChecked;
           });
         };
-    
-        
-    
-        if (!segments) {
+
+        if (!segments&&data.curration==false) {
           const newAiMessage = { sender: "AI", content: ai_response };
-          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-          setLatestMessageIndex(messages.length);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, newAiMessage];
+            setLatestMessageIndex(updatedMessages.length - 1);
+            return updatedMessages;
+          });
         } else {
           // Combine all segments into a single JSX element
           // if (segments && segments.length > 0) {
@@ -598,7 +556,7 @@ export default function Page({ params }: { params: Params }) {
           //   const optionsSegments = segments.filter(
           //     (segment: { tag: string; }) => segment.tag === "o"
           //   );
-      
+
           //   if (questionSegment && optionsSegments.length > 0) {
           //     const question = questionSegment.value;
           //     const options = optionsSegments.map((segment: { value: any; }) => segment.value);
@@ -610,7 +568,7 @@ export default function Page({ params }: { params: Params }) {
           // const combinedSegments = segments.map((segment: { tag: string; value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | PromiseLikeOfReactNode | null | undefined; }, index: number) => {
           //   const keyIndex = index as Key;
           //   const isLastSegment = index === segments.length;
-          //   const isSelected = checkedIndices.has(index); 
+          //   const isSelected = checkedIndices.has(index);
           //   if (segment.tag === 'o') {
           //     return (
           //       <div
@@ -654,24 +612,36 @@ export default function Page({ params }: { params: Params }) {
           //     return <div key={keyIndex}>{segment.value}</div>;
           //   }
           // });
-        
+
           // Create a single AI message with combined segments
           // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
           // setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-          const newAiMessage = { sender: "AI", content: ai_response };
-          setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-          setLatestMessageIndex(messages.length);
+          if (data.curration === false) {
+            const newAiMessage = { sender: "AI", content: ai_response };
+            
+            setMessages((prevMessages) => {
+              const updatedMessages = [...prevMessages, newAiMessage];
+              setLatestMessageIndex(updatedMessages.length - 1); // Set the index based on the updated messages
+              return updatedMessages;
+            });
+          }
+        
           setCheckedIndices(new Set());
         }
-        
-    
+
         if (isCurationRequired) {
           setCuration(false);
           if (isPdtFlag || data.products !== undefined) {
             const productsFromAI = data.products || [];
             console.log("products from ai: ", productsFromAI);
             const formattedProducts = productsFromAI.map(
-              (product: { title: any; rating: any; prices: any; media: any; sellers_results: any; }) => ({
+              (product: {
+                title: any;
+                rating: any;
+                prices: any;
+                media: any;
+                sellers_results: any;
+              }) => ({
                 title: product.title,
                 rating: product.rating,
                 prices: product.prices,
@@ -697,9 +667,8 @@ export default function Page({ params }: { params: Params }) {
       setCheckedIndices(new Set());
       setUserMessage("");
     }
-    
-    
   };
+
 
   useEffect(() => {
     // Set options text in the input box when options change
@@ -944,6 +913,7 @@ if (isPageRefreshed) {
         </div> 
      */}
       <div className="mb-[120px]">
+      
         <section className="flex justify-center h-full mb-16 bp-0  ">
           <div className="md:max-w-2xl md:min-w-[42rem] sm-w-[75%] w-[90%]  mt-5 mb-10 h-full p-0  ">
             {/* attempt 1 */}
@@ -1104,18 +1074,19 @@ if (isPageRefreshed) {
                 </div>
               </>
             ))}
-            {(isLoading  && !curation) && (
+            {isLoading && !curation && (
               <div className="flex items-center space-x-4 mx-1 md:mx-6">
-                <GeneralLoader mode={isDarkMode?"dark":"light"} />
+                <GeneralLoader mode={isDarkMode ? "dark" : "light"} />
               </div>
             )}
             {/* { productArray.length > 0 && (
               <ProductCarousel products={productArray} />
             )} */}
-            <div ref={messagesEndRef}  />
-            {followupSourcesVisible&&followup&& followup.length > 0 && (
+            <HeroResult />
+            <div ref={messagesEndRef} />
+            {followupSourcesVisible && followup && followup.length > 0 && (
               <div>
-{/*                 
+                {/*                 
               <Sources containerWidth={containerWidth}
               followup={followupques}
               isOpen={isOpen}
@@ -1123,24 +1094,20 @@ if (isPageRefreshed) {
               sendMessage={sendMessage}
               mode={isDarkMode?"dark":"light"}
               setIsOpen={setIsOpen}/> */}
-              <Followup
-                containerWidth={containerWidth}
-                followup={followupques}
-                isOpen={isOpen}
-                setUserMessage={setUserMessage}
-                sendMessage={sendMessage}
-                setIsOpen={setIsOpen}
-                mode={isDarkMode?"dark":"light"}
-              />
-              
-
+                <Followup
+                  containerWidth={containerWidth}
+                  followup={followupques}
+                  isOpen={isOpen}
+                  setUserMessage={setUserMessage}
+                  sendMessage={sendMessage}
+                  setIsOpen={setIsOpen}
+                  mode={isDarkMode ? "dark" : "light"}
+                />
               </div>
-              
             )}
-            
 
             {/* <GeneralLoader />
-<ResearchLoader /> */}
+              <ResearchLoader /> */}
 
             {/* message loader */}
 
@@ -1156,7 +1123,7 @@ if (isPageRefreshed) {
           
 
         </section>
-        <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-10`}>
+        <footer className={`fixed bottom-0 w-full flex justify-center mt-6 p-5 ${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} z-[999999999999999999999999]`}>
   <div className={`flex flex-col w-full max-w-2xl ${isDarkMode ? "bg-[#2e2f2f]" : "bg-white"} px-2 rounded-xl z-1200 relative`}>
     <div className="flex w-[100%]">
       <input
@@ -1197,7 +1164,7 @@ if (isPageRefreshed) {
       ))}
     </div>
   </div>
-</footer>
+        </footer>
 
 
       </div>
