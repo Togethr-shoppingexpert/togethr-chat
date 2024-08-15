@@ -883,8 +883,8 @@ export default function Page({ params }: { params: Params }) {
             </footer>
 
             </div>*/}
-         <Layout> 
-            <Discover />
+         <Layout sendMessage={sendMessage}> 
+            <Discover sendMessage={sendMessage}/>
             {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
               <HeroResult />

@@ -8,7 +8,7 @@ import Followup from "@/components/Followup";
 import React, { useRef, useState } from "react";
 import { useContentContext } from "@/ContentContext";
 
-export default function page() {
+export default function page({ sendMessage }: { sendMessage: (message: string) =>void}) {
     const [containerWidth, setContainerWidth] = useState<number>(0);
 
     const { followupSourcesVisible, 

@@ -6,7 +6,7 @@ import GeneralLoader from "./shared/GeneralLoader";
 import { useContentContext } from "@/ContentContext";
 
 
-export default function Chat() {
+export default function Chat({ sendMessage }: { sendMessage: (message: string) =>void}) {
   const { conversationHistorydata, 
           messages, 
           productsHistory, 

@@ -92,7 +92,7 @@ const GeneralLoader = ( {mode}) => {
   ]);
   // useSmoothScrollIntoView(messagesEndRef, [step]);
   return (
-    <div className=" flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl  px-3 py-2 text-xs my-2 md:text-base mx-1 ">
+    <div className=" flex md:max-w-2xl md:min-w-[42rem] max-w-md font-medium flex-col gap-y-4 gap-2 rounded-xl  px-1 py-2 text-xs my-2 md:text-base mx-1 ">
       <div className="flex flex-row gap-3 items-center">
         {showUnderstandingWithFlicker ? (
           <Image
