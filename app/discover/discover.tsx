@@ -31,13 +31,9 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
       <div className="w-[100%] h-full overflow-y-scroll pt-0 p-4 order-1 flex flex-col items-center justify-end">
                
               <HeroResult />
-              console.log('upper followup questions in discover', {followup});
-              console.log({followupSourcesVisible});
-              console.log({followupQues});
               <div ref={messagesEndRef} />
               {true && followup && followup.length > 0 && (
                 <div>
-                    console.log('followup questions in discover', followupQues);
                   <Followup
                     containerWidth={containerWidth}
                     followup={followupQues}
