@@ -37,7 +37,7 @@ const mockdata = [
 export default function Wishlist() {
   return (
     <>
-      <Navbar mode="dark" />
+     {/*} <Navbar mode="dark" /> */}
       <div className="flex flex-col gap-y-6 pt-8 px-4 lg:px-0 pb-20">
         {mockdata.map((item, index) => (
           <div
