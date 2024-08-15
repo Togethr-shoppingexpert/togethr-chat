@@ -115,7 +115,6 @@ export default function ContentComponent() {
 
   return (
     <>
-     <div>This is Content</div>
       <div className="bg-[#202222] px-6 lg:px-[6%]">
         
         <div className="lg:px-[6%] bg-[#202222]">

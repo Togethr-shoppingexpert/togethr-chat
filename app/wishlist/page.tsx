@@ -10,8 +10,6 @@ export default function page() {
   console.log("wishlist");
   return (
     <>
-      {/*<Navbar mode="dark" />*/}
-      <div>This is whishlist</div>
       <div className="bg-[#202222] px-6 lg:px-[6%]">
         <WishlistUI />
       </div>

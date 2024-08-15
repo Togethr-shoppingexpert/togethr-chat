@@ -42,6 +42,8 @@ interface ContentContextData {
   setFollowup:(followup:SetStateAction<never[]>)=>void;
   isOpen:boolean;
   setIsOpen: (started: boolean) => void;
+  followupQues: any[];
+  setFollowupQues: (ques: any[]) => void;
 }
 
 // Create the context with default values
@@ -74,6 +76,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [followupSourcesVisible, setFollowupSourcesVisible] = useState(false);
   const [followup, setFollowup] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [followupQues, setFollowupQues] = useState<any[]>([]);
 
   return (
     <ContentContext.Provider value={{ videoContent, 
@@ -110,6 +113,8 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       setFollowup,
                                       isOpen,
                                       setIsOpen,
+                                      followupQues,
+                                      setFollowupQues,
                                     }}>
       {children}
     </ContentContext.Provider>

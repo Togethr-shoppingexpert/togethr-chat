@@ -209,7 +209,7 @@ export default function Chat() {
         ))}
        
        {isLoading && !curation && (
-          <div className="flex items-center space-x-4 mx-1 md:mx-6">
+          <div className="flex items-center space-x-4 mx-1">
             <GeneralLoader mode="dark" />
           </div>
         )}</div>

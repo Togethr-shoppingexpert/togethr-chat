@@ -15,11 +15,8 @@ export default function page() {
         followup, 
         isOpen, 
         setIsOpen, 
-        userMessage, 
-        currentoptionvisible,
-        curation,
+        followupQues, 
         setUserMessage,
-        currentOptions,
       } = useContentContext();
     
       const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -31,17 +28,19 @@ export default function page() {
   console.log("wishlist");
   return (
     <>
-      {/*<Navbar mode="dark" />*/}
-      <div>This is discover</div>
-      <div className="w-[100%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
-            
+      <div className="w-[100%] h-full overflow-y-scroll pt-0 p-4 order-1 flex flex-col items-center justify-end">
+               
               <HeroResult />
+              console.log('upper followup questions in discover', {followup});
+              console.log({followupSourcesVisible});
+              console.log({followupQues});
               <div ref={messagesEndRef} />
-              {followupSourcesVisible && followup && followup.length > 0 && (
+              {true && followup && followup.length > 0 && (
                 <div>
+                    console.log('followup questions in discover', followupQues);
                   <Followup
                     containerWidth={containerWidth}
-                    followup={followupques}
+                    followup={followupQues}
                     isOpen={isOpen}
                     setUserMessage={setUserMessage}
                     sendMessage={sendMessage} 

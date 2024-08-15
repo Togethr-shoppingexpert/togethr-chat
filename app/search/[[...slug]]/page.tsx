@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Params }) {
   const [messageSent, setMessageSent] = useState(false);
   const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
   const [isLoadingResearch, setIsLoadingResearch] = useState(false);
-  const [followup, setFollowup] = useState([]);
+  //const [followup, setFollowup] = useState([]);
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
   const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
   //const [curation, setCuration] = useState(false);
@@ -124,7 +124,7 @@ export default function Page({ params }: { params: Params }) {
   const router = useRouter();
 
   const [containerWidth, setContainerWidth] = useState<number>(0);
-  const [isOpen, setIsOpen] = useState(false);
+  //const [isOpen, setIsOpen] = useState(false);
   const [checkedIndices, setCheckedIndices] = useState(new Set());
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [currentQuestion, setCurrentQuestion] = useState("");
@@ -166,6 +166,10 @@ export default function Page({ params }: { params: Params }) {
     userMessage,
     currentOptions,
     setCurrentOptions,
+    isOpen,
+    setIsOpen,
+    setFollowup,
+    setFollowupQues,
   } = useContentContext();
 
 
@@ -199,10 +203,15 @@ export default function Page({ params }: { params: Params }) {
           } else if (eventData.data === "Preparing Response") {
             updateLoadingStateCallback(false);
           } else if (eventData.type === "follow_up_questions") {
-            let messages = eventData.data;
-            followupques = messages;
-            setFollowup(messages);
+            //let messages = eventData.data;
+            //followupques = messages;
+            
             setFollowupSourcesVisible(true);
+            const followUpQuestions = eventData.data;
+            setFollowup(followUpQuestions);
+            
+            setFollowupQues(followUpQuestions);
+            console.log('followUpQuestions', followUpQuestions);
           } else if (eventData.type === "product information") {
             setTimeout(() => {
               const formattedProducts: Product[] = eventData.data.map(
@@ -408,120 +417,6 @@ export default function Page({ params }: { params: Params }) {
     setUserMessage("");
     setCheckedIndices(new Set());
 
-    // try {
-    //   const response = await fetch(
-    //     `https://${API_ENDPOINT}/api/WebChatbot/message`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${authTokenRef.current}`,
-    //       },
-    //       body: JSON.stringify({
-    //         userMessage: message,
-    //         id: conversationId,
-    //       }),
-    //     }
-    //   );
-
-    //   // Handle response
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     console.log("Response from backend:", data);
-
-    //     const aiResponse = data.AI_Response;
-    //     console.log("AI Response:", aiResponse);
-
-    //     const isCurationRequired = data.curration; // Corrected spelling
-    //     const isPdtFlag = data.productFlag;
-    //     setCuration(isCurationRequired);
-    //     setPdt(isPdtFlag);
-
-    //     console.log("Is Curation Required:", isCurationRequired);
-    //     console.log("Is Product Flag:", isPdtFlag);
-
-    //     const newAiMessage: Message = { sender: "AI", content: aiResponse };
-    //     setMessages((prevMessages) => [...prevMessages, newAiMessage]);
-
-    //     if (isCurationRequired) {
-    //       // if (!isPdtFlag && aiResponse.products === undefined) {
-    //         // const productResponse = await fetch(
-    //         //   `https://${API_ENDPOINT}/api/WebChatbot/product`,
-    //         //   {
-    //         //     method: "POST",
-    //         //     headers: {
-    //         //       "Content-Type": "application/json",
-    //         //       Authorization: `Bearer ${authTokenRef.current}`,
-    //         //     },
-    //         //     body: JSON.stringify({
-    //         //       MessageId: data.MessageId,
-    //         //     }),
-    //         //   }
-    //         // );
-
-    //       //   if (productArray&&productArray.length>0) {
-    //       //     // const productData = await productResponse.json();
-    //       //     console.log("product data :", productArray);
-    //       //     // setCuration(false);
-    //       //     const formattedProducts: Product[] = productArray.map(
-    //       //       (product: any) => ({
-    //       //         title: product.title,
-    //       //         rating: product.rating,
-    //       //         prices: product.prices,
-    //       //         media: product.media,
-    //       //         sellers_results: product.sellers_results,
-    //       //       })
-    //       //     );
-
-    //       //     const productAiMessage: Message = {
-    //       //       sender: "AI",
-    //       //       content: <ProductCarousel products={formattedProducts} />,
-    //       //     };
-    //       //     setMessages((prevMessages) => [
-    //       //       ...prevMessages,
-    //       //       productAiMessage,
-    //       //     ]);
-    //       //     setProductArray([]);
-    //       //     setCuration(false);
-    //       //   } else {
-    //       //     console.error(
-    //       //       "Failed to fetch products:",
-    //       //       // productResponse.statusText
-    //       //     );
-    //       //     setCuration(false);
-
-    //       //   }
-    //       // } else
-    //       setCuration(false);
-    //        if (isPdtFlag || data.products !== undefined) {
-    //         const productsFromAI = data.products || [];
-    //         console.log("ai response : ", aiResponse.products);
-    //         console.log("products from ai: ", productsFromAI);
-    //         const formattedProducts: Product[] = productsFromAI.map(
-    //           (product: any) => ({
-    //             title: product.title,
-    //             rating: product.rating,
-    //             prices: product.prices,
-    //             media: product.media,
-    //             sellers_results: product.sellers_results,
-    //           })
-    //         );
-    //         const productAiMessage: Message = {
-    //           sender: "AI",
-    //           content: <ProductCarousel products={formattedProducts} />,
-    //         };
-    //         setMessages((prevMessages) => [...prevMessages, productAiMessage]);
-    //       }
-    //     }
-    //   } else {
-    //     console.error("Failed to send message:", response.statusText);
-    //   }
-    // } catch (error) {
-    //   console.error("Error sending message:", error);
-    // } finally {
-    //   setIsLoading(false);
-    // }
-
     try {
       const response = await fetch(
         `https://${API_ENDPOINT}/api/WebChatbot/message`,
@@ -601,72 +496,6 @@ export default function Page({ params }: { params: Params }) {
             return updatedMessages;
           });
         } else {
-          // Combine all segments into a single JSX element
-          // if (segments && segments.length > 0) {
-          //   const questionSegment = segments.find((segment: { tag: string; }) => segment.tag === "q");
-          //   const optionsSegments = segments.filter(
-          //     (segment: { tag: string; }) => segment.tag === "o"
-          //   );
-
-          //   if (questionSegment && optionsSegments.length > 0) {
-          //     const question = questionSegment.value;
-          //     const options = optionsSegments.map((segment: { value: any; }) => segment.value);
-          //     setCurrentoptionvisible(true);
-          //     setCurrentQuestion(question);
-          //     setCurrentOptions(options);
-          //   }
-          // }
-          // const combinedSegments = segments.map((segment: { tag: string; value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | PromiseLikeOfReactNode | null | undefined; }, index: number) => {
-          //   const keyIndex = index as Key;
-          //   const isLastSegment = index === segments.length;
-          //   const isSelected = checkedIndices.has(index);
-          //   if (segment.tag === 'o') {
-          //     return (
-          //       <div
-          //         key={keyIndex}
-          //         className={`segment ${isSelected ? 'selected' : ''}`}
-          //         style={{
-          //           display: 'flex',
-          //           alignItems: 'center',
-          //           margin: '10px',
-          //           // cursor: 'pointer' // Make the cursor a pointer to indicate it is clickable
-          //         }}
-          //         // onClick={() => handleCheckboxChange(index)}
-          //       >
-          //         {/* <input
-          //           type="checkbox"
-          //           checked={checkedIndices.has(index)}
-          //           onClick={(e) => e.stopPropagation()} // Prevent onClick event from firing when the checkbox itself is clicked
-          //           onChange={() => handleCheckboxChange(index)}
-          //           style={{
-          //             width: '20px',
-          //             height: '20px',
-          //             marginRight: '10px',
-          //             borderRadius: '50%', // Make the checkbox perfectly round
-          //             border: '2px solid #2e2f2f',
-          //             cursor: 'pointer',
-          //             appearance: 'none', // Remove default checkbox appearance
-          //             WebkitAppearance: 'none', // For older browsers
-          //             MozAppearance: 'none', // For older browsers
-          //           }}
-          //         /> */}
-          //          {segment.value}
-          //       </div>
-          //     );
-          //   } else if (segment.tag === 'q') {
-          //     return (
-          //       <div key={keyIndex} >
-          //         <div className="mb-[10px]">{segment.value}</div>
-          //       </div>
-          //     );
-          //   } else {
-          //     return <div key={keyIndex}>{segment.value}</div>;
-          //   }
-          // });
-
-          // Create a single AI message with combined segments
-          // const newAiMessage = { sender: "AI", content: <div ref={latestMessageRef}>{combinedSegments}</div> };
-          // setMessages((prevMessages) => [...prevMessages, newAiMessage]);
           if (data.curration === false) {
             const newAiMessage = { sender: "AI", content: ai_response };
             
@@ -956,7 +785,7 @@ export default function Page({ params }: { params: Params }) {
     // setCurrentOptions(selectedOptions);
   }, [selectedOptions]); */}
 
-  const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
+ {/* const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
 
   useEffect(() => {
     const hasFollowups = Array.isArray(followup) && followup.length > 0;
@@ -965,7 +794,7 @@ export default function Page({ params }: { params: Params }) {
     } else {
       setShowHeroAndFollowup(false);
     }
-  }, [followup]);
+  }, [followup]);*/}
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
      {/* <Navbar mode={isDarkMode ? "dark" : "light"} />
@@ -1054,7 +883,7 @@ export default function Page({ params }: { params: Params }) {
             </footer>
 
             </div>*/}
-          <Layout>
+         <Layout> 
             <Discover />
             {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
