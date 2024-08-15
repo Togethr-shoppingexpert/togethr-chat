@@ -10,10 +10,10 @@ import Chat from "./Chat";
 
 interface LayoutProps {
   sendMessage: (message: string) => void;
-  children: ReactNode;
+
 }
 
-export default function Layout({ sendMessage, children }: LayoutProps) {
+export default function Layout({ sendMessage }: LayoutProps) {
   const [activeContent, setActiveContent] = useState<string | null>(null);
 
   const handleContentChange = (content: string) => {
@@ -42,7 +42,7 @@ export default function Layout({ sendMessage, children }: LayoutProps) {
       <div className="flex flex-col">
         <main className="pt-16 w-[70%]">
           {renderContent()}
-          {children}
+         
         </main>
         <div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-2 border-gray-300">
           <Chat sendMessage={sendMessage} />

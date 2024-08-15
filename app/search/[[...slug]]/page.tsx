@@ -797,7 +797,7 @@ export default function Page({ params }: { params: Params }) {
   }, [followup]);*/}
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
-     {/* <Navbar mode={isDarkMode ? "dark" : "light"} />
+     {/*
      
         <div className=" fixed top-[25px] right-4 z-[500]">
           <label className="switch">
@@ -884,7 +884,7 @@ export default function Page({ params }: { params: Params }) {
 
             </div>*/}
          <Layout sendMessage={sendMessage}> 
-            <Discover sendMessage={sendMessage}/>
+           {/* <Discover sendMessage={sendMessage}/>*/}
             {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
               <HeroResult />
