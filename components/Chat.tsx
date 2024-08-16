@@ -154,7 +154,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                   <AvatarFallback>bot</AvatarFallback>
                 </Avatar>*/}
                 <div
-                  className={`flex w-max max-w-[100%] font-medium flex-col gap-2 rounded-xl px-3 py-2 text-xs md:text-sm bg-[#3c3b3b] text-white`}
+                  className={`flex w-max max-w-[90%] font-medium flex-col gap-2 rounded-xl px-3 py-2 text-xs md:text-sm bg-[#3c3b3b] text-white`}
                 >
                   {typeof message.content === "string" ? (
                     <div className="response-content">
@@ -196,7 +196,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
               </>
             ) : (
               <>
-                <div className="flex w-max max-w-[100%] flex-col items-center justify-center font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
+                <div className="flex w-max max-w-[90%] flex-col items-center justify-center font-medium gap-2 rounded-xl shadow-lg px-3 py-2 text-xs md:text-sm ml-auto bg-[#0C8CE9] text-primary-foreground">
                   {message.content}
                 </div>
                 {/*<Avatar className="shadow-lg z-10">
@@ -214,23 +214,23 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
           </div>
         )}</div>
         <footer
-          className={` right-0 bottom-0 absolute w-[100%] h-[100px] flex justify-center overflow-hidden mt-5 p-3 z-[9999]  bg-[#202222]`}
+          className={` right-0 bottom-0 absolute w-[100%] h-[110px] flex justify-center overflow-hidden mt-5 p-3 z-[9999]  bg-[#202222]`}
         >
           <div
-            className={`flex flex-col w-full lg:w-[100%] bg-[#2e2f2f] px-2 rounded-xl z-1200 relative`}
+            className={`flex flex-col gap-[2px] w-full lg:w-[100%] bg-[#2e2f2f] px-2 rounded-xl z-1200 relative`}
           >
             <div className="flex w-[100%]">
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%] h-[40px]"
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
               />
 
               <button
                 type="button"
-                className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                className="bg-[#2196F3] h-[40px] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
                 onClick={handleClick}
                 disabled={!userMessage.trim() || isLoading}
               >
@@ -241,7 +241,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
             </div>
 
             <div
-              className="flex mt-2 overflow-x-scroll whitespace-nowrap"
+              className="flex mt-0 overflow-x-scroll whitespace-nowrap"
               style={{
                 overflowY: "hidden",
                 scrollbarWidth: "thin",
@@ -252,7 +252,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                 currentOptions.map((option, index) => (
                   <div
                     key={index}
-                    className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${
+                    className={`p-2 rounded-xl cursor-pointer h-[20px] mr-2 mb-2 text-white text-[9px] ${
                       selectedOptions.includes(option)
                         ? "bg-[#444545]"
                         : "bg-[#202222]"

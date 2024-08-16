@@ -150,8 +150,12 @@ export default function Page({ params }: { params: Params }) {
 
 
   const {
+    setGuideBlogs,
+    setGuideVideos,
     setVideoContent,
     setBlogsContent,
+    setDiscoverBlogs,
+    setDiscoverVideos,
     setBuyingGuide,
     setIsChatStarted,
     setBestProducts,
@@ -262,28 +266,62 @@ export default function Page({ params }: { params: Params }) {
             }
           }
           else if (eventData.type === "discover_article_content") {
-            console.log("blog_content", eventData.data);
-            const UpdatedBlogContent = eventData.data.map((blog: any) => ({
+            console.log("discover_blog_content", eventData.data);
+            const UpdatedBlog = eventData.data.map((blog: any) => ({
               link: blog.link,
               title: blog.title, 
               favicon: blog.favicon,
               source: blog.source,
             }));
-            console.log('data',UpdatedBlogContent)
-            setBlogsContent(UpdatedBlogContent);
+            console.log('data',UpdatedBlog)
+            setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
             console.log("buying_guide", eventData.text);
             setBuyingGuide(eventData.text);
+          }else if (eventData.type === "buying_guide_content") {
+            console.log("buying_guide_blogs", eventData.articel_url);
+            console.log("buying_guide_videos", eventData.youtube_url);
+            const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
+              link: video.link,
+              title: video.title, 
+              description: video.description, 
+              length: video.length,
+            })); 
+            setGuideVideos(UpdatedVideo);
+            const UpdatedBlog = eventData.articel_url.map((blog: any) => ({
+              link: blog.link,
+              title: blog.title, 
+              favicon: blog.favicon,
+              source: blog.source,
+            }));
+            setGuideBlogs(UpdatedBlog);
           } else if (eventData.type === "discover_video_content") {
-            console.log("video_content", eventData.links);
-            const UpdatedVideoContent: VideoContent[] = eventData.links.map((video: any) => ({
+            console.log("discover_video_content", eventData.links);
+            const UpdatedVideo: VideoContent[] = eventData.links.map((video: any) => ({
               link: video.link,
               title: video.title, 
               description: video.description, 
               length: video.length,
             }));
-            setVideoContent(UpdatedVideoContent);
-          } else if(eventData.type==="product_information"){
+            setDiscoverVideos(UpdatedVideo);
+          }else if (eventData.type === "content_page") {
+            console.log("content_blogs", eventData.articel_url);
+            console.log("content_video", eventData.youtube_url);
+            const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
+              link: video.link,
+              title: video.title, 
+              description: video.description, 
+              length: video.length,
+            })); 
+            setVideoContent(UpdatedVideo);
+            const UpdatedBlog = eventData.article_url.map((blog: any) => ({
+              link: blog.link,
+              title: blog.title, 
+              favicon: blog.favicon,
+              source: blog.source,
+            }));
+            setBlogsContent(UpdatedBlog);
+          }else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
           }

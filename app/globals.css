@@ -254,3 +254,50 @@ height: calc(100% - 60px);
 margin-top: 60px;
 }
 
+
+
+.guide-item {
+  margin: 5px 0 20px 50px;
+  text-align: start;
+}
+
+.item-point {
+  font-weight: bold;
+  font-size: 12px;
+  color: #f0f0f0;
+  display: flex;
+  padding-left: 10px;
+  justify-content: space-between;
+  
+}
+
+.item-details {
+  margin-left: 20px;
+  font-size: 10px;
+  color: #d1d1d1;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.toggle-details-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.toggle-details-btn:hover {
+  color: #f39c12;
+}
+
+/* Additional styling for non-numbered content */
+.guide-item:not(.item-point) {
+  font-size: 1em;
+  color: #c0c0c0;
+  margin-left: 0px;
+  padding-left: 0;
+}
+
+

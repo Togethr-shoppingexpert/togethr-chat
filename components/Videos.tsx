@@ -15,6 +15,18 @@ interface CustomSliderProps {
   sliderRef: React.RefObject<Slider>;
 }
 
+interface VideoContent {
+  link: string;
+  title: string;
+  description: string;
+  length: number;
+}
+
+
+interface VideosProps {
+  content: VideoContent[]; // Updated to take content as a prop
+}
+
 const CustomSlider: React.FC<CustomSliderProps> = ({
   children,
   onPrevClick,
@@ -64,7 +76,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-const Videos = () => {
+const Videos: React.FC<VideosProps> = ({ content })=> {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -75,7 +87,7 @@ const Videos = () => {
     sliderRef.current?.slickNext();
   };
 
-  const { videoContent } = useContentContext();
+  
 
   // Function to extract video ID from YouTube URL
   const getVideoId = (url: string | URL) => {
@@ -83,12 +95,12 @@ const Videos = () => {
     return urlObj.searchParams.get("v");
   };
 
-  if (videoContent.length > 0) {
+  if (content.length > 0) {
     return (
       <div className="w-full lg:w-full pt-10">
         <div className="text-2xl font-bold text-white">Videos</div>
         <CustomSlider onPrevClick={goToPrev} onNextClick={goToNext} sliderRef={sliderRef}>
-          {videoContent.map((item, index) => {
+          {content.map((item, index) => {
             const videoId = getVideoId(item.link);
             const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 

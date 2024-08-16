@@ -9,6 +9,7 @@ import NameCards from "./NameCards";
 import Videos from "./Videos";
 import Blogs from "./Blogs";
 import WishlistUI from "./WishlistUI";
+import { useContentContext } from "@/ContentContext";
 
 // const mockdata = [
 //   {
@@ -58,15 +59,17 @@ interface Video {
 
 
 const HeroResult = () => {
+
+  const { discoverVideos, discoverBlogs } = useContentContext();
   return (
     
     <div className="max-w-2xl justify-center h-full flex flex-col gap-y-6 pt-0 px-4 lg:px-0 pb-20">
       <WishlistUI  />
       {/* <div className="w-full flex"> */}
-        <Videos />
+        <Videos content={discoverVideos}/>
       {/* </div> */}
       {/* <div className="w-full flex justify-end"> */}
-        <Blogs />
+        <Blogs content={discoverBlogs} />
       {/* </div> */}
     </div>
   );

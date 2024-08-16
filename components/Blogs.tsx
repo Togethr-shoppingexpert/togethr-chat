@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useCallback, ReactNode, useRef } from "react";
+"use client";
+import React, { useRef } from "react";
 //@ts-ignore
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -7,10 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import ArrowLeft from "../public/arrow-left.png";
 import ArrowRight from "../public/arrow-right.png";
-import { useContentContext } from "@/ContentContext";
 
 interface CustomSliderProps {
-  children: ReactNode;
+  children: React.ReactNode;
   onPrevClick: () => void;
   onNextClick: () => void;
   sliderRef: React.RefObject<Slider>;
@@ -22,18 +21,11 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   onNextClick,
   sliderRef,
 }) => {
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-
-  const handleBeforeChange = useCallback((current: number, next: number) => {
-    setCurrentSlide(next);
-  }, []);
-
   const settings = {
     infinite: true,
     slidesToShow: 3,
     slidesToScroll: 1,
     arrows: false,
-    beforeChange: handleBeforeChange,
     responsive: [
       {
         breakpoint: 1024,
@@ -65,13 +57,18 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-interface Blog {
+interface BlogContent {
   title: string;
-  description: string;
-  speciality: string;
+  link: string;
+  favicon: string;
+  source: string;
 }
 
-const Blogs: React.FC = () => {
+interface BlogsProps {
+  content: BlogContent[];
+}
+
+const Blogs: React.FC<BlogsProps> = ({ content }) => {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -82,11 +79,8 @@ const Blogs: React.FC = () => {
     sliderRef.current?.slickNext();
   };
 
-  const { blogsContent } = useContentContext();
-
-  // Ensure blogsContent is defined before using it in the map function
-  if (blogsContent.length <= 0) {
-    return null; // Or render a loading state or an empty component
+  if (content.length <= 0) {
+    return null;
   }
 
   return (
@@ -97,12 +91,14 @@ const Blogs: React.FC = () => {
         onNextClick={goToNext}
         sliderRef={sliderRef}
       >
-        {blogsContent.map((item, index) => (
+        {content.map((item, index) => (
           <div className="p-2" key={index}>
             <div className="bg-[#191919] p-2 rounded-xl h-32">
               <div className="flex flex-col h-max gap-y-2">
-                <a href={item.link} target="_blank"  rel="noopener noreferrer" >
-                  <div className="text-white text-[13px] flex align-top p-1 h-14 mt-0 hover:text-[#0C8CE9]">{item.title}</div>
+                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                  <div className="text-white text-[13px] flex align-top p-1 h-14 mt-0 hover:text-[#0C8CE9]">
+                    {item.title}
+                  </div>
                 </a>
                 <div className="text-white flex flex-row justify-start items-center mt-2">
                   <img className="h-6 w-6 p-0.5" src={item.favicon} alt="favicon" />

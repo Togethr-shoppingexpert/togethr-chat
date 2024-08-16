@@ -74,6 +74,8 @@ interface MockData {
 }
 
 export default function ContentComponent() {
+  const { blogsContent, videoContent } = useContentContext();
+
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -118,8 +120,8 @@ export default function ContentComponent() {
       <div className="bg-[#202222] px-6 lg:px-[6%]">
         
         <div className="lg:px-[6%] bg-[#202222]">
-          <Videos />
-          <Blogs />
+          <Videos content={videoContent}/>
+          <Blogs content={blogsContent}/>
         </div>
         
       </div>

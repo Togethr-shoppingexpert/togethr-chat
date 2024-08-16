@@ -12,10 +12,10 @@ interface FollowupProps {
 }
 
 const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOpen, setUserMessage, sendMessage, setIsOpen }) => {
-  const [isAccordionOpen, setIsAccordionOpen] = useState(!isOpen);
+ // const [isAccordionOpen, setIsAccordionOpen] = useState(!isOpen);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const toggleAccordion = () => {
+ {/*} const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
     setIsOpen(!isOpen);
   };
@@ -24,7 +24,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
     if (isAccordionOpen && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [isAccordionOpen]);
+  }, [isAccordionOpen]);*/}
 
   useEffect(() => {
     if (isOpen && messagesEndRef.current) {
@@ -33,25 +33,26 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
   }, [isOpen]);
 
   return (
-    <div className={`mb-[100px] relative w-full ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
-      <div className={`flex justify-between items-center cursor-pointer p-2 ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"}`} onClick={toggleAccordion}>
-        <div>
-        <h3 className="text-left font-bold ">FAQ</h3>
-        </div>
-        <div className="flex items-center">
+    <div className={`mb-[100px] relative max-w-2xl ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
+      <>
+        
+        <h3 className="text-left font-bold pl-4 pt-3">FAQ</h3>
+        
+        {/*<div className="flex items-center">
           {isAccordionOpen ? (
             <FaChevronUp className="transition-transform duration-300 transform rotate-180" />
           ) : (
             <FaChevronDown className="transition-transform duration-300" />
           )}
-        </div>
-      </div>
+        </div>*/}
+        </>
       
-      {isAccordionOpen && (
+      
+       
         <div className={`relative ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-4 rounded-t-lg z-10 w-full transition`}>
           {followup && followup.map((ques, index) => (
             <div key={index}>
-              <div className='flex justify-between items-center w-full cursor-pointer' onClick={() => { sendMessage(ques);setIsOpen(!isOpen);  setIsAccordionOpen(!isAccordionOpen)}}>
+              <div className='flex justify-between items-center w-full cursor-pointer' onClick={() => { sendMessage(ques);setIsOpen(!isOpen); }}>
                 <div  className='p-1 cursor-pointer' key={index}><h4>{ques}</h4></div>
                 <div className='font-semibold'><h4>+</h4></div>
               </div>
@@ -61,7 +62,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
           ))}
           <div ref={messagesEndRef} />
         </div>
-      )}
+   
     </div>
   );
 };

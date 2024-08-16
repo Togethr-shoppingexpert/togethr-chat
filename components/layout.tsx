@@ -41,10 +41,9 @@ export default function Layout({ sendMessage }: LayoutProps) {
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
         <main className="pt-16 w-[70%]">
-          {renderContent()}
-         
+          {renderContent()}         
         </main>
-        <div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-2 border-gray-300">
+        <div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
           <Chat sendMessage={sendMessage} />
         </div>
       </div>

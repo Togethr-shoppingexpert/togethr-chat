@@ -10,9 +10,17 @@ interface Message {
 interface ContentContextData {
   videoContent: any[];
   blogsContent: any[];
+  discoverVideos: any[];
+  discoverBlogs: any[];
+  guideVideos: any[];
+  guideBlogs: any[];
   buyingGuide: string;
   setVideoContent: (videos: any[]) => void;
   setBlogsContent: (blogs: any[]) => void;
+  setDiscoverVideos: (videos: any[]) => void;
+  setDiscoverBlogs: (blogs: any[]) => void;
+  setGuideVideos: (videos: any[]) => void;
+  setGuideBlogs: (blogs: any[]) => void;
   setBuyingGuide: (guide: string) => void;
   isChatStarted:boolean;
   setIsChatStarted: (started: boolean) => void;
@@ -59,6 +67,10 @@ export const useContentContext = () => {
 
 // Create a provider component
 export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [guideVideos, setGuideVideos] = useState<any[]>([]);
+  const [guideBlogs, setGuideBlogs] = useState<any[]>([]);
+  const [discoverVideos, setDiscoverVideos] = useState<any[]>([]);
+  const [discoverBlogs, setDiscoverBlogs] = useState<any[]>([]);
   const [videoContent, setVideoContent] = useState<any[]>([]);
   const [blogsContent, setBlogsContent] = useState<any[]>([]);
   const [buyingGuide, setBuyingGuide] = useState<string>('');
@@ -84,6 +96,14 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       buyingGuide, 
                                       setVideoContent, 
                                       setBlogsContent, 
+                                      discoverVideos,
+                                      setDiscoverVideos,
+                                      discoverBlogs,
+                                      setDiscoverBlogs,
+                                      guideBlogs,
+                                      guideVideos,
+                                      setGuideBlogs,
+                                      setGuideVideos,
                                       setBuyingGuide,
                                       isChatStarted,
                                       setIsChatStarted ,
