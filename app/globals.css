@@ -251,6 +251,6 @@ input:checked + .slider:before {
 
 .products-height{
 height: 100%;
-padding-top: 60px;
+margin-top: 60px;
 }
 
