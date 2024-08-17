@@ -279,7 +279,7 @@ export default function Page({ params }: { params: Params }) {
             console.log("buying_guide", eventData.text);
             setBuyingGuide(eventData.text);
           }else if (eventData.type === "buying_guide_content") {
-            console.log("buying_guide_blogs", eventData.articel_url);
+            console.log("buying_guide_blogs", eventData.article_url);
             console.log("buying_guide_videos", eventData.youtube_url);
             const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
               link: video.link,
@@ -288,7 +288,7 @@ export default function Page({ params }: { params: Params }) {
               length: video.length,
             })); 
             setGuideVideos(UpdatedVideo);
-            const UpdatedBlog = eventData.articel_url.map((blog: any) => ({
+            const UpdatedBlog = eventData.article_url.map((blog: any) => ({
               link: blog.link,
               title: blog.title, 
               favicon: blog.favicon,
