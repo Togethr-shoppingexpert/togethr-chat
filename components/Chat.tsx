@@ -59,7 +59,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
 
   return (
     <div className="w-[100%] h-full overflow-y-scroll pb-[100px]">
-      <div>
+      <div className="chat-height">
       { false &&
           <>
       {conversationHistorydata.map((message, index) => {
@@ -214,7 +214,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
           </div>
         )}</div>
         <footer
-          className={` right-0 bottom-0 absolute w-[100%] h-[110px] flex justify-center overflow-hidden mt-5 p-3 z-[9999]  bg-[#202222]`}
+          className={` right-0 bottom-0 absolute w-[100%] h-[90px] flex justify-center overflow-hidden  p-3 z-[9999]  bg-[#202222]`}
         >
           <div
             className={`flex flex-col gap-[2px] w-full lg:w-[100%] bg-[#2e2f2f] px-2 rounded-xl z-1200 relative`}
@@ -223,14 +223,14 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%] h-[40px]"
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%] h-[50px]"
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
               />
 
               <button
                 type="button"
-                className="bg-[#2196F3] h-[40px] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                className="bg-[#2196F3] h-[50px] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
                 onClick={handleClick}
                 disabled={!userMessage.trim() || isLoading}
               >
@@ -240,7 +240,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
               </button>
             </div>
 
-            <div
+        {/*}    <div
               className="flex mt-0 overflow-x-scroll whitespace-nowrap"
               style={{
                 overflowY: "hidden",
@@ -265,7 +265,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                       : option}
                   </div>
                 ))}
-            </div>
+            </div>*/}
           </div>
         </footer>
     </div>

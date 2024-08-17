@@ -282,7 +282,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange }) => {
 
   return (
     <nav
-      className={`sticky left-0 top-0 z-10 ${
+      className={`sticky left-0 top-0 z-50 ${
         mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"
       }`}
     >

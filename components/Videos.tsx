@@ -58,16 +58,16 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   return (
     <div className="relative px-4">
       <div
-        className="w-14 cursor-pointer absolute z-1 top-[40%] -left-0.5"
+        className="w-14 cursor-pointer absolute z-10 top-[40%] -left-0.5"
         onClick={onPrevClick}
       >
         <Image src={ArrowLeft} alt="arrow-left" />
       </div>
-      <Slider ref={sliderRef} {...settings}>
+      <Slider ref={sliderRef} {...settings} className="z-3">
         {children}
       </Slider>
       <div
-        className="w-14 cursor-pointer absolute z-1 right-0 top-[40%]"
+        className="w-14 cursor-pointer absolute z-10 right-0 top-[40%]"
         onClick={onNextClick}
       >
         <Image src={ArrowRight} alt="arrow-right" />

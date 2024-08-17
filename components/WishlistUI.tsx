@@ -141,14 +141,14 @@ interface Product {
 }
 
 interface ProductInfo {
-  description: string;
+  description?: string;
   media: Array<any>;
   prices: Array<string>;
   product_id: string;
-  rating: number;
-  reviews_results: any;
-  sellers_results: any;
-  title: string;
+  rating?: number;
+  reviews_results?: any;
+  sellers_results?: any;
+  title?: string;
   link: string;
 }
 

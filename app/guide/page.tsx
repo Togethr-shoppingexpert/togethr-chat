@@ -50,7 +50,7 @@ interface GuideItem {
 
 export default function Page() {
   const { buyingGuide, guideBlogs, guideVideos } = useContentContext();
-
+  console.log('buying guid ein guide page', buyingGuide);
   const guideLines = buyingGuide.split("\n");
   const [formattedGuide, setFormattedGuide] = useState<GuideItem[]>([]);
 
@@ -98,7 +98,9 @@ export default function Page() {
 
   return (
     <>
+    
     <div className="bg-[#202222]  px-6 lg:px-[6%] flex flex-col items-center p-10 ">
+    <div className="text-white">{buyingGuide}</div>
       <div className="text-white bg-[#3c3b3b] p-5 text-left max-w-2xl mb-6">
         {formattedGuide.map((item, index) => (
           <div key={index} className="guide-item">
@@ -123,9 +125,9 @@ export default function Page() {
           </div>
         ))}
       </div>
-      <div className="lg:px-[6%] bg-[#202222] w-full">
+       <div className="lg:px-[6%] bg-[#202222] w-full">
           <Videos content={guideVideos} />
-        </div>
+       </div>
         <div className="lg:px-[6%] bg-[#202222] w-full">
           <Blogs content={guideBlogs}/>
         </div>
