@@ -67,7 +67,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     <div className="w-[100%] h-full overflow-y-scroll pb-[100px]">
       <div className="chat-height">
       { false &&
-          <>
+          <>                                       
       {conversationHistorydata.map((message, index) => {
           function isJSON(str: string): boolean {
             try {

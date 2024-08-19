@@ -21,6 +21,15 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
+
+  const defaultBuyingGuide = {
+    buying_guide_text: "",
+    buying_guide_starting_text: "",
+    buying_guide_factors_options: [],
+    buying_guide_specs_text: "",
+    buying_guide_ending_text: "",
+  };
+
   
 
 
@@ -29,7 +38,7 @@ export default function Home() {
     setBlogsContent,
     setBuyingGuide,
     setIsChatStarted,
-    setBestProducts
+    setBestProducts,
   } = useContentContext();
 
 
@@ -41,7 +50,7 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
     const storedToken = localStorage.getItem("token");
     // const storedConvid = sessionStorage.getItem("conversationId");
     setIsChatStarted(false);
-    setBuyingGuide("");
+    setBuyingGuide(defaultBuyingGuide);
     setBlogsContent([]);
     setVideoContent([]);
     setBestProducts([]);
