@@ -81,6 +81,19 @@ interface VideoContent {
   length: number;
 }
 
+interface FactorOption {
+  factor: string;
+  options: string[];
+}
+
+interface BuyingGuide {
+  buying_guide_text: string;
+  buying_guide_starting_text: string;
+  buying_guide_factors_options: FactorOption[];
+  buying_guide_specs_text: string;
+  buying_guide_ending_text: string;
+}
+
 const item = {
   title: "Section 1",
   content: "Content for section 1",
@@ -174,6 +187,7 @@ export default function Page({ params }: { params: Params }) {
     setIsOpen,
     setFollowup,
     setFollowupQues,
+    conversationHistorydata,
   } = useContentContext();
 
 
@@ -218,16 +232,20 @@ export default function Page({ params }: { params: Params }) {
             console.log('followUpQuestions', followUpQuestions);
           } else if (eventData.type === "product information") {
             setTimeout(() => {
-              const formattedProducts: Product[] = eventData.data.map(
-                (product: any) => ({
-                  title: product.title,
-                  rating: product.rating,
-                  prices: product.prices,
-                  media: product.media,
-                  sellers_results: product.sellers_results,
-                  link: product.sellers_results.online_sellers[0].link ,
-                })
-              );
+              const formattedProducts: Product[] = eventData.data
+              .filter((product: any) => 
+                product.sellers_results && 
+                product.sellers_results.online_sellers &&
+                product.sellers_results.online_sellers.length > 0
+              )
+              .map((product: any) => ({
+                title: product.title,
+                rating: product.rating,
+                prices: product.prices,
+                media: product.media,
+                sellers_results: product.sellers_results,
+                link: product.sellers_results.online_sellers[0].link,
+              }));
 
               console.log('formattedProducts', formattedProducts);
 
@@ -276,10 +294,24 @@ export default function Page({ params }: { params: Params }) {
             console.log('data',UpdatedBlog)
             setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
+            //console.log("buying_guide", eventData.text);
+            //setBuyingGuide(eventData.text);
             console.log("buying_guide", eventData.text);
-            setBuyingGuide(eventData.text);
+           {/*} const FormattedBuyingGuide: BuyingGuide[] = eventData.text.map((guide: any) => ({
+              buying_guide_text: guide.buying_guide_text,
+              buying_guide_starting_text: guide.buying_guide_starting_text, 
+              buying_guide_factors_options: guide.buying_guide_factors_options, 
+              buying_guide_specs_text: guide.buying_guide_specs_text,
+              buying_guide_ending_text: guide.buying_guide_ending_text,
+            })); 
+            console.log('fetched formatted guide', FormattedBuyingGuide);
+            setBuyingGuide(FormattedBuyingGuide);*/}
+            const parsedBuyingGuide = JSON.parse(eventData.text);
+            console.log('parsedBuyingGuide' , parsedBuyingGuide);
+            
+            setBuyingGuide(parsedBuyingGuide);
           }else if (eventData.type === "buying_guide_content") {
-            console.log("buying_guide_blogs", eventData.article_url);
+            console.log("buying_guide_blogs", eventData.articel_url);
             console.log("buying_guide_videos", eventData.youtube_url);
             const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
               link: video.link,
@@ -288,7 +320,7 @@ export default function Page({ params }: { params: Params }) {
               length: video.length,
             })); 
             setGuideVideos(UpdatedVideo);
-            const UpdatedBlog = eventData.article_url.map((blog: any) => ({
+            const UpdatedBlog = eventData.articel_url.map((blog: any) => ({
               link: blog.link,
               title: blog.title, 
               favicon: blog.favicon,
@@ -739,7 +771,7 @@ export default function Page({ params }: { params: Params }) {
           setConversationId(storedConversationId);
           // console.log("products:",products[0][0]);
           console.log("response: ", response);
-          //console.log("conversationHistory: ", conversationHistorydata);
+          console.log("conversationHistory: ", conversationHistorydata);
           //console.log("producthistory: ", productsHistory);
           setConversationId(storedConversationId);
         } catch (error) {

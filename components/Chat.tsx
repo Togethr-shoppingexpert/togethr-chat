@@ -49,10 +49,16 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     });
   };
 
+  useEffect(() =>{
+    console.log('conversationHistorydata changed', conversationHistorydata);
+  },[conversationHistorydata]);
+
+
+
   useEffect(() => {
     // Logic to handle the clicked options
     console.log("Selected Options:", selectedOptions);
-
+    
     // Update the currentOptions based on selectedOptions or any other logic
     // setCurrentOptions(selectedOptions);
   }, [selectedOptions]);
@@ -63,7 +69,6 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
       { false &&
           <>
       {conversationHistorydata.map((message, index) => {
-          console.log('Historymessage', message);
           function isJSON(str: string): boolean {
             try {
               JSON.parse(str);
@@ -77,6 +82,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
           }
           let productIndex = 0;
           return (
+            
             <div
               key={index}
               className={`flex flex-row gap-4 mx-1 md:mx-3 my-5 ${

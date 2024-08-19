@@ -304,4 +304,8 @@ margin-top: 70px;
   padding-left: 0;
 }
 
+.product-image-class{
+  object-fit: cover;
+}
+
 

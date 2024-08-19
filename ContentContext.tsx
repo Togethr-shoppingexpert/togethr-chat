@@ -6,6 +6,20 @@ interface Message {
   // content: string;
   content: JSX.Element | string | null;
 }
+
+interface FactorOption {
+  factor: string;
+  options: string[];
+}
+
+interface BuyingGuide {
+  buying_guide_text: string;
+  buying_guide_starting_text: string;
+  buying_guide_factors_options: FactorOption[];
+  buying_guide_specs_text: string;
+  buying_guide_ending_text: string;
+}
+
 // Define the shape of your context data
 interface ContentContextData {
   videoContent: any[];
@@ -14,14 +28,14 @@ interface ContentContextData {
   discoverBlogs: any[];
   guideVideos: any[];
   guideBlogs: any[];
-  buyingGuide: string;
+  buyingGuide: BuyingGuide;
   setVideoContent: (videos: any[]) => void;
   setBlogsContent: (blogs: any[]) => void;
   setDiscoverVideos: (videos: any[]) => void;
   setDiscoverBlogs: (blogs: any[]) => void;
   setGuideVideos: (videos: any[]) => void;
   setGuideBlogs: (blogs: any[]) => void;
-  setBuyingGuide: (guide: string) => void;
+  setBuyingGuide: React.Dispatch<React.SetStateAction<BuyingGuide>>;
   isChatStarted:boolean;
   setIsChatStarted: (started: boolean) => void;
   bestProducts:any[];
@@ -67,13 +81,23 @@ export const useContentContext = () => {
 
 // Create a provider component
 export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
+
+  const defaultBuyingGuide: BuyingGuide = {
+    buying_guide_text: "",
+    buying_guide_starting_text: "",
+    buying_guide_factors_options: [],
+    buying_guide_specs_text: "",
+    buying_guide_ending_text: "",
+  };
+
+
   const [guideVideos, setGuideVideos] = useState<any[]>([]);
   const [guideBlogs, setGuideBlogs] = useState<any[]>([]);
   const [discoverVideos, setDiscoverVideos] = useState<any[]>([]);
   const [discoverBlogs, setDiscoverBlogs] = useState<any[]>([]);
   const [videoContent, setVideoContent] = useState<any[]>([]);
   const [blogsContent, setBlogsContent] = useState<any[]>([]);
-  const [buyingGuide, setBuyingGuide] = useState<string>('');
+  const [buyingGuide, setBuyingGuide] = useState<BuyingGuide>(defaultBuyingGuide);
   const [isChatStarted,setIsChatStarted]=useState(false);
   const [bestProducts,setBestProducts]=useState<any[]>([]);
   const [productInfo,setProductInfo]=useState<any[]>([]);

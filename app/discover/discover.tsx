@@ -28,7 +28,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
   console.log("wishlist");
   return (
     <>
-      <div className="w-[100%] h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">
+      <div className="w-[100%]  h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">
                
               <HeroResult />
               <div ref={messagesEndRef} />

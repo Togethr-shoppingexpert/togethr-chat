@@ -171,7 +171,6 @@ export default function WishlistUI() {
   const getProductLink = (productId: string) => {
     
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
-    console.log("productinfo link", product.sellers_results.online_sellers[0].link);
     return product ? product.sellers_results.online_sellers[0].link : "#";
   };
 
@@ -193,8 +192,7 @@ export default function WishlistUI() {
                     src={imageurl}
                     alt={`test${index + 1}`}
                     layout="fill"
-                    objectFit="cover"
-                    className="rounded-xl"
+                    className="rounded-xl product-image-class"
                   />
                 </div>
                 <div className="flex flex-col gap-y-2">

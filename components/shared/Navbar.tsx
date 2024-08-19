@@ -261,7 +261,7 @@ interface NavbarProps {
 }
 
 const Navbar: FC<NavbarProps> = ({ mode, onContentChange }) => {
-  const { isChatStarted } = useContentContext();
+  const { isChatStarted, setMessages } = useContentContext();
   const router = useRouter();
   const [discoverPath, setDiscoverPath] = useState("/discover");
 
@@ -271,6 +271,11 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange }) => {
     console.log(newPath);
     router.push(newPath);
   };
+
+  const handleInputChange = () =>{
+    setMessages([]);
+    
+  }
 
   useEffect(() => {
     const discoverUrl = sessionStorage.getItem('currentPageUrl');
@@ -289,7 +294,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange }) => {
       <div className="px-[4%] lg:px-[6%] flex justify-center">
         <div className="w-full flex h-max justify-between items-center">
         
-          <Link href="/" className="flex items-center py-1 lg:py-4 px-2">
+          <Link href="/" onClick={handleInputChange} className="flex items-center py-1 lg:py-4 px-2">
             <div className="w-6 lg:w-10">
               <Image
                 src={`${mode === "dark" ? "/icon2.png" : "/favicon.png"}`}
