@@ -22,8 +22,9 @@ export default function Page() {
   console.log("buying guide in guide file", buyingGuide);
   return (
     <>
-      <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10 ">
+      <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10  ">
         <div className="max-w-2xl border-2 border-[#3c3b3b] rounded-md p-2">
+        
         <div className="text-white text-left max-w-[60vw] mb-6">
           <h3 className="text-l font-bold mb-4">{buyingGuide.buying_guide_starting_text}</h3>
         </div>

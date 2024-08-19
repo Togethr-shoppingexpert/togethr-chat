@@ -57,7 +57,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
         <main className={`pt-16 w-[70%] ${isTabletScreen ? 'w-[100%]' : 'w-[70%'}`}>
