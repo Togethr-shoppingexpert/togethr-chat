@@ -33,7 +33,10 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
   }, [isOpen]);
 
   return (
+    <div className=" lg:w-full pt-10 max-md:w-[380px]">
+    <div className="text-2xl font-bold text-white">Know More</div>
     <div className={`mb-[100px] relative max-w-2xl ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
+      
       <>
         
         <h3 className="text-left font-bold pl-4 pt-3">FAQ</h3>
@@ -63,6 +66,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
           <div ref={messagesEndRef} />
         </div>
    
+    </div>
     </div>
   );
 };
