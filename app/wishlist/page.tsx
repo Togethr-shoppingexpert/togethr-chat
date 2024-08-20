@@ -13,7 +13,6 @@ export default function page() {
       <div className="bg-[#202222] px-6 lg:px-[6%]">
         <WishlistUI />
       </div>
-      <FooterNav />
     </>
   );
 }
