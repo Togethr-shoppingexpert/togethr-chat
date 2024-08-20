@@ -116,6 +116,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
             <GeneralLoader mode="dark" />
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <footer
         className={`right-0 bottom-0 absolute w-[100%] h-[90px] flex justify-center overflow-hidden p-3 z-[9999] bg-[#202222]`}
