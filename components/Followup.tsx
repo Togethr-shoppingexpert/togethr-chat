@@ -39,9 +39,9 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
       
       <>
         
-        <h3 className="text-left font-bold pl-4 pt-3">FAQ</h3>
+        {/*<h3 className="text-left font-bold pl-4 pt-3">FAQ</h3>
         
-        {/*<div className="flex items-center">
+        <div className="flex items-center">
           {isAccordionOpen ? (
             <FaChevronUp className="transition-transform duration-300 transform rotate-180" />
           ) : (
