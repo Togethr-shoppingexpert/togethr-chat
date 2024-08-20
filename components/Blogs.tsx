@@ -94,7 +94,7 @@ const Blogs: React.FC<BlogsProps> = ({ content }) => {
   }
 
   return (
-    <div className="w-full lg:w-full pt-10 px-4 max-md:w-[380px]">
+    <div className="w-full lg:w-full pt-10  max-md:w-[380px]">
       <div className="text-2xl font-bold text-white">Blogs</div>
       <CustomSlider
         onPrevClick={goToPrev}

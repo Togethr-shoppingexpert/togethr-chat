@@ -100,7 +100,7 @@ export default function WishlistUI() {
 
           return (
             <Link href={productLink} key={index} passHref legacyBehavior>
-              <a className="lg:w-full max-md:w-[380px] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
+              <a className="lg:w-full max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
               target="_blank" 
               rel="noopener noreferrer"
               >

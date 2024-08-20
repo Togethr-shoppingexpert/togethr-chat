@@ -120,7 +120,7 @@ const Videos: React.FC<VideosProps> = ({ content })=> {
 
   if (content.length > 0) {
     return (
-      <div className=" lg:w-full pt-10 px-4 max-md:w-[380px]">
+      <div className=" lg:w-full pt-10 max-md:w-[380px]">
         <div className="text-2xl font-bold text-white">Videos</div>
         <CustomSlider onPrevClick={goToPrev} onNextClick={goToNext} sliderRef={sliderRef}>
           {content.map((item, index) => {
