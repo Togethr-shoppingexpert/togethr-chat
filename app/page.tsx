@@ -196,7 +196,7 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
   return (
     <>
       <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
-        <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange} isContentAvailable/>
+        <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange}/>
 {/* 
       <div className="fixed top-[25px] right-4 z-[500]">
         <label className="switch">

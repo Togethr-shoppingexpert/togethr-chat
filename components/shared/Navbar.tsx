@@ -9,33 +9,19 @@ import { useContentContext } from "@/ContentContext";
 interface NavbarProps {
   mode: "light" | "dark";
   onContentChange: (content: string) => void;
-  isContentAvailable: boolean;
 }
 
-const Navbar: FC<NavbarProps> = ({ mode, onContentChange, isContentAvailable  }) => {
+const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
   const { isChatStarted, setMessages } = useContentContext();
-  const router = useRouter();
-  const [discoverPath, setDiscoverPath] = useState("/discover");
 
-  const handleNavigation = (path: string) => {
-    console.log(path);
-    const newPath = `/${path}`;
-    console.log(newPath);
-    router.push(newPath);
-  };
+  const { 
+    isContentAvailable,
+  } = useContentContext();
 
   const handleInputChange = () =>{
-    setMessages([]);
-    
+    setMessages([]);    
   }
 
-  useEffect(() => {
-    const discoverUrl = sessionStorage.getItem('currentPageUrl');
-    if (discoverUrl) {
-      const path = discoverUrl.substring(discoverUrl.indexOf("search"));
-      setDiscoverPath(path);
-    }
-  }, []);
 
   return (
     <nav
@@ -69,8 +55,9 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, isContentAvailable  })
           {/* Other Navbar Elements */}
           {isChatStarted && (
             <div className="items-center gap-x-4 hidden md:flex">
+              {isContentAvailable}
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-[#a7a7a7] hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
                 onClick={() => isContentAvailable && onContentChange("discover")}
@@ -78,26 +65,26 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, isContentAvailable  })
                 Discover
               </div>
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-[#a7a7a7] hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("discover")}
+                onClick={() => isContentAvailable && onContentChange("guide")}
               >
                 Buying Guide
               </div>
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-[#a7a7a7] hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("discover")}
+                onClick={() => isContentAvailable && onContentChange("wishlist")}
               >
                 Wishlist
               </div>
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-[#a7a7a7] hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("discover")}
+                onClick={() => isContentAvailable && onContentChange("content")}
               >
                 Content
               </div>

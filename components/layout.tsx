@@ -8,6 +8,7 @@ import Content from "@/app/content/page";
 import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
 import FooterNav from "./FooterNav";
+import { useContentContext } from "@/ContentContext";
 
 interface LayoutProps {
   sendMessage: (message: string) => void;
@@ -20,7 +21,11 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
-  const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
+
+  const { 
+    isContentAvailable,
+  } = useContentContext();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,7 +67,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
 
   return (
     <div className="w-full ">
-      <Navbar mode="dark" onContentChange={handleContentChange} isContentAvailable={isContentAvailable}  />
+      <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
         <main className={`pt-16 ${isLargerScreen ? 'w-[70%]' : 'w-[100%'}`}>
           {renderContent()}         
@@ -81,7 +86,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
         ) : (
           <>
             {isChatOpen ? (
-              <div className={`fixed bottom-10 w-full ${isTabletScreen ? 'right-0 w-[60%]' : 'left-0 w-full'} h-[80%] bg-white shadow-lg rounded-lg z-50`}>
+              <div className={`fixed bottom-10  ${isTabletScreen ? 'right-0 w-[60%]' : 'left-0 w-full'} h-[80%] bg-white shadow-lg rounded-lg z-50`}>
                 <div className="flex justify-between p-4 border-b bg-[#2e2f2f] rounded-t-lg">
                   <h2 className="text-lg font-bold text-white">Chat</h2>
                   <button className="text-[#a7a7a7]" onClick={toggleChat}>Close</button>

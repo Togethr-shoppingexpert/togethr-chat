@@ -10,7 +10,6 @@ import { useContentContext } from "@/ContentContext";
 
 export default function page({ sendMessage }: { sendMessage: (message: string) =>void}) {
     const [containerWidth, setContainerWidth] = useState<number>(0);
-    const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
 
     const { followupSourcesVisible, 
         followup, 
@@ -18,6 +17,8 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         setIsOpen, 
         followupQues, 
         setUserMessage,
+        isContentAvailable,
+        setIsContentAvailable,
       } = useContentContext();
     
       const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         // Assuming that content availability depends on whether followup is present and has length > 0
         if (followup && followup.length > 0) {
           setIsContentAvailable(true);
+          console.log('content available true');
         } else {
           setIsContentAvailable(false);
         }
