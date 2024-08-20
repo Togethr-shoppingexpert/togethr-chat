@@ -71,7 +71,7 @@ export default function WishlistUI() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { productInfo, bestProducts } = useContentContext();
+  const { productInfo, bestProducts, isContentAvailable } = useContentContext();
 
   const getProductPrice = (productId: string) => {
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
@@ -92,6 +92,7 @@ export default function WishlistUI() {
     <>
       {console.log("productinfo in widhlishtui", productInfo)}
       {console.log("bestproductswishlist", bestProducts)}
+      { isContentAvailable && (
       <div className="flex flex-col  gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
         <div className="text-2xl w-full font-bold text-white"><h4>Top picks for you</h4></div>
         {bestProducts.map((item, index) => {
@@ -137,7 +138,7 @@ export default function WishlistUI() {
           );
         })}
 
-      </div>
+      </div> )}
     </>
   );
 }
