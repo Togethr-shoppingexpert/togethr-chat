@@ -33,9 +33,9 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
   }, [isOpen]);
 
   return (
-    <div className=" lg:w-full pt-10 max-md:w-[380px]">
-    <div className="text-2xl font-bold text-white">Know More</div>
-    <div className={`mb-[100px] relative max-w-2xl ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
+    <div className="max-w-2xl w-[672px] pt-10 max-md:w-[380px]">
+    <div className="text-2xl w-full font-bold text-white my-4"><h4>Know More</h4></div>
+    <div className={`mb-[100px] m-2 relative max-w-2xl ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-1 rounded-lg`}>
       
       <>
         

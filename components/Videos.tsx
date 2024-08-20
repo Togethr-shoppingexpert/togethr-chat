@@ -25,6 +25,7 @@ interface VideoContent {
 
 interface VideosProps {
   content: VideoContent[]; // Updated to take content as a prop
+  heading: string;
 }
 
 const CustomSlider: React.FC<CustomSliderProps> = ({
@@ -97,7 +98,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   );
 };
 
-const Videos: React.FC<VideosProps> = ({ content })=> {
+const Videos: React.FC<VideosProps> = ({ content, heading })=> {
 
 
   const sliderRef = useRef<Slider>(null);
@@ -121,7 +122,7 @@ const Videos: React.FC<VideosProps> = ({ content })=> {
   if (content.length > 0) {
     return (
       <div className=" lg:w-full pt-10 max-md:w-[380px]">
-        <div className="text-2xl font-bold text-white">Videos</div>
+        <div className="text-2xl font-bold text-white">{heading}</div>
         <CustomSlider onPrevClick={goToPrev} onNextClick={goToNext} sliderRef={sliderRef}>
           {content.map((item, index) => {
             const videoId = getVideoId(item.link);

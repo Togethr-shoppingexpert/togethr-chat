@@ -92,8 +92,8 @@ export default function WishlistUI() {
     <>
       {console.log("productinfo in widhlishtui", productInfo)}
       {console.log("bestproductswishlist", bestProducts)}
-      <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
-        <div className="text-2xl font-bold text-white">Top picks for you</div>
+      <div className="flex flex-col  gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
+        <div className="text-2xl w-full font-bold text-white"><h4>Top picks for you</h4></div>
         {bestProducts.map((item, index) => {
           const productPrice = getProductPrice(item.product_id);
           const imageurl=getImageUrl(item.product_id);

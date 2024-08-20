@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
 import ArrowLeft from "../public/arrow-left.png";
 import ArrowRight from "../public/arrow-right.png";
+import { Heading } from "lucide-react";
 
 interface CustomSliderProps {
   children: React.ReactNode;
@@ -76,9 +77,10 @@ interface BlogContent {
 
 interface BlogsProps {
   content: BlogContent[];
+  heading: string;
 }
 
-const Blogs: React.FC<BlogsProps> = ({ content }) => {
+const Blogs: React.FC<BlogsProps> = ({ content, heading }) => {
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -95,7 +97,7 @@ const Blogs: React.FC<BlogsProps> = ({ content }) => {
 
   return (
     <div className="w-full lg:w-full pt-10  max-md:w-[380px]">
-      <div className="text-2xl font-bold text-white">Blogs</div>
+      <div className="text-2xl font-bold text-white">{heading}</div>
       <CustomSlider
         onPrevClick={goToPrev}
         onNextClick={goToNext}

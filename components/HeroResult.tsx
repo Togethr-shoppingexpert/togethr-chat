@@ -63,13 +63,13 @@ const HeroResult = () => {
   const { discoverVideos, discoverBlogs } = useContentContext();
   return (
     
-    <div className="max-w-2xl justify-center h-full flex flex-col gap-y-6 pt-0 px-4 lg:px-0 pb-20 max-md:px-0">
+    <div className="max-w-2xl justify-center h-full flex flex-col gap-y-6 pt-0 px-4 lg:px-0 max-md:px-0">
       <WishlistUI  />
       {/* <div className="w-full flex"> */}
-        <Videos content={discoverVideos}/>
+        <Videos content={discoverVideos} heading="Expert picks"/>
       {/* </div> */}
       {/* <div className="w-full flex justify-end"> */}
-        <Blogs content={discoverBlogs} />
+        <Blogs content={discoverBlogs} heading="Curated articles and blogs" />
       {/* </div> */}
     </div>
   );
