@@ -117,7 +117,7 @@ export default function ContentComponent() {
 
   return (
     <>
-      <div className="bg-[#202222] px-6 lg:px-[6%]">
+      <div className="bg-[#202222] px-6 lg:px-[6%] max-md:px-0">
         
         <div className="lg:px-[6%] bg-[#202222]">
           <Videos content={videoContent}/>

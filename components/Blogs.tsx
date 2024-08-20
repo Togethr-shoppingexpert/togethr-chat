@@ -26,18 +26,28 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
     slidesToShow: 3,
     slidesToScroll: 1,
     arrows: false,
+    swipeToSlide: true, // Enable swipe to slide on mobile devices
+    touchThreshold: 10, 
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1024, // Tablet screen size
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2, // Show 2 slides on tablets
+        },
+      },
+      {
+        breakpoint: 668, // Mobile screen size
+        settings: {
+          slidesToShow: 1, // Show 1 slide on mobile
+          centerMode: true, // Centers the slide on mobile
+          centerPadding: "0px", // Removes padding on the sides of centered slides
         },
       },
     ],
   };
 
   return (
-    <div className="relative px-4">
+    <div className="relative px-4 max-md:w-[380px]">
       <div
         className="w-12 h-12 cursor-pointer absolute z-10 top-[33.3%] -left-0.5"
         onClick={onPrevClick}
@@ -84,7 +94,7 @@ const Blogs: React.FC<BlogsProps> = ({ content }) => {
   }
 
   return (
-    <div className="w-full lg:w-full pt-10">
+    <div className="w-full lg:w-full pt-10 px-4 max-md:w-[380px]">
       <div className="text-2xl font-bold text-white">Blogs</div>
       <CustomSlider
         onPrevClick={goToPrev}

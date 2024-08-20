@@ -18,12 +18,14 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
+  const [isLargerScreen, setIsLargerScreen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
       setIsSmallScreen(screenWidth <= 768);
       setIsTabletScreen(screenWidth > 768 && screenWidth <= 1024);
+      setIsLargerScreen(screenWidth > 1024);
     };
 
     handleResize(); // Check on mount
@@ -60,7 +62,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
     <div className="w-full ">
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
-        <main className={`pt-16 w-[70%] ${isTabletScreen ? 'w-[100%]' : 'w-[70%'}`}>
+        <main className={`pt-16 ${isLargerScreen ? 'w-[70%]' : 'w-[100%'}`}>
           {renderContent()}         
         </main>
         {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
@@ -84,7 +86,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
               </div>
             ) : (
               <button
-                className="fixed bottom-10 right-4 p-3 bg-blue-600 text-white rounded-full shadow-lg z-50"
+                className="fixed bottom-[50px] p-3 bg-blue-600 text-white rounded-full shadow-lg z-50"
                 onClick={toggleChat}
               >
                 Ask Anything

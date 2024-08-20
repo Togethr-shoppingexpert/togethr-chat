@@ -8,11 +8,11 @@ import ContentIcon from "@/public/icons/ContentIcon";
 export default function FooterNav() {
   return (
     <div className="w-full fixed bottom-0 flex justify-between pt-4 py-2 px-8 bg-[#202222] lg:hidden z-[999999999]">
-      {/* <Link href="/discover"> */}
+      <Link href="/discover"> 
         <div>
           <DiscoverIcon width={24} height={24} color="currentColor" />
         </div>
-      {/* </Link> */}
+      </Link> 
       <Link href="/guide">
         <div>
           <BuyingGuideIcon width={24} height={24} color="currentColor" />
