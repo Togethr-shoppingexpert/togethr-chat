@@ -1039,7 +1039,8 @@ export default function Page({ params }: { params: Params }) {
         </footer>*/}
       </div>
       
-      <FooterNav />
+      
+      {/*<FooterNav />*/}
       
     </main>
   );

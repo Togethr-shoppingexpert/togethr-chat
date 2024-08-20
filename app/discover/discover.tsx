@@ -5,11 +5,12 @@ import NameCards from "@/components/NameCards";
 import WishlistUI from "@/components/WishlistUI";
 import Navbar from "@/components/shared/Navbar";
 import Followup from "@/components/Followup";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useContentContext } from "@/ContentContext";
 
 export default function page({ sendMessage }: { sendMessage: (message: string) =>void}) {
     const [containerWidth, setContainerWidth] = useState<number>(0);
+    const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
 
     const { followupSourcesVisible, 
         followup, 
@@ -21,7 +22,14 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
     
       const messagesEndRef = useRef<HTMLDivElement>(null);
 
-
+      useEffect(() => {
+        // Assuming that content availability depends on whether followup is present and has length > 0
+        if (followup && followup.length > 0) {
+          setIsContentAvailable(true);
+        } else {
+          setIsContentAvailable(false);
+        }
+      }, [followup]);
 
 
 
@@ -32,7 +40,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
                
               <HeroResult />
               <div ref={messagesEndRef} />
-              {true && followup && followup.length > 0 && (
+            {/*}  {true && followup && followup.length > 0 && (
                 <div>
                   <Followup
                     containerWidth={containerWidth}
@@ -44,7 +52,20 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
                     mode="dark" 
                   />
                 </div>
-              )}
+              )} */}
+              {isContentAvailable && (
+          <div>
+            <Followup
+              containerWidth={containerWidth}
+              followup={followupQues}
+              isOpen={isOpen}
+              setUserMessage={setUserMessage}
+              sendMessage={sendMessage}
+              setIsOpen={setIsOpen}
+              mode="dark"
+            />
+          </div>
+        )}
             </div>
     </>
   );

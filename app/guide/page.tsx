@@ -25,9 +25,9 @@ export default function Page() {
       <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10  ">
         <div className="max-w-2xl border-2 border-[#3c3b3b] rounded-md p-2">
         
-        <div className="text-white text-left max-w-[60vw] mb-6">
+      {/*  <div className="text-white text-left max-w-[60vw] mb-6">
           <h3 className="text-l font-bold mb-4">{buyingGuide.buying_guide_starting_text}</h3>
-        </div>
+        </div> */}
 
         <div className="relative bg-[#3c3b3b] text-white py-2 px-4 rounded-t-lg z-10 w-full transition mb-5">
           {buyingGuide.buying_guide_factors_options.map((factorOption, index) =>(
@@ -47,8 +47,20 @@ export default function Page() {
                   ))}
                 </ul>
               )}
+              {index !== buyingGuide.buying_guide_factors_options.length - 1 &&
+                <hr className="my-2 border-b-2 border-[#222222]" />}
             </div>
           ))}
+          <div className="flex justify-between items-center w-full cursor-pointer" onClick={() => toggleDetails(99)}>
+              <div className="p-1 cursor-pointer" key={99}>
+                <h4 className="text-lg font-semibold">Key Specifications</h4>
+              </div>
+              <div className="font-semibold">
+                  <h4>{visibleFactors.includes(99) ? "-" : "+"}</h4>
+              </div>
+          </div>
+          {visibleFactors.includes(99) && (
+          <p className="mt-2 whitespace-pre-wrap text-sm pl-4">{buyingGuide.buying_guide_specs_text}</p>)}
         </div>
 
         <div className="text-white text-left max-w-[60vw] mb-6">
@@ -56,10 +68,10 @@ export default function Page() {
           <p className="mt-2 whitespace-pre-wrap text-sm pl-4">{buyingGuide.buying_guide_specs_text}</p>
         </div>
 
-        <div className="text-white text-left max-w-[60vw] mb-6">
+     {/*}   <div className="text-white text-left max-w-[60vw] mb-6">
           <h4 className="text-lg font-semibold">Conclusion</h4>
           <p className="mt-2 text-sm pl-4">{buyingGuide.buying_guide_ending_text}</p>
-        </div>
+        </div> */}
 
         </div>
 
@@ -70,7 +82,6 @@ export default function Page() {
           <Blogs content={guideBlogs} />
         </div>
       </div>
-      <FooterNav />
     </>
   );
 }

@@ -7,6 +7,7 @@ import Wishlist from "@/app/wishlist/page";
 import Content from "@/app/content/page";
 import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
+import FooterNav from "./FooterNav";
 
 interface LayoutProps {
   sendMessage: (message: string) => void;
@@ -19,6 +20,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
+  const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +62,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
 
   return (
     <div className="w-full ">
-      <Navbar mode="dark" onContentChange={handleContentChange} />
+      <Navbar mode="dark" onContentChange={handleContentChange} isContentAvailable={isContentAvailable}  />
       <div className="flex flex-col">
         <main className={`pt-16 ${isLargerScreen ? 'w-[70%]' : 'w-[100%'}`}>
           {renderContent()}         
@@ -68,6 +70,10 @@ export default function Layout({ sendMessage }: LayoutProps) {
         {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
           <Chat sendMessage={sendMessage} />
         </div>*/}
+        {isSmallScreen ? (
+          <FooterNav onContentChange={handleContentChange} />
+        ) : null}
+
         {!isSmallScreen && !isTabletScreen ? (
           <div className="fixed right-0 top-0 w-[400px] overflow-y-scroll products-height border-l-8 border-[#2e2f2f]">
             <Chat sendMessage={sendMessage} />
@@ -85,12 +91,14 @@ export default function Layout({ sendMessage }: LayoutProps) {
                 </div>
               </div>
             ) : (
-              <button
-                className="fixed bottom-[50px] p-3 bg-blue-600 text-white rounded-full shadow-lg z-50"
-                onClick={toggleChat}
-              >
-                Ask Anything
-              </button>
+              <div className="fixed bottom-[50px] w-full flex justify-center z-50">
+                <button
+                  className="p-3 bg-blue-600 text-white rounded-full shadow-lg"
+                  onClick={toggleChat}
+                >
+                  Ask Anything
+                </button>
+              </div>
             )}
           </>
         )}
