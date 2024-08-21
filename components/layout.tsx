@@ -71,7 +71,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
     <div className="w-full ">
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
-        <main className={`pt-16 ${isLargerScreen ? 'w-[70%]' : 'w-[100%'}`}>
+        <main className={`pt-16 ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'}`}>
           {renderContent()}         
         </main>
         {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">

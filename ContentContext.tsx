@@ -64,6 +64,8 @@ interface ContentContextData {
   setFollowupSourcesVisible: (started: boolean) => void;
   followup:any[];
   setFollowup:(followup:SetStateAction<never[]>)=>void;
+  filters:any[];
+  setFilters:(followup:SetStateAction<never[]>)=>void;
   isOpen:boolean;
   setIsOpen: (started: boolean) => void;
   followupQues: any[];
@@ -116,6 +118,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [followupSourcesVisible, setFollowupSourcesVisible] = useState(false);
   const [followup, setFollowup] = useState([]);
+  const [filters, setFilters] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [followupQues, setFollowupQues] = useState<any[]>([]);
   const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
@@ -163,6 +166,8 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       setFollowupSourcesVisible,
                                       followup,
                                       setFollowup,
+                                      filters,
+                                      setFilters,
                                       isOpen,
                                       setIsOpen,
                                       followupQues,

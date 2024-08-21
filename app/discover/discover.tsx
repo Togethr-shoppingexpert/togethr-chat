@@ -5,6 +5,7 @@ import NameCards from "@/components/NameCards";
 import WishlistUI from "@/components/WishlistUI";
 import Navbar from "@/components/shared/Navbar";
 import Followup from "@/components/Followup";
+import Filters from "@/components/Filters";
 import React, { useRef, useState, useEffect } from "react";
 import { useContentContext } from "@/ContentContext";
 
@@ -39,7 +40,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
   return (
     <>
       <div className="w-[100%]  h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">
-               
+              <Filters />
               <HeroResult />
               <div ref={messagesEndRef} />
             {/*}  {true && followup && followup.length > 0 && (

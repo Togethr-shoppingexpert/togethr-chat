@@ -188,6 +188,7 @@ export default function Page({ params }: { params: Params }) {
     setFollowup,
     setFollowupQues,
     conversationHistorydata,
+    setFilters
   } = useContentContext();
 
 
@@ -230,6 +231,17 @@ export default function Page({ params }: { params: Params }) {
             
             setFollowupQues(followUpQuestions);
             console.log('followUpQuestions', followUpQuestions);
+          } else if (eventData.type === "follow_up_suggestion") {
+            //let messages = eventData.data;
+            //followupques = messages;
+            
+           // setFollowupSourcesVisible(true);
+           const suggestion = eventData.follow_up_list;
+           setFilters(suggestion);
+            //setFollowup(followUpQuestions);
+             
+            //setFollowupQues(followUpQuestions);
+            console.log('followUpSuggestions', suggestion);
           } else if (eventData.type === "product information") {
             setTimeout(() => {
               const formattedProducts: Product[] = eventData.data
