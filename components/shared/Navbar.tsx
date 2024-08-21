@@ -1,6 +1,6 @@
-
+"use client";
 import { FC,useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Heart from "../../public/icons/HeartIcon";
@@ -14,13 +14,19 @@ interface NavbarProps {
 const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
   const { isChatStarted, setMessages } = useContentContext();
 
-  const { 
-    isContentAvailable,
-  } = useContentContext();
+  const { isContentAvailable} = useContentContext();
+  const router = useRouter();
+  const pathname = usePathname();  // Use the usePathname hook
+  console.log('paath name', pathname);
 
-  const handleInputChange = () =>{
-    setMessages([]);    
-  }
+  const handleInputChange = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    setMessages([]);
+    if (pathname === "/") {
+      e.preventDefault();  // Prevent default navigation
+      router.push('/');    // Navigate to the homepage programmatically
+      window.location.reload(); // Force a full page reload
+    }
+  };
 
 
   return (

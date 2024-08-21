@@ -36,6 +36,8 @@ interface ContentContextData {
   setGuideVideos: (videos: any[]) => void;
   setGuideBlogs: (blogs: any[]) => void;
   setBuyingGuide: React.Dispatch<React.SetStateAction<BuyingGuide>>;
+  isChatOpen:boolean;
+  setIsChatOpen: (started: boolean) => void;
   isChatStarted:boolean;
   setIsChatStarted: (started: boolean) => void;
   bestProducts:any[];
@@ -101,6 +103,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [blogsContent, setBlogsContent] = useState<any[]>([]);
   const [buyingGuide, setBuyingGuide] = useState<BuyingGuide>(defaultBuyingGuide);
   const [isChatStarted,setIsChatStarted]=useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [bestProducts,setBestProducts]=useState<any[]>([]);
   const [productInfo,setProductInfo]=useState<any[]>([]);
   const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
@@ -134,6 +137,8 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
                                       setBuyingGuide,
                                       isChatStarted,
                                       setIsChatStarted ,
+                                      isChatOpen,
+                                      setIsChatOpen,
                                       bestProducts,
                                       setBestProducts,
                                       productInfo,

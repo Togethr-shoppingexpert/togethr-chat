@@ -17,13 +17,15 @@ interface LayoutProps {
 
 export default function Layout({ sendMessage }: LayoutProps) {
   const [activeContent, setActiveContent] = useState<string | null>(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
 
   const { 
     isContentAvailable,
+    isChatOpen,
+    setIsChatOpen
   } = useContentContext();
 
 
@@ -86,17 +88,17 @@ export default function Layout({ sendMessage }: LayoutProps) {
         ) : (
           <>
             {isChatOpen ? (
-              <div className={`fixed bottom-10  ${isTabletScreen ? 'right-0 w-[60%]' : 'left-0 w-full'} h-[80%] bg-white shadow-lg rounded-lg z-50`}>
+              <div className={`fixed bottom-[66px]  ${isTabletScreen ? 'right-0 w-[60%]' : 'left-0 w-full'} h-[80%] bg-white shadow-lg rounded-lg z-50`}>
                 <div className="flex justify-between p-4 border-b bg-[#2e2f2f] rounded-t-lg">
                   <h2 className="text-lg font-bold text-white">Chat</h2>
                   <button className="text-[#a7a7a7]" onClick={toggleChat}>Close</button>
                 </div>
-                <div className="overflow-y-scroll h-full bg-[#202222]">
+                <div className="overflow-y-scroll h-[calc(100%-80px)] bg-[#202222]">
                   <Chat sendMessage={sendMessage} />
                 </div>
               </div>
             ) : (
-              <div className="fixed bottom-[50px] w-full flex justify-center z-50">
+              <div className="fixed bottom-[66px] w-full flex justify-center z-50">
                 <button
                   className="p-3 bg-blue-600 text-white rounded-full shadow-lg"
                   onClick={toggleChat}

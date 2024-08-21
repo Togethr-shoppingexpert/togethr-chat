@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { useContentContext } from "@/ContentContext";
 
 interface FollowupProps {
   containerWidth: number;
@@ -15,6 +16,9 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
  // const [isAccordionOpen, setIsAccordionOpen] = useState(!isOpen);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const { 
+    setIsChatOpen,
+  } = useContentContext();
  {/*} const toggleAccordion = () => {
     setIsAccordionOpen(!isAccordionOpen);
     setIsOpen(!isOpen);
@@ -55,7 +59,7 @@ const Followup: React.FC<FollowupProps> = ({ mode,containerWidth, followup, isOp
         <div className={`relative ${mode==="dark"?"bg-[#3c3b3b] text-white":"bg-white text-black"} p-4 rounded-t-lg z-10 w-full transition`}>
           {followup && followup.map((ques, index) => (
             <div key={index}>
-              <div className='flex justify-between items-center w-full cursor-pointer' onClick={() => { sendMessage(ques);setIsOpen(!isOpen); }}>
+              <div className='flex justify-between items-center w-full cursor-pointer' onClick={() => { sendMessage(ques);setIsOpen(!isOpen); setIsChatOpen(true);}}>
                 <div  className='p-1 cursor-pointer' key={index}><h4>{ques}</h4></div>
                 <div className='font-semibold'><h4>+</h4></div>
               </div>
