@@ -103,7 +103,7 @@ export default function WishlistUI() {
 
           return (
             <Link href={productLink} key={index} passHref legacyBehavior>
-              <a className="lg:w-full max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
+              <a className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
               target="_blank" 
               rel="noopener noreferrer"
               >
@@ -134,7 +134,7 @@ export default function WishlistUI() {
                   </div>
                   <div className="text-gray-400 text-[15px]">{item.recommendation_reason}</div>
                 </div>
-                <div onClick={() => {}} className="p-2 flex justify-center items-center rounded-full">
+                <div onClick={() => {}} className="absolute top-2 right-2 z-10 p-2 flex rounded-full">
                   <Heart width={24} height={24} color="white" />
                 </div>
               </a>
