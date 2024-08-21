@@ -7,6 +7,7 @@ import TestThree from "../public/test/test3.png";
 import BlackTick from "../public/test/blacktick.png";
 import Favourite from "../public/test/favourite.png";
 import { useContentContext } from "@/ContentContext";
+import Heart from "@/public/icons/HeartIcon";
 
 const mockdata = [
   {
@@ -132,6 +133,9 @@ export default function WishlistUI() {
                     </div>
                   </div>
                   <div className="text-gray-400 text-[15px]">{item.recommendation_reason}</div>
+                </div>
+                <div onClick={() => {}} className="p-2 flex justify-center items-center rounded-full">
+                  <Heart width={24} height={24} color="white" />
                 </div>
               </a>
             </Link>

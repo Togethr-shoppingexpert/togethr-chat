@@ -40,22 +40,10 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
   return (
     <>
       <div className="w-[100%]  h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">
-              <Filters />
+              <Filters sendMessage={sendMessage}/>
               <HeroResult />
               <div ref={messagesEndRef} />
-            {/*}  {true && followup && followup.length > 0 && (
-                <div>
-                  <Followup
-                    containerWidth={containerWidth}
-                    followup={followupQues}
-                    isOpen={isOpen}
-                    setUserMessage={setUserMessage}
-                    sendMessage={sendMessage} 
-                    setIsOpen={setIsOpen}
-                    mode="dark" 
-                  />
-                </div>
-              )} */}
+
               {isContentAvailable && (
           <div>
             <Followup

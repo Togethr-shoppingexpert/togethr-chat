@@ -309,3 +309,15 @@ margin-top: 70px;
 }
 
 
+/* In a global CSS file or within a <style jsx> block */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+
+
