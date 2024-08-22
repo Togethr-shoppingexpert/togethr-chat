@@ -8,7 +8,7 @@ import Favourite from "../public/test/favourite.png";
 import NameCards from "./NameCards";
 import Videos from "./Videos";
 import Blogs from "./Blogs";
-import WishlistUI from "./WishlistUI";
+import WishlistUI from "./HomeProducts";
 import { useContentContext } from "@/ContentContext";
 
 // const mockdata = [

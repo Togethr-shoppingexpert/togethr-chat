@@ -42,7 +42,7 @@ export default function Home() {
   } = useContentContext();
 
 
-const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+  const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
 
   // guestsignup and localstorage logic
   useEffect(() => {

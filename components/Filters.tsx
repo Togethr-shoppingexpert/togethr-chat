@@ -52,7 +52,7 @@ const Filters: React.FC<FilterProps> = ({ sendMessage }) => {
   };
 
   return (
-    <div className="relative w-[90%] mx-auto dark py-2 px-4  rounded-md overflow-hidden">
+    <div className="relative w-[95%] mx-auto dark py-2 px-4  rounded-md overflow-hidden">
       {/* Left Arrow Button */}
       {showLeftArrow && (
         <button
