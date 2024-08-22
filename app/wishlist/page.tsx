@@ -1,56 +1,66 @@
-"use client"
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import WishlistUI from "@/components/WishlistUI";
 import { config } from "@/constants";
 const API_ENDPOINT = config.url;
 
-interface WishlistProduct {
-  product_name: string;
-  product_id: string;
-  recommendation_reason: string;
+interface ProductReview {
+  productId: string;
+  review: string;
 }
 
 export default function Wishlist() {
-  const [wishlistProducts, setWishlistProducts] = useState<WishlistProduct[]>([]);
+  const [productReviews, setProductReviews] = useState<ProductReview[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   // Fetch conversationId from sessionStorage with retry mechanism
-  const fetchConversationId = async () => {
+  const fetchConversationId = async (): Promise<string | null> => {
     let id = sessionStorage.getItem("conversationId");
 
     if (!id) {
+      console.log("Conversation ID not found initially, retrying...");
       await new Promise((resolve) => setTimeout(resolve, 500));
       id = sessionStorage.getItem("conversationId");
 
       if (!id) {
-        console.error("Conversation ID not found in local storage after timeout.");
+        console.error("Conversation ID not found in sessionStorage after timeout.");
         return null;
       }
     }
 
-    return conversationId;
+    console.log("Retrieved Conversation ID:", id);
+    return id;
   };
 
-  // Fetch wishlist products from the API
-  const fetchWishlistProducts = async (id: string) => {
+  // Fetch product reviews from the API
+  const fetchProductReviews = async (id: string) => {
+    console.log("Fetching product reviews with Conversation ID:", id);
+
     try {
       const response = await fetch(`https://${API_ENDPOINT}/api/wishlist/${id}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching product reviews: ${response.status}`);
+      }
       const data = await response.json();
-      setWishlistProducts(data.products); // Assuming the response contains a "products" field
+      console.log("Product reviews fetched successfully:", data);
+      setProductReviews(data.productReviews); // Assuming the response contains a "productReviews" field
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching wishlist products:", error);
+      console.error("Error fetching product reviews:", error);
       setLoading(false);
     }
   };
 
+  // Initialize conversation ID and fetch product reviews
   useEffect(() => {
     const initialize = async () => {
       const id = await fetchConversationId();
       if (id) {
         setConversationId(id);
-        await fetchWishlistProducts(id);
+        await fetchProductReviews(id);
+      } else {
+        setLoading(false); // Stop loading if no conversation ID is found
       }
     };
 
@@ -67,10 +77,10 @@ export default function Wishlist() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ product_id: productId }),
+        body: JSON.stringify({ productId }),
       });
       // Refresh wishlist after adding
-      fetchWishlistProducts(conversationId);
+      fetchProductReviews(conversationId);
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
     }
@@ -86,10 +96,10 @@ export default function Wishlist() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ product_id: productId }),
+        body: JSON.stringify({ productId }),
       });
       // Refresh wishlist after deletion
-      fetchWishlistProducts(conversationId);
+      fetchProductReviews(conversationId);
     } catch (error) {
       console.error("Error deleting product from wishlist:", error);
     }
@@ -101,7 +111,7 @@ export default function Wishlist() {
 
   return (
     <WishlistUI
-      wishlistProducts={wishlistProducts}
+      productReviews={productReviews}
       onDelete={handleDeleteFromWishlist}
       onAdd={handleAddToWishlist}
     />

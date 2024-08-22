@@ -84,7 +84,7 @@ export default function HomeProducts() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ product_id: productId }),
+        body: JSON.stringify({ productId: productId }),
       });
       alert('Product added to wishlist');
     } catch (error) {

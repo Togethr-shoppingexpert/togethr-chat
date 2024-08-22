@@ -5,10 +5,9 @@ import BlackTick from "../public/test/blacktick.png";
 import Heart from "@/public/icons/HeartIcon";
 import { useContentContext } from "@/ContentContext";
 
-interface Product {
-  product_name: string;
-  product_id: string;
-  recommendation_reason: string;
+interface ProductReview {
+  productId: string;
+  review: string;
 }
 
 interface ProductInfo {
@@ -24,13 +23,13 @@ interface ProductInfo {
 }
 
 interface WishlistUIProps {
-  wishlistProducts?: Product[];
+  productReviews?: ProductReview[];
   onDelete: (productId: string) => void;
   onAdd: (productId: string) => void;
 }
 
 export default function WishlistUI({
-  wishlistProducts = [],
+  productReviews = [],
   onDelete,
   onAdd,
 }: WishlistUIProps) {
@@ -64,16 +63,17 @@ export default function WishlistUI({
           <div className="text-2xl w-full font-bold text-white">
             <h4>Your Wishlist</h4>
           </div>
-          {wishlistProducts.map((item, index) => {
-            const productPrice = getProductPrice(item.product_id);
-            const imageurl = getImageUrl(item.product_id);
-            const productLink = getProductLink(item.product_id);
+          {productReviews.map((item, index) => {
+            const productPrice = getProductPrice(item.productId);
+            const imageurl = getImageUrl(item.productId);
+            const productLink = getProductLink(item.productId);
 
             return (
               <Link href={productLink} key={index} passHref legacyBehavior>
-                <a className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
-                   target="_blank"
-                   rel="noopener noreferrer"
+                <a
+                  className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <div className="w-full h-50 relative rounded-xl bg-custom-gradient-cards">
                     <Image
@@ -86,7 +86,7 @@ export default function WishlistUI({
                   <div className="flex flex-col gap-y-2">
                     <div className="flex justify-between items-center">
                       <div className="text-[17px] text-white">
-                        {item.product_name}
+                        {item.review.split("\n")[0]} {/* Display product name */}
                       </div>
                       <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
                         <div className="w-3">
@@ -94,12 +94,12 @@ export default function WishlistUI({
                         </div>
                         <div>{productPrice}</div>
                       </div>
-                      <div onClick={() => onDelete(item.product_id)} className="w-5">
+                      <div onClick={() => onDelete(item.productId)} className="w-5">
                         <Heart width={24} height={24} color="red" />
                       </div>
                     </div>
                     <div className="text-gray-400 text-[15px]">
-                      {item.recommendation_reason}
+                      {item.review.split("\n").slice(1).join("\n")} {/* Display review */}
                     </div>
                   </div>
                 </a>
