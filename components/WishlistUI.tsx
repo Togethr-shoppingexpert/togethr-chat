@@ -59,8 +59,8 @@ export default function WishlistUI({
   return (
     <>
       {isContentAvailable && (
-        <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
-          <div className="text-2xl w-full font-bold text-white">
+        <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 pb-10 w-[100%] justify-center">
+          <div className="text-2xl w-full pl-10 font-bold text-white">
             <h4>Your Wishlist</h4>
           </div>
           {productReviews.map((item, index) => {
@@ -69,13 +69,15 @@ export default function WishlistUI({
             const productLink = getProductLink(item.productId);
 
             return (
+              <div className="relative flex justify-center items-center max-w-2xl">
               <Link href={productLink} key={index} passHref legacyBehavior>
                 <a
-                  className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
+                  className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col  gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
                   target="_blank"
                   rel="noopener noreferrer"
-                >
-                  <div className="w-full h-50 relative rounded-xl bg-custom-gradient-cards">
+                > 
+                <div className="flex">
+                  <div className="w-52 h-52 relative rounded-xl bg-custom-gradient-cards">
                     <Image
                       src={imageurl}
                       alt={`wishlist-product-${index + 1}`}
@@ -83,8 +85,7 @@ export default function WishlistUI({
                       className="rounded-xl product-image-class"
                     />
                   </div>
-                  <div className="flex flex-col gap-y-2">
-                    <div className="flex justify-between items-center">
+                  <div className="flex flex-col justify-start items-start w-[calc(100%- 300px)] m-4">
                       <div className="text-[17px] text-white">
                         {item.review.split("\n")[0]} {/* Display product name */}
                       </div>
@@ -94,16 +95,23 @@ export default function WishlistUI({
                         </div>
                         <div>{productPrice}</div>
                       </div>
-                      <div onClick={() => onDelete(item.productId)} className="w-5">
-                        <Heart width={24} height={24} color="red" />
-                      </div>
-                    </div>
-                    <div className="text-gray-400 text-[15px]">
+
+                  </div>
+                  </div>
+                  <div className="flex flex-col gap-y-2">
+
+                    <div className=" whitespace-pre-wrap text-gray-400 text-[15px]">
                       {item.review.split("\n").slice(1).join("\n")} {/* Display review */}
                     </div>
                   </div>
                 </a>
               </Link>
+              <div  className=" absolute right-5 top-2 z-10">
+                 <button className="text-[#a7a7a7] absolute right-2 top-2 z-10" onClick={() => onDelete(item.productId)}>
+                    <span>Remove</span>
+                  </button>
+              </div>
+              </div>
             );
           })}
         </div>
