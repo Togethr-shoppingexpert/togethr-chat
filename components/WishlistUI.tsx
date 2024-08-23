@@ -702,7 +702,7 @@ export default function WishlistUI({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="flex">
+                  <div className="flex max-md:flex-col justify-center items-center">
                     <div className="w-52 h-52 relative rounded-xl bg-custom-gradient-cards">
                       <Image
                         src={imageurl}

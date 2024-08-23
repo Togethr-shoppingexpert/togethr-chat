@@ -115,37 +115,42 @@ export default function HomeProducts() {
                   <a className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
                      target="_blank"
                      rel="noopener noreferrer"
-                  >
-                    <div className="w-full h-50 relative rounded-xl bg-custom-gradient-cards">
-                      <Image
-                        src={imageurl}
-                        alt={`product-${index + 1}`}
-                        layout="fill"
-                        className="rounded-xl product-image-class"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <div className="flex justify-between items-center">
-                        <div className="flex flex-col lg:flex-row justify-between h-max gap-y-2 gap-x-4 items-start lg:items-center">
-                          <div className="text-[17px] text-white mt-2 lg:mt-0">
-                            {item.product_name}
-                          </div>
-                          <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
-                            <div className="w-3">
-                              <Image src={BlackTick} alt="tick" />
-                            </div>
-                            <div>{productPrice}</div>
-                          </div>
-                        </div>
-                        <div className="w-5">
-                          <Image src={Favourite} alt="favourite" />
-                        </div>
-                      </div>
-                      <div className="text-gray-400 text-[15px]">{item.recommendation_reason}</div>
-                    </div>
+                  > 
+<div className="flex flex-col lg:flex-row lg:items-start gap-y-4 lg:gap-x-4 max-md:items-center max-md:justify-center ">
+  <div className="w-[80%] h-52 lg:w-[20%] flex  it relative rounded-xl bg-custom-gradient-cards">
+    <Image
+      src={imageurl}
+      alt={`product-${index + 1}`}
+      layout="fill"
+      className="rounded-xl product-image-class"
+    />
+  </div>
+  <div className="flex flex-col gap-y-2 lg:w-[80%] max-sm:p-4">
+    <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row justify-between h-max gap-y-2 gap-x-4 items-start lg:items-center">
+        <div className="text-[17px] text-white mt-2 lg:mt-0">
+          {item.product_name}
+        </div>
+        <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
+          <div className="w-3">
+            <Image src={BlackTick} alt="tick" />
+          </div>
+          <div>{productPrice}</div>
+        </div>
+      </div>
+      <div className="w-5">
+        <Image src={Favourite} alt="favourite" />
+      </div>
+    </div>
+    <div className="text-gray-400 text-[15px]">
+      {item.recommendation_reason}
+    </div>
+  </div>
+</div>
+
                   </a>
                 </Link>
-                <div onClick={() => handleAddToWishlist(item.product_id)} className="absolute top-2 right-2 z-5 p-2 flex rounded-full cursor-pointer">
+                <div onClick={() => handleAddToWishlist(item.product_id)} className="absolute max-sm:top-0 max-sm:right-0 top-2 right-2 z-5 p-2 flex rounded-full cursor-pointer">
                   <Heart width={24} height={24} color={isHeartFilled ? "red" : "white"} />
                 </div>
               </div>
