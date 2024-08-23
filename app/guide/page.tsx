@@ -61,7 +61,8 @@ export default function Page() {
               </div>
           </div>
           {visibleFactors.includes(99) && (
-          <p className="mt-2 whitespace-pre-wrap text-sm pl-4">{buyingGuide.buying_guide_specs_text}</p>)}
+            <p className="mt-2 whitespace-pre-wrap text-sm pl-4">{buyingGuide.buying_guide_specs_text}</p>
+          )}
         </div>
 
   {/*}      <div className="text-white text-left max-w-[60vw] mb-6">
