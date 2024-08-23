@@ -11,6 +11,7 @@ interface ProductReview {
 
 export default function Wishlist() {
   const [productReviews, setProductReviews] = useState<ProductReview[]>([]);
+  const [productId, setProductId] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [conversationId, setConversationId] = useState<string | null>(null);
 
@@ -46,6 +47,8 @@ export default function Wishlist() {
       console.log("Product reviews fetched successfully:", data);
       setProductReviews(data.productReviews); // Assuming the response contains a "productReviews" field
       setLoading(false);
+      setProductId(data.productIds);
+      console.log('fetched product ids', data.productIds);
     } catch (error) {
       console.error("Error fetching product reviews:", error);
       setLoading(false);
@@ -111,9 +114,10 @@ export default function Wishlist() {
 
   return (
     <WishlistUI
-      productReviews={productReviews}
+      //productReviews={productReviews}
+      productIds={productId}
       onDelete={handleDeleteFromWishlist}
-      onAdd={handleAddToWishlist}
+     // onAdd={handleAddToWishlist}
     />
   );
 }
