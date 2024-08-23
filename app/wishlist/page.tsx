@@ -113,8 +113,9 @@ export default function Wishlist() {
   }
 
   return (
+   
     <WishlistUI
-      //productReviews={productReviews}
+      productReviews={productReviews}
       productIds={productId}
       onDelete={handleDeleteFromWishlist}
      // onAdd={handleAddToWishlist}
