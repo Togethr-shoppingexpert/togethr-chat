@@ -27,6 +27,8 @@ export default function HomeProducts() {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
 
+
+
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
@@ -40,7 +42,7 @@ export default function HomeProducts() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { productInfo, bestProducts, isContentAvailable } = useContentContext();
+  const { productInfo, bestProducts, isContentAvailable, filledHearts, setFilledHearts } = useContentContext();
 
   const getProductPrice = (productId: string) => {
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
@@ -87,6 +89,8 @@ export default function HomeProducts() {
         body: JSON.stringify({ productId: productId }),
       });
       alert('Product added to wishlist');
+
+      setFilledHearts(productId, true);
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
     }
@@ -103,6 +107,7 @@ export default function HomeProducts() {
             const productPrice = getProductPrice(item.product_id);
             const imageurl = getImageUrl(item.product_id);
             const productLink = getProductLink(item.product_id);
+            const isHeartFilled = filledHearts.has(item.product_id);
 
             return (
               <div key={index} className="relative">
@@ -140,8 +145,8 @@ export default function HomeProducts() {
                     </div>
                   </a>
                 </Link>
-                <div onClick={() => handleAddToWishlist(item.product_id)} className="absolute top-2 right-2 z-50 p-2 flex rounded-full cursor-pointer">
-                  <Heart width={24} height={24} color="white" />
+                <div onClick={() => handleAddToWishlist(item.product_id)} className="absolute top-2 right-2 z-5 p-2 flex rounded-full cursor-pointer">
+                  <Heart width={24} height={24} color={isHeartFilled ? "red" : "white"} />
                 </div>
               </div>
             );

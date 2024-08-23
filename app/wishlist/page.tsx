@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import WishlistUI from "@/components/WishlistUI";
+import { useContentContext } from "@/ContentContext";
 import { config } from "@/constants";
 const API_ENDPOINT = config.url;
 
@@ -9,11 +10,23 @@ interface ProductReview {
   review: string;
 }
 
+interface Wishlist{
+  productIds: string[],
+  productReviews: ProductReview[],
+}
+
+
 export default function Wishlist() {
   const [productReviews, setProductReviews] = useState<ProductReview[]>([]);
   const [productId, setProductId] = useState<string[]>([]);
+  const [wishlist, setWishlist] = useState<Wishlist>({
+    productIds: [],
+    productReviews: [],
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const [conversationId, setConversationId] = useState<string | null>(null);
+
+  const {setFilledHearts, filledHearts } = useContentContext();
 
   // Fetch conversationId from sessionStorage with retry mechanism
   const fetchConversationId = async (): Promise<string | null> => {
@@ -45,6 +58,7 @@ export default function Wishlist() {
       }
       const data = await response.json();
       console.log("Product reviews fetched successfully:", data);
+      setWishlist(data);
       setProductReviews(data.productReviews); // Assuming the response contains a "productReviews" field
       setLoading(false);
       setProductId(data.productIds);
@@ -103,6 +117,9 @@ export default function Wishlist() {
       });
       // Refresh wishlist after deletion
       fetchProductReviews(conversationId);
+      alert('Product removed to wishlist');
+
+      setFilledHearts(productId, false);
     } catch (error) {
       console.error("Error deleting product from wishlist:", error);
     }
@@ -115,8 +132,9 @@ export default function Wishlist() {
   return (
    
     <WishlistUI
-      productReviews={productReviews}
-      productIds={productId}
+      wishlist={wishlist}
+      //productReviews={productReviews}
+      //productIds={productId}
       onDelete={handleDeleteFromWishlist}
      // onAdd={handleAddToWishlist}
     />

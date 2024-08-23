@@ -1,9 +1,8 @@
 "use client"
-import React, { createContext, useState, useContext, ReactNode, FC, SetStateAction } from 'react';
+import React, { createContext, useState, useContext, ReactNode, FC, SetStateAction, useMemo } from 'react';
 
 interface Message {
   sender: string;
-  // content: string;
   content: JSX.Element | string | null;
 }
 
@@ -20,7 +19,6 @@ interface BuyingGuide {
   buying_guide_ending_text: string;
 }
 
-// Define the shape of your context data
 interface ContentContextData {
   videoContent: any[];
   blogsContent: any[];
@@ -47,7 +45,7 @@ interface ContentContextData {
   conversationHistorydata: any[];
   setConversationHistorydata: (conversationHistory: any[]) => void;
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>; // Updated here
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   productsHistory: any[];
   setProductsHistory: (productsHistory: any[]) => void;
   isLoading:boolean;
@@ -72,9 +70,10 @@ interface ContentContextData {
   setFollowupQues: (ques: any[]) => void;
   isContentAvailable:boolean;
   setIsContentAvailable: (content: boolean) => void;
+  filledHearts: Set<string>;
+  setFilledHearts: (productId: string, isFilled: boolean) => void;
 }
 
-// Create the context with default values
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
 
 export const useContentContext = () => {
@@ -85,7 +84,6 @@ export const useContentContext = () => {
   return context;
 };
 
-// Create a provider component
 export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const defaultBuyingGuide: BuyingGuide = {
@@ -96,7 +94,6 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     buying_guide_ending_text: "",
   };
 
-
   const [guideVideos, setGuideVideos] = useState<any[]>([]);
   const [guideBlogs, setGuideBlogs] = useState<any[]>([]);
   const [discoverVideos, setDiscoverVideos] = useState<any[]>([]);
@@ -104,10 +101,10 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [videoContent, setVideoContent] = useState<any[]>([]);
   const [blogsContent, setBlogsContent] = useState<any[]>([]);
   const [buyingGuide, setBuyingGuide] = useState<BuyingGuide>(defaultBuyingGuide);
-  const [isChatStarted,setIsChatStarted]=useState(false);
+  const [isChatStarted, setIsChatStarted] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [bestProducts,setBestProducts]=useState<any[]>([]);
-  const [productInfo,setProductInfo]=useState<any[]>([]);
+  const [bestProducts, setBestProducts] = useState<any[]>([]);
+  const [productInfo, setProductInfo] = useState<any[]>([]);
   const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [productsHistory, setProductsHistory] = useState<any[]>([]);
@@ -122,59 +119,77 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [followupQues, setFollowupQues] = useState<any[]>([]);
   const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
+  const [filledHearts, setFilledHearts] = useState<Set<string>>(new Set());
+
+  const updateFilledHearts = (productId: string, isFilled: boolean) => {
+    setFilledHearts(prev => {
+      const newSet = new Set(prev);
+      if (isFilled) {
+        newSet.add(productId);
+      } else {
+        newSet.delete(productId);
+      }
+      return newSet;
+    });
+  };
+
+  const contextValue = useMemo(() => ({
+    videoContent,
+    blogsContent,
+    buyingGuide,
+    setVideoContent,
+    setBlogsContent,
+    discoverVideos,
+    setDiscoverVideos,
+    discoverBlogs,
+    setDiscoverBlogs,
+    guideBlogs,
+    guideVideos,
+    setGuideBlogs,
+    setGuideVideos,
+    setBuyingGuide,
+    isChatStarted,
+    setIsChatStarted,
+    isChatOpen,
+    setIsChatOpen,
+    bestProducts,
+    setBestProducts,
+    productInfo,
+    setProductInfo,
+    conversationHistorydata,
+    setConversationHistorydata,
+    messages,
+    setMessages,
+    productsHistory,
+    setProductsHistory,
+    isLoading,
+    setIsLoading,
+    userMessage,
+    setUserMessage,
+    currentoptionvisible,
+    setCurrentoptionvisible,
+    curation,
+    setCuration,
+    currentOptions,
+    setCurrentOptions,
+    followupSourcesVisible,
+    setFollowupSourcesVisible,
+    followup,
+    setFollowup,
+    filters,
+    setFilters,
+    isOpen,
+    setIsOpen,
+    followupQues,
+    setFollowupQues,
+    isContentAvailable,
+    setIsContentAvailable,
+    filledHearts,
+    setFilledHearts: updateFilledHearts,
+  }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts]);
 
   return (
-    <ContentContext.Provider value={{ videoContent, 
-                                      blogsContent, 
-                                      buyingGuide, 
-                                      setVideoContent, 
-                                      setBlogsContent, 
-                                      discoverVideos,
-                                      setDiscoverVideos,
-                                      discoverBlogs,
-                                      setDiscoverBlogs,
-                                      guideBlogs,
-                                      guideVideos,
-                                      setGuideBlogs,
-                                      setGuideVideos,
-                                      setBuyingGuide,
-                                      isChatStarted,
-                                      setIsChatStarted ,
-                                      isChatOpen,
-                                      setIsChatOpen,
-                                      bestProducts,
-                                      setBestProducts,
-                                      productInfo,
-                                      setProductInfo,
-                                      conversationHistorydata,
-                                      setConversationHistorydata,
-                                      messages,
-                                      setMessages,
-                                      productsHistory,
-                                      setProductsHistory,
-                                      isLoading,
-                                      setIsLoading,
-                                      userMessage,
-                                      setUserMessage,
-                                      currentoptionvisible,
-                                      setCurrentoptionvisible,
-                                      curation,
-                                      setCuration,
-                                      currentOptions,
-                                      setCurrentOptions,
-                                      followupSourcesVisible,
-                                      setFollowupSourcesVisible,
-                                      followup,
-                                      setFollowup,
-                                      filters,
-                                      setFilters,
-                                      isOpen,
-                                      setIsOpen,
-                                      followupQues,
-                                      setFollowupQues,
-                                      isContentAvailable,
-                                      setIsContentAvailable,
-                                    }}>
+    <ContentContext.Provider value={contextValue}>
       {children}
     </ContentContext.Provider>
   );
