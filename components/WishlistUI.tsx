@@ -23,7 +23,7 @@ interface Product{
   description?: string;
   media: Array<any>;
   prices: Array<string>;
-  productId: string;
+  product_id: string;
   rating?: number;
   reviews_results?: any;
   sellers_results?: any;
@@ -84,7 +84,7 @@ export default function WishlistUI({
     description: "",
     media: [],
     prices: [],
-    productId: "",
+    product_id: "",
     rating: 0 ,
     reviews_results: [],
     sellers_results: [],
@@ -124,28 +124,28 @@ export default function WishlistUI({
 
   const getProductPrice = (productId: string) => {
     const product = productInfo.find(
-      (info: Product) => info.productId === productId
+      (info: Product) => info.product_id === productId
     );
     return product ? product.prices[0] : "Price not available";
   };
 
-  const getProductTitle = (productId: string) : string => {
-    if (product && product.title && productId == product.productId) {
+  const getProductTitle = (): string => {
+    if (product && product.title) {
       return product.title; // Assuming the first media item is the image
     }
     console.log('product title of Product api', product.title);
     return  "";
   };
 
-  const getImageUrl = (productId: string): string => {
-    if (product && product.media && product.media.length > 0 && productId == product.productId) {
+  const getImageUrl = (): string => {
+    if (product && product.media && product.media.length > 0) {
       return product.media[0].link; // Assuming the first media item is the image
     }
     return ""; // Return an empty string if no media is available
   }
 
-  const getProductLink = (productId: string): string => {
-    if (product && productId == product.productId &&  product.sellers_results && product.sellers_results.online_sellers && product.sellers_results.length > 0) {
+  const getProductLink = (): string => {
+    if (product && product.sellers_results && product.sellers_results.online_sellers && product.sellers_results.length > 0) {
       return product.sellers_results.online_sellers[0].link; // Assuming the first media item is the image
     }
     return "#";
@@ -175,9 +175,9 @@ export default function WishlistUI({
           fetchProduct(productId);
           {product}
           const productPrice = getProductPrice(productId);
-          const imageurl = getImageUrl(productId);
-          const productLink = getProductLink(productId);
-          const title = getProductTitle(productId);
+          const imageurl = getImageUrl();
+          const productLink = getProductLink();
+          const title = getProductTitle();
 
           // Find the corresponding review for this product
           const review = wishlist.productReviews.find(
