@@ -188,6 +188,7 @@ export default function Page({ params }: { params: Params }) {
     setFollowup,
     setFollowupQues,
     conversationHistorydata,
+    setIsContentAvailable,
     setFilters
   } = useContentContext();
 
@@ -778,6 +779,11 @@ export default function Page({ params }: { params: Params }) {
           const data = await response.json();
           const { conversationHistory } = data;
           console.log("history: ", data);
+          if(conversationHistory.length > 0){
+            console.log('conversation history length > 0')
+            setIsChatStarted(true);
+            setIsContentAvailable(true);
+          }
           setConversationHistorydata(conversationHistory);
           //setProductsHistory(products[0]);
           setConversationId(storedConversationId);

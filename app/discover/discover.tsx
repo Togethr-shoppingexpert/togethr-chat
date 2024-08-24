@@ -13,6 +13,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
     const [containerWidth, setContainerWidth] = useState<number>(0);
 
     const { followupSourcesVisible, 
+        productsHistory,
         followup, 
         isOpen, 
         setIsOpen, 
@@ -26,7 +27,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
 
       useEffect(() => {
         // Assuming that content availability depends on whether followup is present and has length > 0
-        if (followup && followup.length > 0) {
+        if ((followup && followup.length > 0)) {
           setIsContentAvailable(true);
           console.log('content available true');
         } else {
