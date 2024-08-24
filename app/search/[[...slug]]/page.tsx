@@ -773,10 +773,10 @@ export default function Page({ params }: { params: Params }) {
             }
           );
           if (!response.ok) {
-            throw new Error("Network response was not ok.");
+            throw new Error(`Error fetching product reviews: ${response.status}`);
           }
           const data = await response.json();
-          const { conversationHistory, products } = data;
+          const { conversationHistory } = data;
           console.log("history: ", data);
           setConversationHistorydata(conversationHistory);
           //setProductsHistory(products[0]);
@@ -803,7 +803,7 @@ export default function Page({ params }: { params: Params }) {
         `https://${API_ENDPOINT}/api/guest-auth/signup`
       );
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("auth- Network response was not ok");
       }
       const data = await response.json();
       //.guest ---> .User

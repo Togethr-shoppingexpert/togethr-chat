@@ -4,8 +4,22 @@ import Image from "next/image";
 import BlackTick from "@/public/test/blacktick.png";
 import Heart from "@/public/icons/HeartIcon";
 import { useContentContext } from "@/ContentContext";
+import { config } from "@/constants";
+const API_ENDPOINT = config.url;
 
 interface ProductInfo {
+  description?: string;
+  media: Array<any>;
+  prices: Array<string>;
+  product_id: string;
+  rating?: number;
+  reviews_results?: any;
+  sellers_results?: any;
+  title?: string;
+  link: string;
+}
+
+interface Product{
   description?: string;
   media: Array<any>;
   prices: Array<string>;
@@ -66,36 +80,77 @@ export default function WishlistUI({
   wishlist,
   onDelete,
 }: WishlistUIProps) {
+  const defaultProduct: Product ={
+    description: "",
+    media: [],
+    prices: [],
+    product_id: "",
+    rating: 0 ,
+    reviews_results: [],
+    sellers_results: [],
+    title: "",
+    link: "" ,
+  }
   const { productInfo, filledHearts, setFilledHearts } = useContentContext();
   const [visibleFactors, setVisibleFactors] = useState<{ [key: string]: boolean }>({});
+  const [product, setProduct] = useState<Product>(defaultProduct);
+  const [productTitle, setProductTitle] = useState<string>("");
+  const [productImg, setProductImg] = useState<string>("");
+  const [productPrize, setProductPrize] = useState<string[]>([]);
+  const [productUrl, setProductUrl] = useState<string>("");
+  const [productDes, setProductDes] = useState<string>("");
+
+  const fetchProduct = async (productId: string) => {
+    console.log("Fetching product reviews with Conversation ID:", productId);
+
+    try {
+      const response = await fetch(`https://${API_ENDPOINT}/api/product/${productId}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching product using : ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Products  fetched successfully using product api:", data);
+      setProduct(data);
+      //setProductTitle(data.title);
+      setProductPrize(data.prize[0]);
+      //setProductImg(data.media[0].link);
+      setProductUrl(data.product.sellers_results.online_sellers[0].link);
+      setProductDes(data.description);
+
+    } catch (error) {
+      console.error("Error fetching product reviews:", error);
+    }
+  };
 
   const getProductPrice = (productId: string) => {
     const product = productInfo.find(
-      (info: ProductInfo) => info.product_id === productId
+      (info: Product) => info.product_id === productId
     );
     return product ? product.prices[0] : "Price not available";
   };
 
-  const getImageUrl = (productId: string) => {
-    const product = productInfo.find(
-      (info: ProductInfo) => info.product_id === productId
-    );
-    return product ? product.media[0].link : "";
+  const getProductTitle = (): string => {
+    if (product && product.title) {
+      return product.title; // Assuming the first media item is the image
+    }
+    console.log('product title of Product api', product.title);
+    return  "";
   };
 
-  const getProductLink = (productId: string) => {
-    const product = productInfo.find(
-      (info: ProductInfo) => info.product_id === productId
-    );
-    return product ? product.sellers_results.online_sellers[0].link : "#";
+  const getImageUrl = (): string => {
+    if (product && product.media && product.media.length > 0) {
+      return product.media[0].link; // Assuming the first media item is the image
+    }
+    return ""; // Return an empty string if no media is available
+  }
+
+  const getProductLink = (): string => {
+    if (product && product.sellers_results && product.sellers_results.online_sellers && product.sellers_results.length > 0) {
+      return product.sellers_results.online_sellers[0].link; // Assuming the first media item is the image
+    }
+    return "#";
   };
 
-  const getProductTitle = (productId: string) => {
-    const product = productInfo.find(
-      (info: ProductInfo) => info.product_id === productId
-    );
-    return product ? product.title : "";
-  };
 
   const handleHeartClick = (productId: string) => {
     onDelete(productId);
@@ -117,10 +172,12 @@ export default function WishlistUI({
       </div>
       {wishlist.productIds.length > 0 ? (
         wishlist.productIds.map((productId, index) => {
+          fetchProduct(productId);
+          {product}
           const productPrice = getProductPrice(productId);
-          const imageurl = getImageUrl(productId);
-          const productLink = getProductLink(productId);
-          const title = getProductTitle(productId);
+          const imageurl = getImageUrl();
+          const productLink = getProductLink();
+          const title = getProductTitle();
 
           // Find the corresponding review for this product
           const review = wishlist.productReviews.find(
