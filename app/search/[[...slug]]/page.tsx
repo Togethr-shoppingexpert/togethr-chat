@@ -37,6 +37,8 @@ import Discover from "../../discover/discover";
 import Heart from "../../../public/icons/HeartIcon";
 import HeartFill from "../../../public/icons/HeartFilledIcon";
 import Message from "../../../public/icons/MessageIcon";
+import Videos from "@/components/Videos";
+import Blogs from "@/components/Blogs";
 import ContentIcon from "../../../public/icons/ContentIcon";
 import DiscoverIcon from "../../../public/icons/DiscoverIcon";
 import BuyingIcon from "../../../public/icons/BuyingGuideIcon";
@@ -189,7 +191,19 @@ export default function Page({ params }: { params: Params }) {
     setFollowupQues,
     conversationHistorydata,
     setIsContentAvailable,
-    setFilters
+    setFilters,
+    messageId,
+    setBuyingGuideHistory,
+    setContentPageHistory,
+    setDiscoverContentHistory,
+    setFiltersHistory,
+    setDiscoverVideosHistory,
+    setDiscoverBlogsHistory,
+    setGuideTextHistory,
+    setGuideVideosHistory,
+    setGuideBlogsHistory,
+    setContentBlogsHistory,
+    setContentVideosHistory,
   } = useContentContext();
 
 
@@ -761,7 +775,7 @@ export default function Page({ params }: { params: Params }) {
     ) {
       // Use data from sessionStorage if conversationId matches
       sessionStorage.setItem("conversationId", storedConversationId);
-      const getrefresheddata = async () => {
+      const getrefreshedChat = async () => {
         try {
           const response = await fetch(
             `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`,
@@ -795,14 +809,181 @@ export default function Page({ params }: { params: Params }) {
         } catch (error) {
           console.error("Error fetching conversation data:", error);
         }
+        
       };
 
-      getrefresheddata(); // Call the async function
+      const getRefreshedContentData = async () =>{
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/content/${storedConversationId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching content data: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Content history: ", data);
+
+          const { article_links, youtube_links } = JSON.parse(data.Body);
+      
+          // Log the separate content
+          console.log("Article Links: ", article_links);
+          console.log("YouTube Links: ", youtube_links);
+       
+
+
+          setContentVideosHistory(youtube_links);
+          setContentBlogsHistory(article_links);
+
+          setContentPageHistory(data);
+        } catch (error) {
+          console.error("Error fetching content data:", error);
+        }        
+      };
+
+      const getRefreshedBuyingGuide = async () =>{
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/buying-guide/${storedConversationId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching buying Guide data: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Buying Guide history: ", data);
+
+          const {buying_guide_text ,  buying_guide_article_links, buying_guide_youtube_links } = JSON.parse(data[0].Body);
+      
+          // Log the separate content
+          console.log("buying guide text", buying_guide_text);
+          console.log("buying guide Article Links: ", buying_guide_article_links);
+          console.log("buying guide YouTube Links: ", buying_guide_youtube_links);
+          setBuyingGuide(data)
+
+          const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
+            console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
+            
+
+
+          setGuideVideosHistory(buying_guide_youtube_links);
+          setGuideBlogsHistory(buying_guide_article_links);
+          setGuideTextHistory(parsedBuyingGuideHistory);
+        } catch (error) {
+          console.error("Error fetching buying guide data:", error);
+        }        
+      };
+
+
+      getrefreshedChat(); // Call the async function
+      getRefreshedContentData();
+      getRefreshedBuyingGuide();
     } else {
       router.push("/");
     }
   }, []);
 
+  useEffect(() => {
+    // Check if messageId is available
+    if (messageId) {
+      const getRefreshedDiscoverData = async () => {
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/discover-content/${messageId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching discover content: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          console.log("discover content history: ", data);
+      
+          // Parse the Body
+          const { article_links, youtube_links } = JSON.parse(data.Body);
+      
+          // Log the separate content
+          console.log("Article Links: ", article_links);
+          console.log("YouTube Links: ", youtube_links);
+      
+          // Send the parsed data to the respective components
+          setDiscoverContentHistory(data);
+          setDiscoverVideosHistory(youtube_links);
+          setDiscoverBlogsHistory(article_links);
+      
+        } catch (error) {
+          console.error("Error fetching discover content data:", error);
+        }
+      };
+      
+      
+      const getRefreshedFiltersData = async () => {
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/suggestion/${messageId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching Filters: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          console.log("Filters history: ", data);
+      
+          // Check if Body exists and parse it
+          if (data.Body) {
+            const parsedData = JSON.parse(data.Body);
+            console.log("Parsed filters history:", parsedData);
+      
+            // Access follow_up_list
+            const followUpList = parsedData.follow_up_list;
+            console.log("Follow-up list:", followUpList);
+      
+            // You can now update your state or handle the follow-up list as needed
+            setFiltersHistory(followUpList);
+          } else {
+            console.error("Body field is missing from the response data");
+          }
+      
+        } catch (error) {
+          console.error("Error fetching Filters data:", error);
+        }
+      };
+      
+      
+  
+      getRefreshedDiscoverData();
+      getRefreshedFiltersData();
+    }
+  }, [messageId]); // Add messageId as a dependency
+  
+
+  useEffect(() => {
+    console.log('Updated messadge id :', messageId);  // Debugging
+  }, [messageId]);
+  
   const fetchGuestAuthSignup = async () => {
     try {
       const response = await fetch(

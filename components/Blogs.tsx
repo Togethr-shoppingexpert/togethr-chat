@@ -81,6 +81,7 @@ interface BlogsProps {
 }
 
 const Blogs: React.FC<BlogsProps> = ({ content, heading }) => {
+
   const sliderRef = useRef<Slider>(null);
 
   const goToPrev = () => {
@@ -103,6 +104,7 @@ const Blogs: React.FC<BlogsProps> = ({ content, heading }) => {
         onNextClick={goToNext}
         sliderRef={sliderRef}
       >
+
         {content.map((item, index) => (
           <div className="p-2" key={index}>
             <div className="bg-[#191919] p-2 rounded-xl h-32">

@@ -36,9 +36,9 @@ export default function FooterNav({ onContentChange }: FooterNavProps) {
       <div onClick={() => handleIconClick("wishlist")} className={`p-2 flex justify-center items-center rounded-full ${getIconClass("wishlist")}`}>
         <Heart width={24} height={24} color="white" />
       </div>
-      <div onClick={() => handleIconClick("content")} className={`p-2 flex justify-center items-center rounded-full ${getIconClass("content")}`}>
+    {/*}  <div onClick={() => handleIconClick("content")} className={`p-2 flex justify-center items-center rounded-full ${getIconClass("content")}`}>
         <ContentIcon width={24} height={24} color="white" />
-      </div>
+      </div> */}
     </div>
   );
 }

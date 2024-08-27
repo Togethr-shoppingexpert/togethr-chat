@@ -99,7 +99,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
 };
 
 const Videos: React.FC<VideosProps> = ({ content, heading })=> {
-
+  const { discoverVideosHistory } = useContentContext();
 
   const sliderRef = useRef<Slider>(null);
 
@@ -124,6 +124,7 @@ const Videos: React.FC<VideosProps> = ({ content, heading })=> {
       <div className=" lg:w-full pt-10 max-md:w-[380px]">
         <div className="text-2xl font-bold text-white">{heading}</div>
         <CustomSlider onPrevClick={goToPrev} onNextClick={goToNext} sliderRef={sliderRef}>
+          
           {content.map((item, index) => {
             const videoId = getVideoId(item.link);
             const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;

@@ -60,7 +60,7 @@ interface Video {
 
 const HeroResult = () => {
 
-  const { discoverVideos, discoverBlogs } = useContentContext();
+  const { discoverVideos, discoverBlogs, discoverBlogsHistory, discoverVideosHistory } = useContentContext();
   return (
     
     <div className="max-w-2xl justify-center h-full flex flex-col gap-y-6 pt-0 px-4 lg:px-0 max-md:px-0">
@@ -70,6 +70,14 @@ const HeroResult = () => {
       {/* </div> */}
       {/* <div className="w-full flex justify-end"> */}
         <Blogs content={discoverBlogs} heading="Curated articles and blogs" />
+
+        {discoverVideosHistory && discoverVideosHistory.length > 0 && (
+          <Videos content={discoverVideosHistory} heading="Expert picks"/>
+        )}
+
+        {discoverBlogsHistory && discoverBlogsHistory.length > 0 && (
+          <Blogs content={discoverBlogsHistory} heading="Curated articles and blogs" />
+        )}
       {/* </div> */}
     </div>
   );

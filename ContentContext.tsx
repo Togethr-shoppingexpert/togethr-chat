@@ -72,6 +72,30 @@ interface ContentContextData {
   setIsContentAvailable: (content: boolean) => void;
   filledHearts: Set<string>;
   setFilledHearts: (productId: string, isFilled: boolean) => void;
+  messageId: string;
+  setMessageId: (messageId: string) => void;
+  discoverContentHistory: any[];
+  setDiscoverContentHistory: (discoverContentHistory: any[]) => void;
+  contentPageHistory: any[];
+  setContentPageHistory: (contentPageHistory: any[]) => void;
+  buyingGuideHistory: any[];
+  setBuyingGuideHistory: (buyingGuideHistory: any[]) => void;
+  filtersHistory:any[];
+  setFiltersHistory:(followup:SetStateAction<never[]>)=>void;
+  discoverVideosHistory: any[];
+  discoverBlogsHistory: any[];
+  setDiscoverVideosHistory: (videos: any[]) => void;
+  setDiscoverBlogsHistory: (blogs: any[]) => void;
+  guideVideosHistory: any[];
+  guideBlogsHistory: any[];
+  guideTextHistory: BuyingGuide;
+  setGuideVideosHistory: (videos: any[]) => void;
+  setGuideBlogsHistory: (blogs: any[]) => void;
+  setGuideTextHistory: React.Dispatch<React.SetStateAction<BuyingGuide>>;
+  contentVideosHistory: any[];
+  contentBlogsHistory: any[];
+  setContentVideosHistory: (videos: any[]) => void;
+  setContentBlogsHistory: (blogs: any[]) => void;
 }
 
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
@@ -120,6 +144,19 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [followupQues, setFollowupQues] = useState<any[]>([]);
   const [isContentAvailable, setIsContentAvailable] = useState<boolean>(false);
   const [filledHearts, setFilledHearts] = useState<Set<string>>(new Set());
+  const [messageId, setMessageId] = useState<string>("");
+  const [discoverContentHistory, setDiscoverContentHistory] = useState<any[]>([]);
+  const [contentPageHistory, setContentPageHistory] = useState<any[]>([]);
+  const [buyingGuideHistory, setBuyingGuideHistory] = useState<any[]>([]);
+  const [filtersHistory, setFiltersHistory] = useState([]);
+  const [discoverVideosHistory, setDiscoverVideosHistory] = useState<any[]>([]);
+  const [discoverBlogsHistory, setDiscoverBlogsHistory] = useState<any[]>([]);
+  const [guideVideosHistory, setGuideVideosHistory] = useState<any[]>([]);
+  const [guideBlogsHistory, setGuideBlogsHistory] = useState<any[]>([]);
+  const [guideTextHistory, setGuideTextHistory] = useState<BuyingGuide>(defaultBuyingGuide);
+  const [contentVideosHistory, setContentVideosHistory] = useState<any[]>([]);
+  const [contentBlogsHistory, setContentBlogsHistory] = useState<any[]>([]);
+  
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
     setFilledHearts(prev => {
@@ -186,7 +223,20 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsContentAvailable,
     filledHearts,
     setFilledHearts: updateFilledHearts,
-  }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts]);
+    messageId, setMessageId,
+    discoverContentHistory, setDiscoverContentHistory,
+    buyingGuideHistory, setBuyingGuideHistory,
+    contentPageHistory, setContentPageHistory,
+    filtersHistory, setFiltersHistory,
+    discoverBlogsHistory, setDiscoverBlogsHistory,
+    discoverVideosHistory, setDiscoverVideosHistory,
+    guideBlogsHistory, setGuideBlogsHistory,
+    guideVideosHistory, setGuideVideosHistory,
+    guideTextHistory, setGuideTextHistory,
+    contentBlogsHistory, setContentBlogsHistory,
+    contentVideosHistory, setContentVideosHistory
+  }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
+    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory]);
 
   return (
     <ContentContext.Provider value={contextValue}>

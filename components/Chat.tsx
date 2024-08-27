@@ -13,6 +13,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     setProductsHistory,
     isLoading,
     userMessage,
+    setMessageId,
     currentoptionvisible,
     curation,
     setUserMessage,
@@ -50,9 +51,11 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
       if (message.containsProduct && message.products) {
         console.log('Product history from chat:', message.products); // Debugging
         setProductsHistory(message.products);
+        console.log('message id in chat:', message.MessageId);
+        setMessageId(message.MessageId);
       }
     });
-  }, [conversationHistorydata, setProductsHistory]);
+  }, [conversationHistorydata, setProductsHistory, setMessageId]);
 
   useEffect(() => {
     console.log("Selected Options:", selectedOptions);
@@ -114,9 +117,11 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                             })}
                             {message.containsProduct &&
                                 message.products
-                                && (
+                                && ( <>
                                      console.log('product History got', message.products),
-                                     setProductsHistory(message.products))
+                                     setProductsHistory(message.products);
+                                     </>
+                                    )
                             }
                           </div>
                         );

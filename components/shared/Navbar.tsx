@@ -12,7 +12,7 @@ interface NavbarProps {
 }
 
 const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
-  const { isChatStarted, setMessages } = useContentContext();
+  const { isChatStarted, setMessages, productsHistory, guideTextHistory } = useContentContext();
 
   const { isContentAvailable} = useContentContext();
   const router = useRouter();
@@ -63,37 +63,37 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
             <div className="items-center gap-x-4 hidden md:flex">
               {isContentAvailable}
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
+                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                  (isContentAvailable || productsHistory.length >0) ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("discover")}
+                onClick={() => (isContentAvailable || productsHistory.length >0) && onContentChange("discover")}
               >
-                Discover
+                Discover  
               </div>
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
+                className={`w-max text-lg ${(isContentAvailable || guideTextHistory) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                  (isContentAvailable || guideTextHistory )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("guide")}
+                onClick={() =>( guideTextHistory || isContentAvailable) && onContentChange("guide")}
               >
                 Buying Guide
               </div>
               <div
-                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
+                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                  (isContentAvailable || productsHistory.length >0 )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() => isContentAvailable && onContentChange("wishlist")}
+                onClick={() => (isContentAvailable  || productsHistory.length >0) && onContentChange("wishlist")}
               >
                 Wishlist
               </div>
-              <div
+              {/*<div
                 className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
                 onClick={() => isContentAvailable && onContentChange("content")}
               >
                 Content
-              </div>
+              </div> */}
             </div>
           )}
         </div>

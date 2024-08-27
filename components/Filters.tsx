@@ -10,7 +10,7 @@ const Filters: React.FC<FilterProps> = ({ sendMessage }) => {
   const filtersContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
-  const { filters, setIsChatOpen } = useContentContext();
+  const { filters, setIsChatOpen, filtersHistory } = useContentContext();
 
   const updateArrowButtons = () => {
     if (filtersContainerRef.current) {
@@ -69,7 +69,16 @@ const Filters: React.FC<FilterProps> = ({ sendMessage }) => {
         ref={filtersContainerRef}
         className="flex space-x-2 overflow-x-auto rounded-md items-center mx-2 scrollbar-hide"
         onScroll={updateArrowButtons}
-      >
+      > 
+        {filtersHistory.length > 0 && filtersHistory.map((filter, index) => (
+          <button
+            key={index}
+            className="flex-shrink-0 bg-[#2e2f2f] rounded-lg p-2 shadow-md hover:bg-[#f5f5f58a] transition duration-300"
+            onClick={() => handleFilterClick(filter)}
+          >
+            <span className="text-white hover:text-black  text-sm">{filter}</span>
+          </button>
+        ))}
         {filters.length > 0 && filters.map((filter, index) => (
           <button
             key={index}

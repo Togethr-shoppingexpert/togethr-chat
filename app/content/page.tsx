@@ -74,7 +74,7 @@ interface MockData {
 }
 
 export default function ContentComponent() {
-  const { blogsContent, videoContent } = useContentContext();
+  const { blogsContent, videoContent , contentBlogsHistory, contentVideosHistory} = useContentContext();
 
   const sliderRef = useRef<Slider>(null);
 
@@ -120,8 +120,16 @@ export default function ContentComponent() {
       <div className="bg-[#202222] px-6 lg:px-[6%] max-md:px-0">
         
         <div className="lg:px-[6%] bg-[#202222]">
+        {contentVideosHistory && contentVideosHistory.length > 0 ? (
+           <Videos content={contentVideosHistory} heading="Video"/>
+        ):(
           <Videos content={videoContent} heading="Video"/>
+        )}
+        {contentBlogsHistory && contentBlogsHistory.length > 0 ? (
+          <Blogs content={contentBlogsHistory} heading="Blogs"/>
+        ):(
           <Blogs content={blogsContent} heading="Blogs"/>
+        )}
         </div>
         
       </div>
