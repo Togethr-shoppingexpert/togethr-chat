@@ -42,7 +42,7 @@ export default function HomeProducts() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { productInfo, bestProducts, isContentAvailable, filledHearts, setFilledHearts, productsHistory } = useContentContext();
+  const { productInfo, bestProducts, bestProductsHistory, isContentAvailable, filledHearts, setFilledHearts, productsHistory } = useContentContext();
 
   
   const getProductPrice = (productId: string) => {
@@ -58,6 +58,16 @@ export default function HomeProducts() {
     const getImageUrlHistory = (productId: string) => {
     const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
     return product ? product.media[0].link : "";
+  };
+
+  const getProductUrlHistory = (productId: string) => {
+    const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
+    return product ? product.sellers_results.online_sellers[0].link : "";
+  };
+
+  const getProductPriceHistory = (productId: string) => {
+    const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
+    return product ? product.prices[0] : "Price not available";
   };
 
   const getProductLink = (productId: string) => {
@@ -108,20 +118,20 @@ export default function HomeProducts() {
 
   return (
     <>
-      {(isContentAvailable || productsHistory.length > 0) && (
+      {(isContentAvailable || bestProductsHistory) && (
         <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
           <div className="text-2xl w-full font-bold text-white">
             <h4>Top picks for you</h4>
           </div>
-          {productsHistory.map((item, index) => {
-            const productPrice = getProductPrice(item.product_id);
+          {bestProductsHistory.length > 0 && bestProductsHistory.map((item, index) => {
+            const productPrice = getProductPriceHistory(item.product_id);
             const imageurl = getImageUrlHistory(item.product_id);
-            const productLink = getProductLink(item.product_id);
+            const productLink = getProductUrlHistory(item.product_id);
             const isHeartFilled = filledHearts.has(item.product_id);
 
             return (
               <div key={index} className="relative">
-                <Link href={item.sellers_results.online_sellers[0].link} passHref legacyBehavior>
+                <Link href={productLink} passHref legacyBehavior>
                   <a className="lg:w-full relative max-md:w-[100%] max-md:px-2 flex flex-col lg:flex-row gap-x-4 rounded-xl bg-[#191919] p-4 lg:p-8 pb-6 lg:pb-10"
                      target="_blank"
                      rel="noopener noreferrer"
@@ -139,13 +149,13 @@ export default function HomeProducts() {
     <div className="flex justify-between items-center">
       <div className="flex flex-col lg:flex-row justify-between h-max gap-y-2 gap-x-4 items-start lg:items-center">
         <div className="text-[17px] text-white mt-2 lg:mt-0">
-          {item.title}
+          {item.product_name}
         </div>
         <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
           <div className="w-3">
             <Image src={BlackTick} alt="tick" />
           </div>
-          <div>{item.prices[0]}</div>
+          <div>{productPrice}</div>
         </div>
       </div>
       <div className="w-5">
@@ -153,7 +163,7 @@ export default function HomeProducts() {
       </div>
     </div>
     <div className="text-gray-400 text-[15px]">
-      {item.description}
+      {item.recommendation_reason}
     </div>
   </div>
 </div>

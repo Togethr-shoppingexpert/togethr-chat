@@ -71,10 +71,10 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
                 Discover  
               </div>
               <div
-                className={`w-max text-lg ${(isContentAvailable || guideTextHistory) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  (isContentAvailable || guideTextHistory )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
+                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                  (isContentAvailable || productsHistory.length >0 )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
-                onClick={() =>( guideTextHistory || isContentAvailable) && onContentChange("guide")}
+                onClick={() =>( productsHistory.length >0 || isContentAvailable) && onContentChange("guide")}
               >
                 Buying Guide
               </div>

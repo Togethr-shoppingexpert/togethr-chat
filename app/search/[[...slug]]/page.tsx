@@ -768,13 +768,13 @@ export default function Page({ params }: { params: Params }) {
 
     console.log("stored convid: ", storedConversationId);
 
+    const conversationIdToUse = urlConversationId || storedConversationId;
+
     if (
-      storedConversationId &&
-      urlConversationId &&
-      urlConversationId === storedConversationId
+      conversationIdToUse
     ) {
       // Use data from sessionStorage if conversationId matches
-      sessionStorage.setItem("conversationId", storedConversationId);
+      sessionStorage.setItem("conversationId", conversationIdToUse);
       const getrefreshedChat = async () => {
         try {
           const response = await fetch(

@@ -10,6 +10,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     conversationHistorydata,
     messages,
     productsHistory,
+    setBestProductsHistory,
     setProductsHistory,
     isLoading,
     userMessage,
@@ -53,9 +54,12 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
         setProductsHistory(message.products);
         console.log('message id in chat:', message.MessageId);
         setMessageId(message.MessageId);
+        const response = JSON.parse(message.MessageBody);
+        console.log('message boday in chat', response);
+        setBestProductsHistory(response);
       }
     });
-  }, [conversationHistorydata, setProductsHistory, setMessageId]);
+  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);
 
   useEffect(() => {
     console.log("Selected Options:", selectedOptions);
@@ -64,7 +68,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
   return (
     <div className="w-[100%] h-full overflow-y-scroll pb-[100px]">
       <div className="chat-height">
-        {conversationHistorydata.map((message, index) => {
+        {conversationHistorydata.length > 2 && conversationHistorydata.map((message, index) => {
           let productIndex = 0;
           return (
             <div
@@ -115,18 +119,9 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                               }
                               return null;
                             })}
-                            {message.containsProduct &&
-                                message.products
-                                && ( <>
-                                     console.log('product History got', message.products),
-                                     setProductsHistory(message.products);
-                                     </>
-                                    )
-                            }
                           </div>
                         );
                       } catch (error) {
-                        console.error("Failed to parse message MessageBody:", error);
                         return <div>{message.MessageBody}</div>;
                       }
                     }

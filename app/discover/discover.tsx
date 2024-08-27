@@ -45,7 +45,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
               <HeroResult />
               <div ref={messagesEndRef} />
 
-              {isContentAvailable && (
+              {isContentAvailable  && (
           <div>
             <Followup
               containerWidth={containerWidth}

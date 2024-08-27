@@ -40,6 +40,8 @@ interface ContentContextData {
   setIsChatStarted: (started: boolean) => void;
   bestProducts:any[];
   setBestProducts:(bestproducts:any[])=>void;
+  bestProductsHistory:any[];
+  setBestProductsHistory:(bestProductsHistory:any[])=>void;
   productInfo:any[];
   setProductInfo:(productInfo:any[])=>void;
   conversationHistorydata: any[];
@@ -156,6 +158,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [guideTextHistory, setGuideTextHistory] = useState<BuyingGuide>(defaultBuyingGuide);
   const [contentVideosHistory, setContentVideosHistory] = useState<any[]>([]);
   const [contentBlogsHistory, setContentBlogsHistory] = useState<any[]>([]);
+  const [bestProductsHistory, setBestProductsHistory] = useState<any[]>([]);
   
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
@@ -191,6 +194,8 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsChatOpen,
     bestProducts,
     setBestProducts,
+    bestProductsHistory,
+    setBestProductsHistory,
     productInfo,
     setProductInfo,
     conversationHistorydata,
@@ -235,7 +240,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     guideTextHistory, setGuideTextHistory,
     contentBlogsHistory, setContentBlogsHistory,
     contentVideosHistory, setContentVideosHistory
-  }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
+  }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, bestProductsHistory, setBestProductsHistory, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
     guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory]);
 
   return (
