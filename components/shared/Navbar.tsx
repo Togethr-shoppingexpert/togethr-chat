@@ -59,11 +59,11 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
             <Heart width={24} height={24} color="currentColor" />
           </div>
           {/* Other Navbar Elements */}
-          {isChatStarted && (
+          {isChatStarted && (isContentAvailable||productsHistory.length >0) && (
             <div className="items-center gap-x-4 hidden md:flex">
               {isContentAvailable}
               <div
-                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
+                className={`w-max text-lg ${(isContentAvailable||  productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
                   (isContentAvailable || productsHistory.length >0) ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
                 }`}
                 onClick={() => (isContentAvailable || productsHistory.length >0) && onContentChange("discover")}

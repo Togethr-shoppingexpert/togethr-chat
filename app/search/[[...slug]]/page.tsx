@@ -261,9 +261,10 @@ export default function Page({ params }: { params: Params }) {
             setTimeout(() => {
               const formattedProducts: Product[] = eventData.data
               .filter((product: any) => 
-                product.sellers_results && 
-                product.sellers_results.online_sellers &&
-                product.sellers_results.online_sellers.length > 0
+                product.sellers_results && // Check if sellers_results exists
+              product.sellers_results.online_sellers && // Check if online_sellers exists
+              Array.isArray(product.sellers_results.online_sellers) && // Check if online_sellers is an array
+              product.sellers_results?.online_sellers.length > 0 
               )
               .map((product: any) => ({
                 title: product.title,
@@ -271,7 +272,6 @@ export default function Page({ params }: { params: Params }) {
                 prices: product.prices,
                 media: product.media,
                 sellers_results: product.sellers_results,
-                link: product.sellers_results.online_sellers[0].link,
               }));
 
               console.log('formattedProducts', formattedProducts);
@@ -796,7 +796,6 @@ export default function Page({ params }: { params: Params }) {
           if(conversationHistory.length > 0){
             console.log('conversation history length > 0')
             setIsChatStarted(true);
-            setIsContentAvailable(true);
           }
           setConversationHistorydata(conversationHistory);
           //setProductsHistory(products[0]);

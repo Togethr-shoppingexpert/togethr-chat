@@ -62,7 +62,7 @@ export default function HomeProducts() {
 
   const getProductUrlHistory = (productId: string) => {
     const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
-    return product ? product.sellers_results.online_sellers[0].link : "";
+    return (product && product.sellers_results) ? product.sellers_results?.online_sellers[0].link : "#";
   };
 
   const getProductPriceHistory = (productId: string) => {
@@ -72,7 +72,7 @@ export default function HomeProducts() {
 
   const getProductLink = (productId: string) => {
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
-    return product ? product.sellers_results.online_sellers[0].link : "#";
+    return (product && product.sellers_results) ? product.sellers_results.online_sellers[0].link : "#";
   };
 
   // Function to fetch conversationId from sessionStorage with retry mechanism

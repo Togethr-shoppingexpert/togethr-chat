@@ -5,6 +5,14 @@ import GeneralLoader from "./shared/GeneralLoader";
 import ProductCarousel from "./ProductCarousel";
 import { useContentContext } from "@/ContentContext";
 
+interface Product {
+  title: string;
+  rating: number;
+  prices: number[];
+  media: { link: string }[];
+  sellers_results: { online_sellers: { link: string }[] };
+}
+
 export default function Chat({ sendMessage }: { sendMessage: (message: string) => void }) {
   const {
     conversationHistorydata,
@@ -47,7 +55,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     }
   };
 
-  useEffect(() => {
+ {/*} useEffect(() => {
     conversationHistorydata.forEach((message) => {
       if (message.containsProduct && message.products) {
         console.log('Product history from chat:', message.products); // Debugging
@@ -59,7 +67,37 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
         setBestProductsHistory(response);
       }
     });
+  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);*/}
+
+  useEffect(() => {
+    conversationHistorydata.forEach((message) => {
+      if (message.containsProduct && message.products) {
+        console.log('Product history from chat:', message.products); // Debugging
+  
+        // Assuming you have a type called `Product`
+        const filteredProducts = message.products.filter((product: Product) => 
+          product.sellers_results && 
+          product.sellers_results.online_sellers &&
+          Array.isArray(product.sellers_results.online_sellers) &&
+          product.sellers_results.online_sellers.length > 0
+        );
+  
+        setProductsHistory(filteredProducts);
+        console.log('Filtered product history:', filteredProducts);
+  
+        // Set message ID
+        console.log('Message ID in chat:', message.MessageId);
+        setMessageId(message.MessageId);
+  
+        // Parse and set best products history if applicable
+        const response = JSON.parse(message.MessageBody);
+        console.log('Message body in chat:', response);
+        setBestProductsHistory(response);
+      }
+    });
   }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);
+  
+  
 
   useEffect(() => {
     console.log("Selected Options:", selectedOptions);

@@ -35,7 +35,9 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         }
       }, [followup]);
 
-
+useEffect(()=>{
+  console.log("content available", isContentAvailable)
+},[isContentAvailable])
 
   console.log("wishlist");
   return (
