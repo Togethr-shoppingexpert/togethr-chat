@@ -321,3 +321,24 @@ margin-top: 70px;
 
 
 
+.partial-star {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+}
+
+.partial-star::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: yellow;
+  width: 50%; /* Adjust this value to control how much of the star is filled */
+  overflow: hidden;
+}
+
+.partial-star::after {
+  content: '★';
+  color: gray;
+}
+

@@ -75,28 +75,43 @@ export default function WishlistUI({ wishlist, onDelete }: WishlistUIProps) {
       for (const productId of wishlist.productIds) {
         try {
           const response = await fetch(`https://${API_ENDPOINT}/api/product/${productId}`);
-          if (response.ok) {
-            const data = await response.json();
-            fetchedProducts[productId] = data;
-          } else {
-            console.error(`Error fetching product: ${response.status}`);
+          
+          if (!response.ok) {
+            console.error(`Error fetching product ${productId}: ${response.statusText}`);
+            continue;
           }
+  
+          const responseBody = await response.text();
+          
+          if (!responseBody) {
+            console.error(`Empty response for product ${productId}`);
+            continue;
+          }
+          
+          try {
+            const data = JSON.parse(responseBody);
+            fetchedProducts[productId] = data;
+          } catch (jsonError) {
+            //console.error(`Failed to parse JSON for product ${productId}: ${jsonError.message}`);
+          }
+  
         } catch (error) {
-          console.error("Error fetching product:", error);
+          console.error(`Error fetching product ${productId}:`, error);
         }
       }
       setProductData(fetchedProducts);
     };
-
+  
     if (wishlist.productIds.length > 0) {
       fetchProducts();
     }
   }, [wishlist.productIds]);
+  
 
   const handleHeartClick = (productId: string) => {
     onDelete(productId);
-    //const isFilled = filledHearts.has(productId);
-    //setFilledHearts(productId, !isFilled);
+    const isFilled = filledHearts.has(productId);
+    setFilledHearts(productId, !isFilled);
   };
 
   const toggleVisibility = (key: string) => {
@@ -151,7 +166,7 @@ export default function WishlistUI({ wishlist, onDelete }: WishlistUIProps) {
                         className="rounded-xl product-image-class"
                       />
                     </div>
-                    <div className="flex flex-col justify-start items-start lg:w-[calc(100%-300px)] sm:w-[100%] m-4">
+                    <div className="flex flex-col justify-start items-start w-[calc(100%-300px)] m-4">
                       <div className="text-[17px] text-white">{title}</div>
                       <div className="flex h-max items-center gap-x-2 p-1.5 px-3 mt-2 rounded-xl bg-[#E8DEF8]">
                         <div className="w-3">
@@ -257,4 +272,3 @@ export default function WishlistUI({ wishlist, onDelete }: WishlistUIProps) {
     </div>
   );
 }
-

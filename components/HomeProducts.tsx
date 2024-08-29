@@ -6,6 +6,7 @@ import TestTwo from "../public/test/test2.png";
 import TestThree from "../public/test/test3.png";
 import BlackTick from "../public/test/blacktick.png";
 import Favourite from "../public/test/favourite.png";
+import Rating from "./shared/Rating";
 import { useContentContext } from "@/ContentContext";
 import Heart from "@/public/icons/HeartIcon";
 import { config } from "@/constants";
@@ -55,9 +56,12 @@ export default function HomeProducts() {
     return product ? product.media[0].link : "";
   };
 
-    const getImageUrlHistory = (productId: string) => {
-    const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
-    return product ? product.media[0].link : "";
+  const getImageUrlHistory = (productId: string) => {
+    const product = productsHistory.find((info) => info.product_id === productId);
+    const imageUrl = product ? product.media[0].link : "";
+    console.log('product for img',productId , product);
+    console.log('Image URL for product:', productId, imageUrl);
+    return imageUrl;
   };
 
   const getProductUrlHistory = (productId: string) => {
@@ -73,6 +77,16 @@ export default function HomeProducts() {
   const getProductLink = (productId: string) => {
     const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
     return (product && product.sellers_results) ? product.sellers_results.online_sellers[0].link : "#";
+  };
+
+  const getProductRatingHistory = (productId: string) => {
+    const product = productsHistory.find((info: ProductInfo) => info.product_id === productId);
+    return product ? product.rating : 0; // Return 0 if rating is not available
+  };
+
+  const getProductRating = (productId: string) => {
+    const product = productInfo.find((info: ProductInfo) => info.product_id === productId);
+    return product ? product.rating : 0; // Return 0 if rating is not available
   };
 
   // Function to fetch conversationId from sessionStorage with retry mechanism
@@ -128,6 +142,7 @@ export default function HomeProducts() {
             const imageurl = getImageUrlHistory(item.product_id);
             const productLink = getProductUrlHistory(item.product_id);
             const isHeartFilled = filledHearts.has(item.product_id);
+            const rating = getProductRatingHistory(item.product_id);
 
             return (
               <div key={index} className="relative">
@@ -148,8 +163,13 @@ export default function HomeProducts() {
   <div className="flex flex-col gap-y-2 lg:w-[80%] max-sm:p-4">
     <div className="flex justify-between items-center">
       <div className="flex flex-col lg:flex-row justify-between h-max gap-y-2 gap-x-4 items-start lg:items-center">
+        <div className="flex flex-col">
         <div className="text-[17px] text-white mt-2 lg:mt-0">
           {item.product_name}
+        </div>
+        {rating && rating > 0 && (
+        <Rating productRating={rating} />
+      )}
         </div>
         <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
           <div className="w-3">
@@ -181,6 +201,7 @@ export default function HomeProducts() {
             const imageurl = getImageUrl(item.product_id);
             const productLink = getProductLink(item.product_id);
             const isHeartFilled = filledHearts.has(item.product_id);
+            const rating = getProductRating(item.product_id);
 
             return (
               <div key={index} className="relative">
@@ -204,6 +225,7 @@ export default function HomeProducts() {
         <div className="text-[17px] text-white mt-2 lg:mt-0">
           {item.product_name}
         </div>
+        <Rating productRating={rating} />
         <div className="flex h-max items-center gap-x-2 p-1.5 px-3 rounded-xl bg-[#E8DEF8]">
           <div className="w-3">
             <Image src={BlackTick} alt="tick" />

@@ -6,6 +6,7 @@ import ProductCarousel from "./ProductCarousel";
 import { useContentContext } from "@/ContentContext";
 
 interface Product {
+  productId: string;
   title: string;
   rating: number;
   prices: number[];
@@ -55,7 +56,35 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
     }
   };
 
- {/*} useEffect(() => {
+  useEffect(() => {
+    conversationHistorydata.forEach((message) => {
+      if (message.containsProduct && message.products) {
+        console.log('Product history from chat:', message.products); // Debugging
+  
+        // Filter products to include only non-null products with a valid productId
+        const filteredProducts = message.products.filter((product: Product | null) => 
+          product 
+        );
+  
+        // Set the filtered products to productsHistory
+        setProductsHistory(filteredProducts);
+        console.log('Filtered product history:', filteredProducts);
+  
+        // Set message ID
+        console.log('Message ID in chat:', message.MessageId);
+        setMessageId(message.MessageId);
+  
+        // Parse and set best products history if applicable
+        const response = JSON.parse(message.MessageBody);
+        console.log('Message body in chat:', response);
+        setBestProductsHistory(response);
+      }
+    });
+  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);
+  
+  
+
+ {/*useEffect(() => {
     conversationHistorydata.forEach((message) => {
       if (message.containsProduct && message.products) {
         console.log('Product history from chat:', message.products); // Debugging
@@ -67,9 +96,9 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
         setBestProductsHistory(response);
       }
     });
-  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);*/}
+  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);
 
-  useEffect(() => {
+ useEffect(() => {
     conversationHistorydata.forEach((message) => {
       if (message.containsProduct && message.products) {
         console.log('Product history from chat:', message.products); // Debugging
@@ -95,7 +124,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
         setBestProductsHistory(response);
       }
     });
-  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]);
+  }, [conversationHistorydata, setProductsHistory, setMessageId, setBestProductsHistory]); */}
   
   
 
