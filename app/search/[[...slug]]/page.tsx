@@ -363,7 +363,7 @@ export default function Page({ params }: { params: Params }) {
               length: video.length,
             }));
             setDiscoverVideos(UpdatedVideo);
-          }else if (eventData.type === "content_page") {
+      {/*}    }else if (eventData.type === "content_page") {
             console.log("content_blogs", eventData.articel_url);
             console.log("content_video", eventData.youtube_url);
             const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
@@ -379,7 +379,7 @@ export default function Page({ params }: { params: Params }) {
               favicon: blog.favicon,
               source: blog.source,
             }));
-            setBlogsContent(UpdatedBlog);
+            setBlogsContent(UpdatedBlog);    */}
           }else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
@@ -811,7 +811,7 @@ export default function Page({ params }: { params: Params }) {
         
       };
 
-      const getRefreshedContentData = async () =>{
+  {/*}    const getRefreshedContentData = async () =>{
         try {
           const response = await fetch(
             `https://${API_ENDPOINT}/api/content/${storedConversationId}`,
@@ -844,7 +844,7 @@ export default function Page({ params }: { params: Params }) {
         } catch (error) {
           console.error("Error fetching content data:", error);
         }        
-      };
+      };   */}
 
       const getRefreshedBuyingGuide = async () =>{
         try {
@@ -887,7 +887,7 @@ export default function Page({ params }: { params: Params }) {
 
 
       getrefreshedChat(); // Call the async function
-      getRefreshedContentData();
+      //getRefreshedContentData();
       getRefreshedBuyingGuide();
     } else {
       router.push("/");

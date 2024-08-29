@@ -118,7 +118,7 @@ export default function HomeProducts() {
 
   return (
     <>
-      {(isContentAvailable || bestProductsHistory) && (
+      {(isContentAvailable || bestProductsHistory.length > 0) && (
         <div className="flex flex-col gap-y-6 pt-8 mt-0 items-center px-4 lg:px-0 pb-10">
           <div className="text-2xl w-full font-bold text-white">
             <h4>Top picks for you</h4>
