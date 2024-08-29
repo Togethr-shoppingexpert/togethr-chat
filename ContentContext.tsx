@@ -98,8 +98,6 @@ interface ContentContextData {
   contentBlogsHistory: any[];
   setContentVideosHistory: (videos: any[]) => void;
   setContentBlogsHistory: (blogs: any[]) => void;
-  productRating: number;
-  setProductRating: (rating: number) => void;
 }
 
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
@@ -161,7 +159,6 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [contentVideosHistory, setContentVideosHistory] = useState<any[]>([]);
   const [contentBlogsHistory, setContentBlogsHistory] = useState<any[]>([]);
   const [bestProductsHistory, setBestProductsHistory] = useState<any[]>([]);
-  const [productRating, setProductRating] = useState<number>(0)
   
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
@@ -242,10 +239,9 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     guideVideosHistory, setGuideVideosHistory,
     guideTextHistory, setGuideTextHistory,
     contentBlogsHistory, setContentBlogsHistory,
-    contentVideosHistory, setContentVideosHistory,
-    productRating, setProductRating,
+    contentVideosHistory, setContentVideosHistory
   }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, bestProductsHistory, setBestProductsHistory, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
-    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory, productRating, setProductRating]);
+    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory]);
 
   return (
     <ContentContext.Provider value={contextValue}>
