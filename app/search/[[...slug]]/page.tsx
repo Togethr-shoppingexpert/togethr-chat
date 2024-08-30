@@ -989,6 +989,7 @@ export default function Page({ params }: { params: Params }) {
     }
   }, []);
   
+
  {/* const handleOptionClick = (option: string) => {
     setSelectedOptions((prevOptions) => {
       if (prevOptions.includes(option)) {
