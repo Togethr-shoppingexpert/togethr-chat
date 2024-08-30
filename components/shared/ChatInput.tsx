@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useContentContext } from "@/ContentContext";
 
 interface ChatInputProps {
     initialText: string; // Define initialText prop
@@ -20,6 +21,11 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mo
     const [inputValue, setInputValue] = useState(initialText);
     const router = useRouter();
 
+    const { 
+        setIsChatOpen,
+      } = useContentContext();
+    
+
     // Handle input change
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
@@ -30,6 +36,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mo
     const handleClick = () => {
         console.log("Button clicked");
         router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}`);
+        setIsChatOpen(true);
     }
 
     const handleKeyDown = (event : KeyboardEvent) => {

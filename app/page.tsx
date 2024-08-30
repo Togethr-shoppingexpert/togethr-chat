@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { FaSun, FaMoon } from "react-icons/fa"; 
 import { config } from "../constants";
+import { useContentContext } from "@/ContentContext";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 
@@ -20,16 +21,39 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
+
+  const defaultBuyingGuide = {
+    buying_guide_text: "",
+    buying_guide_starting_text: "",
+    buying_guide_factors_options: [],
+    buying_guide_specs_text: "",
+    buying_guide_ending_text: "",
+  };
+
   
 
-const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
+
+  const {
+    setVideoContent,
+    setBlogsContent,
+    setBuyingGuide,
+    setIsChatStarted,
+    setBestProducts,
+  } = useContentContext();
+
+
+  const authTokenRef = useRef<string | null>(null); // Ref to hold the authentication token
 
   // guestsignup and localstorage logic
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
     // const storedConvid = sessionStorage.getItem("conversationId");
-
+    setIsChatStarted(false);
+    setBuyingGuide(defaultBuyingGuide);
+    setBlogsContent([]);
+    setVideoContent([]);
+    setBestProducts([]);
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);
@@ -86,6 +110,7 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
         const newConversationId = data.ConversationId;
         sessionStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         sessionStorage.removeItem("chatstarted");
+        sessionStorage.removeItem("currentPageUrl");
         localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         localStorage.removeItem("chatstarted");
         setConversationId(newConversationId);
@@ -164,10 +189,14 @@ const authTokenRef = useRef<string | null>(null); // Ref to hold the authenticat
     };
   }, []);
 
+  const handleContentChange = (content: string) => {
+    // No operation
+  };
+
   return (
     <>
       <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
-        <Navbar mode={isDarkMode? "dark" : "light"} />
+        <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange}/>
 {/* 
       <div className="fixed top-[25px] right-4 z-[500]">
         <label className="switch">

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
- 
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -10,63 +9,63 @@
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
+
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
- 
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
+
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     /* --input: 214.3 31.8% 91.4%; */
     --ring: 222.2 84% 4.9%;
- 
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
- 
+
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
- 
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
- 
+
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
- 
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
- 
+
     --border: 217.2 32.6% 17.5%;
     /* --input: 217.2 32.6% 17.5%; */
     --ring: 212.7 26.8% 83.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -80,7 +79,7 @@
   min-width: 42rem; /* Assuming max-w-2xl is equivalent to 42rem */
 }
 
-.pdtimg{
+.pdtimg {
   border-radius: 0.75rem;
   object-fit: cover;
   /* height: ; */
@@ -97,7 +96,7 @@
   text-overflow: ellipsis; /* equivalent to truncate */
 }
 
-.pdtcard1{
+.pdtcard1 {
   max-width: 100%; /* max-w-full */
   min-width: 80px; /* min-w-80 */
   margin-left: auto; /* mx-auto */
@@ -110,7 +109,7 @@
   /* background-color: #2F3031; bg-[#2F3031] */
 }
 
-.pdtcard1:hover{
+.pdtcard1:hover {
   transform: scale(1.05);
   cursor: pointer;
 }
@@ -159,7 +158,7 @@
   height: 24px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -173,8 +172,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -185,16 +184,16 @@
   left: 3px;
   bottom: 2.3px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -212,7 +211,134 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 .selected {
-  background-color:#0C8CE9;
+  background-color: #0c8ce9;
   padding: 8px;
   border-radius: 5px; /* Change text color to red when selected */
 }
+
+.bg-custom-gradient-cards {
+  background: radial-gradient(
+    circle at 24.1% 68.8%,
+    rgb(50, 50, 50) 0%,
+    rgb(0, 0, 0) 99.4%
+  );
+}
+
+.chat-box-shadow {
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+    rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.scrollbar-margin {
+  scrollbar-gutter: stable;
+  overflow-y: auto;
+}
+
+.scrollbar-margin::-webkit-scrollbar {
+  width: 5px; /* Adjust as needed */
+}
+
+.scrollbar-margin::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px; /* Adjust as needed */
+  margin-bottom: 10px; /* Adjust as needed */
+}
+
+.scrollbar-margin::-webkit-scrollbar-thumb {
+  background: #888; /* Adjust color as needed */
+  border-radius: 5px;
+}
+
+.products-height{
+height: calc(100% - 60px);
+margin-top: 70px;
+}
+
+.chat-height{
+  height: calc(100%-90px);
+}
+
+
+
+.guide-item {
+  margin: 5px 0 20px 50px;
+  text-align: start;
+}
+
+.item-point {
+  font-weight: bold;
+  font-size: 12px;
+  color: #f0f0f0;
+  display: flex;
+  padding-left: 10px;
+  justify-content: space-between;
+  
+}
+
+.item-details {
+  margin-left: 20px;
+  font-size: 10px;
+  color: #d1d1d1;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.toggle-details-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.toggle-details-btn:hover {
+  color: #f39c12;
+}
+
+/* Additional styling for non-numbered content */
+.guide-item:not(.item-point) {
+  font-size: 1em;
+  color: #c0c0c0;
+  margin-left: 0px;
+  padding-left: 0;
+}
+
+.product-image-class{
+  object-fit: cover;
+}
+
+
+/* In a global CSS file or within a <style jsx> block */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+
+
+.partial-star {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+}
+
+.partial-star::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: yellow;
+  width: 50%; /* Adjust this value to control how much of the star is filled */
+  overflow: hidden;
+}
+
+.partial-star::after {
+  content: '★';
+  color: gray;
+}
+
