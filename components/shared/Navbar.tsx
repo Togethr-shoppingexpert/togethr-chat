@@ -55,9 +55,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
               Togethr
             </span>
           </Link>
-          <div className="lg:hidden">
-            <Heart width={24} height={24} color="currentColor" />
-          </div>
+         
           {/* Other Navbar Elements */}
           {isChatStarted && (isContentAvailable||productsHistory.length >0) && (
             <div className="items-center gap-x-4 hidden md:flex">

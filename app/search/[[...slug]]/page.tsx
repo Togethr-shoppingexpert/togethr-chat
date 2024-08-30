@@ -546,6 +546,14 @@ export default function Page({ params }: { params: Params }) {
         const ai_response = data.AI_Response;
         if(data.curration){
           setBestProducts(JSON.parse(ai_response));
+          const curatioMessage = data.CurationMessage;
+          const newAiMessage = { sender: "AI", content: curatioMessage };
+            
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, newAiMessage];
+            setLatestMessageIndex(updatedMessages.length ); // Set the index based on the updated messages
+            return updatedMessages;
+          });
         }
         // console.log("bestproduct: ",bestProductsRef.current);
         console.log("ai_response: ",ai_response);
@@ -589,7 +597,7 @@ export default function Page({ params }: { params: Params }) {
           const newAiMessage = { sender: "AI", content: ai_response };
           setMessages((prevMessages) => {
             const updatedMessages = [...prevMessages, newAiMessage];
-            setLatestMessageIndex(updatedMessages.length - 1);
+            setLatestMessageIndex(updatedMessages.length );
             return updatedMessages;
           });
         } else {
@@ -598,10 +606,10 @@ export default function Page({ params }: { params: Params }) {
             
             setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages, newAiMessage];
-              setLatestMessageIndex(updatedMessages.length - 1); // Set the index based on the updated messages
+              setLatestMessageIndex(updatedMessages.length ); // Set the index based on the updated messages
               return updatedMessages;
             });
-          }
+          }  
         
           setCheckedIndices(new Set());
         }
@@ -631,6 +639,7 @@ export default function Page({ params }: { params: Params }) {
               content: <ProductCarousel products={formattedProducts} />,
             };
             setMessages((prevMessages) => [...prevMessages, productAiMessage]);
+
           }
         }
       } else {
@@ -742,43 +751,40 @@ export default function Page({ params }: { params: Params }) {
   }, []);
 
   useEffect(() => {
+    // Check if the page was refreshed
     const perfEntries = performance.getEntriesByType("navigation");
     const perfEntry =
       perfEntries.length && (perfEntries[0] as PerformanceNavigationTiming);
     const isPageRefreshed = perfEntry && perfEntry.type === "reload";
+  
+    // Retrieve URL parameters and theme
     const params = new URLSearchParams(window.location.search);
     const urlConversationId = params.get("convid");
     console.log("urlconvid: ", urlConversationId);
-
-    // Check if conversationId exists in sessionStorage
-    let storedConversationId: string;
-    if (isPageRefreshed) {
-      storedConversationId = sessionStorage.getItem("conversationId") || "";
-      const savedTheme = localStorage.getItem("darkmode");
-      if (savedTheme) {
-        setIsDarkMode(savedTheme === "dark");
-      }
-    } else {
-      storedConversationId = localStorage.getItem("conversationId") || "";
-      const savedTheme = localStorage.getItem("darkmode");
-      if (savedTheme) {
-        setIsDarkMode(savedTheme === "dark");
-      }
+  
+    const savedTheme = localStorage.getItem("darkmode");
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === "dark");
     }
-
+  
+    // Determine the stored conversation ID (check sessionStorage or localStorage)
+    let storedConversationId = isPageRefreshed
+      ? sessionStorage.getItem("conversationId") || ""
+      : localStorage.getItem("conversationId") || "";
+  
     console.log("stored convid: ", storedConversationId);
-
+  
     const conversationIdToUse = urlConversationId || storedConversationId;
-
-    if (
-      conversationIdToUse
-    ) {
-      // Use data from sessionStorage if conversationId matches
+  
+    // Fetch data if we have a valid conversation ID
+    if (conversationIdToUse) {
       sessionStorage.setItem("conversationId", conversationIdToUse);
-      const getrefreshedChat = async () => {
+  
+      const fetchData = async () => {
         try {
-          const response = await fetch(
-            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`,
+          // Fetch conversation history
+          const chatResponse = await fetch(
+            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${conversationIdToUse}`,
             {
               method: "GET",
               headers: {
@@ -787,34 +793,22 @@ export default function Page({ params }: { params: Params }) {
               },
             }
           );
-          if (!response.ok) {
-            throw new Error(`Error fetching product reviews: ${response.status}`);
+          if (!chatResponse.ok) {
+            throw new Error(`Error fetching conversation history: ${chatResponse.status}`);
           }
-          const data = await response.json();
-          const { conversationHistory } = data;
-          console.log("history: ", data);
-          if(conversationHistory.length > 0){
-            console.log('conversation history length > 0')
+          const chatData = await chatResponse.json();
+          console.log("history: ", chatData);
+  
+          const { conversationHistory } = chatData;
+          if (conversationHistory.length > 0) {
             setIsChatStarted(true);
           }
           setConversationHistorydata(conversationHistory);
-          //setProductsHistory(products[0]);
-          setConversationId(storedConversationId);
-          // console.log("products:",products[0][0]);
-          console.log("response: ", response);
-          console.log("conversationHistory: ", conversationHistorydata);
-          //console.log("producthistory: ", productsHistory);
-          setConversationId(storedConversationId);
-        } catch (error) {
-          console.error("Error fetching conversation data:", error);
-        }
-        
-      };
-
-  {/*}    const getRefreshedContentData = async () =>{
-        try {
-          const response = await fetch(
-            `https://${API_ENDPOINT}/api/content/${storedConversationId}`,
+          setConversationId(conversationIdToUse);
+  
+          // Fetch buying guide
+          const guideResponse = await fetch(
+            `https://${API_ENDPOINT}/api/buying-guide/${conversationIdToUse}`,
             {
               method: "GET",
               headers: {
@@ -823,76 +817,37 @@ export default function Page({ params }: { params: Params }) {
               },
             }
           );
-          if (!response.ok) {
-            throw new Error(`Error fetching content data: ${response.status}`);
+          if (!guideResponse.ok) {
+            throw new Error(`Error fetching buying guide data: ${guideResponse.status}`);
           }
-          const data = await response.json();
-          console.log("Content history: ", data);
-
-          const { article_links, youtube_links } = JSON.parse(data.Body);
-      
-          // Log the separate content
-          console.log("Article Links: ", article_links);
-          console.log("YouTube Links: ", youtube_links);
-       
-
-
-          setContentVideosHistory(youtube_links);
-          setContentBlogsHistory(article_links);
-
-          setContentPageHistory(data);
-        } catch (error) {
-          console.error("Error fetching content data:", error);
-        }        
-      };   */}
-
-      const getRefreshedBuyingGuide = async () =>{
-        try {
-          const response = await fetch(
-            `https://${API_ENDPOINT}/api/buying-guide/${storedConversationId}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
-              },
-            }
-          );
-          if (!response.ok) {
-            throw new Error(`Error fetching buying Guide data: ${response.status}`);
-          }
-          const data = await response.json();
-          console.log("Buying Guide history: ", data);
-
-          const {buying_guide_text ,  buying_guide_article_links, buying_guide_youtube_links } = JSON.parse(data[0].Body);
-      
-          // Log the separate content
-          console.log("buying guide text", buying_guide_text);
-          console.log("buying guide Article Links: ", buying_guide_article_links);
-          console.log("buying guide YouTube Links: ", buying_guide_youtube_links);
-          setBuyingGuide(data)
-
-          const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
-            console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
-            
-
-
+          const guideData = await guideResponse.json();
+          console.log("Buying Guide history: ", guideData);
+  
+          const {
+            buying_guide_text,
+            buying_guide_article_links,
+            buying_guide_youtube_links,
+          } = JSON.parse(guideData[0].Body);
+  
+          setBuyingGuide(guideData);
+  
+          const parsedBuyingGuideText = JSON.parse(buying_guide_text);
+          setGuideTextHistory(parsedBuyingGuideText);
           setGuideVideosHistory(buying_guide_youtube_links);
           setGuideBlogsHistory(buying_guide_article_links);
-          setGuideTextHistory(parsedBuyingGuideHistory);
+  
         } catch (error) {
-          console.error("Error fetching buying guide data:", error);
-        }        
+          console.error("Error fetching data:", error);
+        }
       };
-
-
-      getrefreshedChat(); // Call the async function
-      //getRefreshedContentData();
-      getRefreshedBuyingGuide();
+  
+      fetchData();
     } else {
+      // Redirect to home page if no conversation ID is found
       router.push("/");
     }
   }, []);
+  
 
   useEffect(() => {
     // Check if messageId is available
@@ -992,31 +947,39 @@ export default function Page({ params }: { params: Params }) {
         throw new Error("auth- Network response was not ok");
       }
       const data = await response.json();
-      //.guest ---> .User
-      //.guestId ---> UserId
-      // setGuestID(data.guest.GuestId);
-      // setToken(data.token);
-
+      
       setGuestID(data.User.UserId);
       setToken(data.token);
-      // Store guestID and token in local storage
-      // localStorage.setItem('guestID', data.guest.GuestId);
+  
+      // Store guestID, token, and expiration in local storage
       localStorage.setItem("UserID", data.User.UserId);
-
       localStorage.setItem("token", data.token);
+  
+      // If the token has an expiration time, store it
+      if (data.tokenExpiration) {
+        const expirationTime = Date.now() + data.tokenExpiration * 1000; // Convert to ms
+        localStorage.setItem("tokenExpiration", expirationTime.toString());
+      }
+  
       authTokenRef.current = data.token;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching guest authentication:", error);
+      // Optionally display a user notification or retry logic
     }
   };
-
-
-
-
+  
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
-
+    const tokenExpiration = localStorage.getItem("tokenExpiration");
+  
+    // Check if the token is still valid
+    if (storedToken && tokenExpiration && Date.now() > Number(tokenExpiration)) {
+      console.log("Token expired. Fetching new token.");
+      fetchGuestAuthSignup();
+      return;
+    }
+  
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);
@@ -1025,6 +988,7 @@ export default function Page({ params }: { params: Params }) {
       fetchGuestAuthSignup();
     }
   }, []);
+  
  {/* const handleOptionClick = (option: string) => {
     setSelectedOptions((prevOptions) => {
       if (prevOptions.includes(option)) {

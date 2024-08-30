@@ -265,6 +265,8 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                     }
                     return <div>{message.content}</div>;
                   })()}
+                  
+
                 </div>
               </>
             ) : (

@@ -166,7 +166,7 @@ export default function WishlistUI({ wishlist, onDelete }: WishlistUIProps) {
                         className="rounded-xl product-image-class"
                       />
                     </div>
-                    <div className="flex flex-col justify-start items-start w-[calc(100%-300px)] m-4">
+                    <div className="flex flex-col justify-start items-start sm:w-100% lg:w-[calc(100%-300px)] m-4">
                       <div className="text-[17px] text-white">{title}</div>
                       <div className="flex h-max items-center gap-x-2 p-1.5 px-3 mt-2 rounded-xl bg-[#E8DEF8]">
                         <div className="w-3">
