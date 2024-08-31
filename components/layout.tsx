@@ -9,6 +9,7 @@ import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
 import FooterNav from "./FooterNav";
 import { useContentContext } from "@/ContentContext";
+import { Divide } from "lucide-react";
 
 interface LayoutProps {
   sendMessage: (message: string) => void;
@@ -24,6 +25,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
 
   const { 
     isContentAvailable,
+    isContentLoading,
     isChatOpen,
     setIsChatOpen
   } = useContentContext();
@@ -36,9 +38,6 @@ export default function Layout({ sendMessage }: LayoutProps) {
       setIsTabletScreen(screenWidth > 768 && screenWidth <= 1024);
       setIsLargerScreen(screenWidth > 1024);
     };
-
-  
-
     handleResize(); // Check on mount
     window.addEventListener("resize", handleResize);
 
@@ -48,6 +47,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const handleContentChange = (content: string) => {
     console.log('activeContent', content);
     setActiveContent(content);
+    
   };
 
   const toggleChat = () => {
@@ -55,6 +55,20 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
+   // {!isContentAvailable ? return(<div>loading</div>) : " "}
+   if (isContentLoading) {
+    return (
+      <div className="flex justify-center items-end h-full w-full overflow-y-hidden z-0 pr-14">
+        <img
+          src="/loading.jpg"
+          alt="Loading..."
+          className="object-cover h-full w-full"
+          style={{ maxHeight: "100%", maxWidth: "100%" }}
+        />
+      </div>
+    );
+  }
+
     switch (activeContent) {
       case 'discover':
         return <Discover sendMessage={sendMessage} />;
@@ -67,14 +81,15 @@ export default function Layout({ sendMessage }: LayoutProps) {
       default:
         return <Discover sendMessage={sendMessage} />; // Default to Discover if no other content is selected
     }
+  
   };
 
   return (
     <div className="w-full ">
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
-        <main className={`pt-10 ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'}`}>
-          {renderContent()}         
+        <main className={` ${isContentLoading ? 'flex pt-0 w-[100%] h-[90vh] overflow-hidden' : 'pt-10 w-[70%]'} ${isLargerScreen ? '' : 'w-[100%] p-4'}`}>
+          {renderContent()}   
         </main>
         {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
           <Chat sendMessage={sendMessage} />
@@ -84,7 +99,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
         ) : null}
 
         {!isSmallScreen && !isTabletScreen ? (
-          <div className="fixed right-0 top-0 w-[400px] overflow-y-scroll products-height border-l-8 border-[#2e2f2f]">
+          <div className="fixed right-0 top-0 w-[400px] z-10 bg-[#202222] overflow-y-scroll products-height border-l-8 border-[#2e2f2f]">
             <Chat sendMessage={sendMessage} />
           </div>
         ) : (

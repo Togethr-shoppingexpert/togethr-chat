@@ -98,6 +98,8 @@ interface ContentContextData {
   contentBlogsHistory: any[];
   setContentVideosHistory: (videos: any[]) => void;
   setContentBlogsHistory: (blogs: any[]) => void;
+  isContentLoading:boolean;
+  setIsContentLoading: (started: boolean) => void;
 }
 
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
@@ -159,6 +161,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [contentVideosHistory, setContentVideosHistory] = useState<any[]>([]);
   const [contentBlogsHistory, setContentBlogsHistory] = useState<any[]>([]);
   const [bestProductsHistory, setBestProductsHistory] = useState<any[]>([]);
+  const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
   
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
@@ -239,7 +242,8 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     guideVideosHistory, setGuideVideosHistory,
     guideTextHistory, setGuideTextHistory,
     contentBlogsHistory, setContentBlogsHistory,
-    contentVideosHistory, setContentVideosHistory
+    contentVideosHistory, setContentVideosHistory,
+    isContentLoading, setIsContentLoading
   }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, bestProductsHistory, setBestProductsHistory, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
     guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory]);
 

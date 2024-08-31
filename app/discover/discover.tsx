@@ -17,6 +17,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         followup, 
         isOpen, 
         setIsOpen, 
+        setIsContentLoading,
         setIsChatOpen,
         followupQues, 
         setUserMessage,
@@ -41,7 +42,7 @@ useEffect(()=>{
   console.log("content available", isContentAvailable)
 },[isContentAvailable])
 
-  console.log("wishlist");
+  
   return (
     <>
       <div className="w-[100%]  h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">

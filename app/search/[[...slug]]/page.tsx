@@ -192,6 +192,8 @@ export default function Page({ params }: { params: Params }) {
     conversationHistorydata,
     setIsContentAvailable,
     setFilters,
+    setIsContentLoading,
+    isContentLoading,
     messageId,
     setBuyingGuideHistory,
     setContentPageHistory,
@@ -318,6 +320,10 @@ export default function Page({ params }: { params: Params }) {
               favicon: blog.favicon,
               source: blog.source,
             }));
+            if(UpdatedBlog.length >0){
+              setIsContentLoading(false);
+              console.log('content loaing set to false');
+            }
             console.log('data',UpdatedBlog)
             setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
@@ -1212,7 +1218,7 @@ export default function Page({ params }: { params: Params }) {
       <div className=" w-full flex items-center justify-end   z-10">
         <section className="w-[100%]">
           
-          <div className="flex w-full mb-16  h-screent">
+          <div className={`flex w-full  ${isContentLoading ? 'mb-0' : 'mb-16'}  h-screent`}>
              {/*<div className="fixed right-0 top-0 w-[370px] overflow-y-scroll order-2  products-height">
             
             attempt 1 
@@ -1286,6 +1292,7 @@ export default function Page({ params }: { params: Params }) {
 
             </div>*/}
          <Layout sendMessage={sendMessage}> 
+
            {/* <Discover sendMessage={sendMessage}/>*/}
             {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
