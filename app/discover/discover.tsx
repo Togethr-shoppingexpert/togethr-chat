@@ -17,6 +17,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         followup, 
         isOpen, 
         setIsOpen, 
+        setIsChatOpen,
         followupQues, 
         setUserMessage,
         isContentAvailable,
@@ -30,6 +31,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         if ((followup && followup.length > 0)) {
           setIsContentAvailable(true);
           console.log('content available true');
+          setIsChatOpen(false);
         } else {
           setIsContentAvailable(false);
         }

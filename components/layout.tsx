@@ -37,6 +37,8 @@ export default function Layout({ sendMessage }: LayoutProps) {
       setIsLargerScreen(screenWidth > 1024);
     };
 
+  
+
     handleResize(); // Check on mount
     window.addEventListener("resize", handleResize);
 
