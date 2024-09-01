@@ -1025,7 +1025,7 @@ export default function Page({ params }: { params: Params }) {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                //Authorization: `Bearer ${authTokenRef.current}`,
+                // Authorization: `Bearer ${authTokenRef.current}`,
               },
             }
           );
@@ -1035,16 +1035,21 @@ export default function Page({ params }: { params: Params }) {
           const data = await response.json();
           const { conversationHistory } = data;
           console.log("conversationHistory: ", conversationHistory);
-  
+      
           if (conversationHistory.length > 0) {
             setIsChatStarted(true);
           }
           setConversationHistorydata(conversationHistory);
-          setConversationId(conversationIdToUse);
+      
+          // Ensure conversationIdToUse is not null before setting it
+          if (conversationIdToUse) {
+            setConversationId(conversationIdToUse);
+          }
         } catch (error) {
           console.error("Error fetching conversation data:", error);
         }
       };
+      
   
       fetchConversationData();
       // Add your other data fetching functions here, like getRefreshedBuyingGuide();
