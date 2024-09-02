@@ -59,19 +59,14 @@ export default function Layout({ sendMessage }: LayoutProps) {
    if (isContentLoading) {
     return (
       <div className="flex justify-center items-end h-full w-full overflow-y-hidden z-0 pr-14">
-        <img
-          src="/loading.jpg"
-          alt="Loading..."
-          className="object-cover h-full w-full"
-          style={{ maxHeight: "100%", maxWidth: "100%" }}
-        />
+       
       </div>
     );
   }
 
     switch (activeContent) {
       case 'discover':
-        return <Discover sendMessage={sendMessage} />;
+        return <div className="[#f5f5f58a]"><Discover sendMessage={sendMessage} /></div>;
       case 'guide':
         return <BuyingGuide />;
       case 'wishlist':
@@ -88,7 +83,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
     <div className="w-full ">
       <Navbar mode="dark" onContentChange={handleContentChange} />
       <div className="flex flex-col">
-        <main className={` ${isContentLoading ? 'flex pt-0 w-[100%] h-[90vh] overflow-hidden' : 'pt-10 w-[70%]'} ${isLargerScreen ? '' : 'w-[100%] p-4'}`}>
+        <main className={` ${isContentLoading ? 'flex pt-0 h-[90vh] overflow-hidden' : 'pt-10'} ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'}`}>
           {renderContent()}   
         </main>
         {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
