@@ -1,33 +1,35 @@
-"use client";
-import { FC,useState, useEffect } from "react";
+import { FC } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Heart from "../../public/icons/HeartIcon";
 import { useContentContext } from "@/ContentContext";
 
 interface NavbarProps {
   mode: "light" | "dark";
   onContentChange: (content: string) => void;
+  activeContent: string;
 }
 
-const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
-  const { isChatStarted, setMessages, productsHistory, guideTextHistory } = useContentContext();
+const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
+  const { isChatStarted, setMessages, productsHistory, guideTextHistory } =
+    useContentContext();
 
-  const { isContentAvailable} = useContentContext();
+  const { isContentAvailable } = useContentContext();
   const router = useRouter();
-  const pathname = usePathname();  // Use the usePathname hook
-  console.log('paath name', pathname);
+  const pathname = usePathname();
 
-  const handleInputChange = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleInputChange = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     setMessages([]);
     if (pathname === "/") {
-      e.preventDefault();  // Prevent default navigation
-      router.push('/');    // Navigate to the homepage programmatically
+      e.preventDefault(); // Prevent default navigation
+      router.push("/"); // Navigate to the homepage programmatically
       window.location.reload(); // Force a full page reload
     }
   };
 
+  const isActive = (content: string) => activeContent === content;
 
   return (
     <nav
@@ -37,8 +39,11 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
     >
       <div className="px-[4%] lg:px-[6%] flex justify-center">
         <div className="w-full flex h-max justify-between items-center">
-        
-          <Link href="/" onClick={handleInputChange} className="flex items-center py-1 lg:py-4 px-2">
+          <Link
+            href="/"
+            onClick={handleInputChange}
+            className="flex items-center py-1 lg:py-4 px-2"
+          >
             <div className="w-6 lg:w-10">
               <Image
                 src={`${mode === "dark" ? "/icon2.png" : "/favicon.png"}`}
@@ -55,43 +60,44 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
               Togethr
             </span>
           </Link>
-         
+
           {/* Other Navbar Elements */}
-          {isChatStarted && (isContentAvailable||productsHistory.length >0) && (
+          {isChatStarted && (isContentAvailable || productsHistory.length > 0) && (
             <div className="items-center gap-x-4 hidden md:flex">
               {isContentAvailable}
               <div
-                className={`w-max text-lg ${(isContentAvailable||  productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  (isContentAvailable || productsHistory.length >0) ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
-                }`}
-                onClick={() => (isContentAvailable || productsHistory.length >0) && onContentChange("discover")}
+                className={`w-max text-lg  font-semibold px-4 p-1 rounded-lg  cursor-pointer
+                  ${isActive("discover") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
+                  `}
+                onClick={() =>
+                  (isContentAvailable || productsHistory.length > 0) &&
+                  onContentChange("discover")
+                }
               >
-                Discover  
+                Discover
               </div>
               <div
-                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  (isContentAvailable || productsHistory.length >0 )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
-                }`}
-                onClick={() =>( productsHistory.length >0 || isContentAvailable) && onContentChange("guide")}
+                className={`w-max text-lg  font-semibold px-4 p-1 rounded-lg  cursor-pointer
+                 ${isActive("guide") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
+                 `}
+                onClick={() =>
+                  productsHistory.length > 0 ||
+                  (isContentAvailable && onContentChange("guide"))
+                }
               >
                 Buying Guide
               </div>
               <div
-                className={`w-max text-lg ${(isContentAvailable || productsHistory.length >0) ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  (isContentAvailable || productsHistory.length >0 )? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
-                }`}
-                onClick={() => (isContentAvailable  || productsHistory.length >0) && onContentChange("wishlist")}
+                className={`w-max text-lg  font-semibold px-4 p-1 rounded-lg  cursor-pointer
+                  ${isActive("wishlist") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
+                  `}
+                onClick={() =>
+                  (isContentAvailable || productsHistory.length > 0) &&
+                  onContentChange("wishlist")
+                }
               >
                 Wishlist
               </div>
-              {/*<div
-                className={`w-max text-lg ${isContentAvailable ? "text-white hover:text-black cursor-pointer" : "text-[#a7a7a7] opacity-50 cursor-not-allowed"}  font-semibold px-4 p-1 rounded-lg ${
-                  isContentAvailable ? "hover:bg-[#f5f5f58a] transition-all duration-500" : ""
-                }`}
-                onClick={() => isContentAvailable && onContentChange("content")}
-              >
-                Content
-              </div> */}
             </div>
           )}
         </div>
@@ -101,4 +107,3 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange  }) => {
 };
 
 export default Navbar;
-

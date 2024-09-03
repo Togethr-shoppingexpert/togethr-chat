@@ -1,6 +1,4 @@
-// components/Layout.tsx
-import { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import Navbar from "../components/shared/Navbar";
 import BuyingGuide from "@/app/guide/page";
 import Wishlist from "@/app/wishlist/page";
@@ -9,27 +7,20 @@ import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
 import FooterNav from "./FooterNav";
 import { useContentContext } from "@/ContentContext";
-import { Divide } from "lucide-react";
 
 interface LayoutProps {
   sendMessage: (message: string) => void;
-
 }
 
 export default function Layout({ sendMessage }: LayoutProps) {
-  const [activeContent, setActiveContent] = useState<string | null>(null);
+  const [activeContent, setActiveContent] = useState<string>("discover");
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
 
-  const { 
-    isContentAvailable,
-    isContentLoading,
-    isChatOpen,
-    setIsChatOpen
-  } = useContentContext();
-
+  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen } =
+    useContentContext();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,9 +36,8 @@ export default function Layout({ sendMessage }: LayoutProps) {
   }, []);
 
   const handleContentChange = (content: string) => {
-    console.log('activeContent', content);
+    console.log("activeContent", content);
     setActiveContent(content);
-    
   };
 
   const toggleChat = () => {
@@ -55,40 +45,43 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
-   // {!isContentAvailable ? return(<div>loading</div>) : " "}
-   if (isContentLoading) {
-    return (
-      <div className="flex justify-center items-end h-full w-full overflow-y-hidden z-0 pr-14">
-       
-      </div>
-    );
-  }
+    if (isContentLoading) {
+      return (
+        <div className="">
+          <BuyingGuide />
+        </div>
+      );
+    }
 
     switch (activeContent) {
-      case 'discover':
-        return <div className="[#f5f5f58a]"><Discover sendMessage={sendMessage} /></div>;
-      case 'guide':
+      case "discover":
+        return <Discover sendMessage={sendMessage} />;
+      case "guide":
         return <BuyingGuide />;
-      case 'wishlist':
+      case "wishlist":
         return <Wishlist />;
-      case 'content':
+      case "content":
         return <Content />;
       default:
         return <Discover sendMessage={sendMessage} />; // Default to Discover if no other content is selected
     }
-  
   };
 
   return (
     <div className="w-full ">
-      <Navbar mode="dark" onContentChange={handleContentChange} />
+      <Navbar
+        mode="dark"
+        activeContent={activeContent}
+        onContentChange={handleContentChange}
+      />
       <div className="flex flex-col">
-        <main className={` ${isContentLoading ? 'flex pt-0 h-[90vh] overflow-hidden' : 'pt-10'} ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'}`}>
-          {renderContent()}   
+        <main
+          className={` ${
+            isContentLoading ? "flex pt-0 h-[90vh] overflow-hidden" : "pt-10"
+          } ${isLargerScreen ? "w-[70%]" : "w-[100%] p-4"}`}
+        >
+          {renderContent()}
         </main>
-        {/*<div className="fixed right-0 top-0 w-[400px] overflow-y-scroll order-2 products-height border-l-8 border-[#2e2f2f]">
-          <Chat sendMessage={sendMessage} />
-        </div>*/}
         {isSmallScreen ? (
           <FooterNav onContentChange={handleContentChange} />
         ) : null}
@@ -100,10 +93,16 @@ export default function Layout({ sendMessage }: LayoutProps) {
         ) : (
           <>
             {isChatOpen ? (
-              <div className={`fixed bottom-[66px]  ${isTabletScreen ? 'right-0 w-[60%]' : 'left-0 w-full'} h-[80%] bg-white shadow-lg rounded-lg z-50`}>
+              <div
+                className={`fixed bottom-[66px]  ${
+                  isTabletScreen ? "right-0 w-[60%]" : "left-0 w-full"
+                } h-[80%] bg-white shadow-lg rounded-lg z-50`}
+              >
                 <div className="flex justify-between p-4 border-b bg-[#2e2f2f] rounded-t-lg">
                   <h2 className="text-lg font-bold text-white">Chat</h2>
-                  <button className="text-[#a7a7a7]" onClick={toggleChat}>Close</button>
+                  <button className="text-[#a7a7a7]" onClick={toggleChat}>
+                    Close
+                  </button>
                 </div>
                 <div className="overflow-y-scroll h-[calc(100%-80px)] bg-[#202222]">
                   <Chat sendMessage={sendMessage} />
