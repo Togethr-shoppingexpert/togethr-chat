@@ -443,7 +443,7 @@ export default function Page({ params }: { params: Params }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authTokenRef.current}`,
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify({
             userMessage: message,
