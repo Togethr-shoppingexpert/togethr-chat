@@ -672,8 +672,13 @@ export default function Page({ params }: { params: Params }) {
   
     // Check if conversationId exists in sessionStorage or URL
     let conversationIdToUse = urlConversationId || sessionStorage.getItem("conversationId");
+    const token = localStorage.getItem('token'); // Get the token from localStorage
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
   
-    if (conversationIdToUse) {
+    if (conversationIdToUse && token) {
       // Store the conversationId in sessionStorage if not already stored
       sessionStorage.setItem("conversationId", conversationIdToUse);
   
@@ -690,7 +695,7 @@ export default function Page({ params }: { params: Params }) {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                 Authorization: `Bearer ${authTokenRef.current}`,
+                 "Authorization": `Bearer ${token}`,
               },
             }
           );
