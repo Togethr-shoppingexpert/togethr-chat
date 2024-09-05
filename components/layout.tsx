@@ -45,13 +45,13 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
-    if (isContentLoading) {
+  {/*}  if (isContentLoading) {
       return (
         <div className="">
           <BuyingGuide />
         </div>
       );
-    }
+    }*/}
 
     switch (activeContent) {
       case "discover":
