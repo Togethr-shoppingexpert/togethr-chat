@@ -183,7 +183,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
           </Link>
 
           {/* Other Navbar Elements */}
-          {isChatStarted && (isContentAvailable || productsHistory.length > 0 || guideTextHistory) && (
+          {isChatStarted && (isContentAvailable || productsHistory.length > 0) && (
             <div className="items-center gap-x-4 hidden md:flex">
               {isContentAvailable}
               <div
@@ -202,8 +202,8 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
                  ${isActive("guide") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
                  `}
                 onClick={() =>
-                  productsHistory.length > 0 ||
-                  (isContentAvailable && onContentChange("guide"))
+                  (productsHistory.length > 0 ||isContentAvailable) && 
+                  onContentChange("guide")
                 }
               >
                 Buying Guide
