@@ -749,7 +749,7 @@ export default function Page({ params }: { params: Params }) {
 
           const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
             console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
-            
+            setIsLoading(false);
 
 
           setGuideVideosHistory(buying_guide_youtube_links);
@@ -761,8 +761,7 @@ export default function Page({ params }: { params: Params }) {
       };
   
       fetchConversationData();
-      getRefreshedBuyingGuide();
-      // Add your other data fetching functions here, like getRefreshedBuyingGuide();
+      getRefreshedBuyingGuide();    
     } else {
       // Handle case where no conversation ID is found
       router.push("/");
