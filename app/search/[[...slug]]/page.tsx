@@ -721,8 +721,47 @@ export default function Page({ params }: { params: Params }) {
         }
       };
       
+      const getRefreshedBuyingGuide = async () =>{
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/buying-guide/${storedConversationId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching buying Guide data: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Buying Guide history: ", data);
+
+          const {buying_guide_text ,  buying_guide_article_links, buying_guide_youtube_links } = JSON.parse(data[0].Body);
+      
+          // Log the separate content
+          console.log("buying guide text", buying_guide_text);
+          console.log("buying guide Article Links: ", buying_guide_article_links);
+          console.log("buying guide YouTube Links: ", buying_guide_youtube_links);
+          setBuyingGuide(data)
+
+          const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
+            console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
+            
+
+
+          setGuideVideosHistory(buying_guide_youtube_links);
+          setGuideBlogsHistory(buying_guide_article_links);
+          setGuideTextHistory(parsedBuyingGuideHistory);
+        } catch (error) {
+          console.error("Error fetching buying guide data:", error);
+        }        
+      };
   
       fetchConversationData();
+      getRefreshedBuyingGuide();
       // Add your other data fetching functions here, like getRefreshedBuyingGuide();
     } else {
       // Handle case where no conversation ID is found
