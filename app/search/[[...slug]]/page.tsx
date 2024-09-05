@@ -298,23 +298,7 @@ export default function Page({ params }: { params: Params }) {
               length: video.length,
             }));
             setDiscoverVideos(UpdatedVideo);
-      {/*}    }else if (eventData.type === "content_page") {
-            console.log("content_blogs", eventData.articel_url);
-            console.log("content_video", eventData.youtube_url);
-            const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
-              link: video.link,
-              title: video.title, 
-              description: video.description, 
-              length: video.length,
-            })); 
-            setVideoContent(UpdatedVideo);
-            const UpdatedBlog = eventData.article_url.map((blog: any) => ({
-              link: blog.link,
-              title: blog.title, 
-              favicon: blog.favicon,
-              source: blog.source,
-            }));
-            setBlogsContent(UpdatedBlog);    */}
+     
           }else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
@@ -396,11 +380,7 @@ export default function Page({ params }: { params: Params }) {
   const handleWebSocketMessage = (isLoading: boolean) => {
     setIsLoadingResearch(isLoading);
   };
-  // useEffect(() => {
-  //   if (isLoading === false) {
-  //     setCuration(false);
-  //   }
-  // },[]);
+
   useEffect(() => {
     // Get conversation ID from sessionStorage
     const storedConversationId = localStorage.getItem("conversationId");
@@ -445,6 +425,12 @@ export default function Page({ params }: { params: Params }) {
       }
     }
 
+    const token = localStorage.getItem('token'); // Get the token from localStorage
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
     const newMessage: Message = { sender: "user", content: message };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
@@ -457,7 +443,7 @@ export default function Page({ params }: { params: Params }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authTokenRef.current}`,
+            "Authorization": `Bearer ${authTokenRef.current}`,
           },
           body: JSON.stringify({
             userMessage: message,
@@ -704,7 +690,7 @@ export default function Page({ params }: { params: Params }) {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `Bearer ${authTokenRef.current}`,
+                 Authorization: `Bearer ${authTokenRef.current}`,
               },
             }
           );

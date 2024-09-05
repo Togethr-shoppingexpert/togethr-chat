@@ -148,6 +148,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
   const handleLogout = () => {
     // Perform logout operation (e.g., clearing tokens, redirecting to login page)
     localStorage.removeItem("token");
+    localStorage.removeItem("conversationId");
     router.push("/login"); // Redirect to the login page
   };
 

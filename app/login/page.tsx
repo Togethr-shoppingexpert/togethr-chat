@@ -14,6 +14,7 @@ export default function Login() {
     try {
       // Redirect to Google login endpoint
       window.location.href = `https://${config.url}/api/oauth2/login/google`;
+      localStorage.removeItem("token");
     } catch (error) {
       console.error("Error during Google login:", error);
       setLoading(false);
