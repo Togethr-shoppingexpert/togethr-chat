@@ -705,7 +705,7 @@ export default function Page({ params }: { params: Params }) {
           const data = await response.json();
           const { conversationHistory } = data;
           console.log("conversationHistory: ", conversationHistory);
-      
+          setIsLoading(false);
           if (conversationHistory.length > 0) {
             setIsChatStarted(true);
           }
