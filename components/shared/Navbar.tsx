@@ -201,8 +201,8 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
                 className={`w-max text-lg  font-semibold px-4 p-1 rounded-lg  cursor-pointer
                  ${isActive("guide") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
                  `}
-                onClick={() =>
-                  (productsHistory.length > 0 ||isContentAvailable) && 
+                 onClick={() =>
+                  (isContentAvailable || productsHistory.length > 0) &&
                   onContentChange("guide")
                 }
               >
