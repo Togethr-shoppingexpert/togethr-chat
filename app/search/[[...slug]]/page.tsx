@@ -708,6 +708,7 @@ export default function Page({ params }: { params: Params }) {
           setIsLoading(false);
           if (conversationHistory.length > 0) {
             setIsChatStarted(true);
+            setIsLoading(false);
           }
           setConversationHistorydata(conversationHistory);
       
