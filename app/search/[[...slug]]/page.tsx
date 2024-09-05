@@ -403,6 +403,7 @@ export default function Page({ params }: { params: Params }) {
   }, []); // Empty dependency array to run once on component mount
 
   const sendMessage = async (message: string) => {
+    console.log("send message called");
     setIsLoading(true);
     setFollowupSourcesVisible(false);
     setCheckedIndices(new Set());
@@ -575,6 +576,8 @@ export default function Page({ params }: { params: Params }) {
       setCheckedIndices(new Set());
       setUserMessage("");
     }
+
+    console.log("send message function")
   };
 
 
