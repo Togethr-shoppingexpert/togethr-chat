@@ -183,7 +183,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
           </Link>
 
           {/* Other Navbar Elements */}
-          {isChatStarted && (isContentAvailable || productsHistory.length > 0) && (
+          {isChatStarted && (isContentAvailable || productsHistory.length > 0 || guideTextHistory) && (
             <div className="items-center gap-x-4 hidden md:flex">
               {isContentAvailable}
               <div
