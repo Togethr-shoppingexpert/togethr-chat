@@ -724,12 +724,12 @@ export default function Page({ params }: { params: Params }) {
       const getRefreshedBuyingGuide = async () =>{
         try {
           const response = await fetch(
-            `https://${API_ENDPOINT}/api/buying-guide/${storedConversationId}`,
+            `https://${API_ENDPOINT}/api/buying-guide/${conversationIdToUse}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
+                "Authorization": `Bearer ${token}`,
               },
             }
           );
