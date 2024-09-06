@@ -55,8 +55,11 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
       }
 
       const data: Conversation[] = await response.json();
-      setConversations(data);
-      console.log("history button history", data)
+    // Filter out conversations where `firstMessage` is null
+    const filteredConversations = data.filter(conversation => conversation.firstMessage !== null);
+
+    setConversations(filteredConversations);
+      console.log("history button history", filteredConversations)
     } catch (error) {
       console.error("Error fetching conversations:", error);
     } finally {
