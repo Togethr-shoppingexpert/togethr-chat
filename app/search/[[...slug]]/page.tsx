@@ -4,16 +4,52 @@ import {
   useEffect,
   useRef,
   SetStateAction,
+  Key,
+  JSXElementConstructor,
+  PromiseLikeOfReactNode,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  use,
 } from "react";
 
+import Navbar from "@/components/shared/Navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import favicon from "@/app/favicon.ico";
+import { FaSun, FaMoon } from "react-icons/fa";
+import { Skeleton } from "@/components/ui/skeleton";
 import ProductCarousel from "@/components/ProductCarousel";
+import useSmoothScrollIntoView from "@/hooks/autoscroll";
+import Followup from "@/components/Followup";
+import { ResearchComponent } from "@/components/ResearchComponent";
+import ResearchLoader from "@/components/shared/ResearchLoader";
+import GeneralLoader from "@/components/shared/GeneralLoader";
+import { FaRegLightbulb } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { config } from "../../../constants";
+import Sources from "@/components/Sources";
+import HeroResult from "@/components/HeroResult";
+import Chat from "@/components/Chat";
 import Layout from "@/components/layout";
+import Discover from "../../discover/discover";
+import Heart from "../../../public/icons/HeartIcon";
+import HeartFill from "../../../public/icons/HeartFilledIcon";
 import Message from "../../../public/icons/MessageIcon";
+import Videos from "@/components/Videos";
+import Blogs from "@/components/Blogs";
+import ContentIcon from "../../../public/icons/ContentIcon";
+import DiscoverIcon from "../../../public/icons/DiscoverIcon";
+import BuyingIcon from "../../../public/icons/BuyingGuideIcon";
+import BuyingGuideIcon from "../../../public/icons/BuyingGuideIcon";
+import FooterNav from "@/components/FooterNav";
 import { useContentContext } from "@/ContentContext";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
+let followupques: [];
+let productinformation: any[];
+// const id = sessionStorage.getItem("conversationId");
 
 interface Params {
   slug: string[];
@@ -72,16 +108,27 @@ interface Product {
 }
 
 export default function Page({ params }: { params: Params }) {
+  //const [messages, setMessages] = useState<Message[]>([]);
+  //const [userMessage, setUserMessage] = useState("");
+  //const [isLoading, setIsLoading] = useState(false);
+  const [messageSent, setMessageSent] = useState(false);
+  const [isConversationIdLoaded, setIsConversationIdLoaded] = useState(false);
   const [isLoadingResearch, setIsLoadingResearch] = useState(false);
+  //const [followup, setFollowup] = useState([]);
   const [inputWidth, setInputWidth] = useState<number | null>(null); // Specify type explicitly
-  const inputRef = useRef<HTMLInputElement>(null); 
+  const inputRef = useRef<HTMLInputElement>(null); // Specify type explicitly
+  //const [curation, setCuration] = useState(false);
   const [pdt, setPdt] = useState(false);
+  const [nextsearch, setNextSearch] = useState(false);
   const [convnId, setConversationId] = useState("");
   const [productArray, setProductArray] = useState([]);
+  const [showbuttons, setShowbuttons] = useState(false);
   const [guestID, setGuestID] = useState("");
   const [token, setToken] = useState("");
   const [prevConvId, setPrevConvId] = useState("");
   const [latestMessageIndex, setLatestMessageIndex] = useState(-1);
+  //const [conversationHistorydata, setConversationHistorydata] = useState<any[]>([]);
+  //const [productsHistory, setProductsHistory] = useState<any[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
   });
@@ -90,10 +137,15 @@ export default function Page({ params }: { params: Params }) {
   const userId = slug[0];
   const searchQuery = slug[1];
   const router = useRouter();
+
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  //const [isOpen, setIsOpen] = useState(false);
   const [checkedIndices, setCheckedIndices] = useState(new Set());
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [currentQuestion, setCurrentQuestion] = useState("");
+  //const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  //const [currentoptionvisible, setCurrentoptionvisible] = useState(false);
   const handleNewQuestion = (
     question: SetStateAction<string>,
     options: SetStateAction<string[]>
@@ -101,6 +153,16 @@ export default function Page({ params }: { params: Params }) {
     setCurrentQuestion(question);
     setCurrentOptions(options);
   };
+  // const [bestProducts,setBestProducts]=useState<Product[]>([]);
+  // const bestProductsRef = useRef<Product[]>([]);
+  // const [airesponse,setAiResponse]=useState()
+  // const [blogsContent, setBlogsContent] = useState<BlogContent[]>([]);
+  // const [buyingGuide, setBuyingGuide] = useState<string>('');
+  // const [videoContent, setVideoContent] = useState<VideoContent[]>([]);
+  // const handleOptionClick = (option: string) => {
+  //   setUserMessage((prevMessage) => prevMessage + ' ' + option); // Append option to user message
+  // };
+
 
   const {
     setGuideBlogs,
@@ -265,9 +327,18 @@ export default function Page({ params }: { params: Params }) {
             console.log('data',UpdatedBlog)
             setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
-      
+            //console.log("buying_guide", eventData.text);
+            //setBuyingGuide(eventData.text);
             console.log("buying_guide", eventData.text);
-           
+           {/*} const FormattedBuyingGuide: BuyingGuide[] = eventData.text.map((guide: any) => ({
+              buying_guide_text: guide.buying_guide_text,
+              buying_guide_starting_text: guide.buying_guide_starting_text, 
+              buying_guide_factors_options: guide.buying_guide_factors_options, 
+              buying_guide_specs_text: guide.buying_guide_specs_text,
+              buying_guide_ending_text: guide.buying_guide_ending_text,
+            })); 
+            console.log('fetched formatted guide', FormattedBuyingGuide);
+            setBuyingGuide(FormattedBuyingGuide);*/}
             const parsedBuyingGuide = JSON.parse(eventData.text);
             console.log('parsedBuyingGuide' , parsedBuyingGuide);
             
@@ -298,7 +369,23 @@ export default function Page({ params }: { params: Params }) {
               length: video.length,
             }));
             setDiscoverVideos(UpdatedVideo);
-     
+      {/*}    }else if (eventData.type === "content_page") {
+            console.log("content_blogs", eventData.articel_url);
+            console.log("content_video", eventData.youtube_url);
+            const UpdatedVideo: VideoContent[] = eventData.youtube_url.map((video: any) => ({
+              link: video.link,
+              title: video.title, 
+              description: video.description, 
+              length: video.length,
+            })); 
+            setVideoContent(UpdatedVideo);
+            const UpdatedBlog = eventData.article_url.map((blog: any) => ({
+              link: blog.link,
+              title: blog.title, 
+              favicon: blog.favicon,
+              source: blog.source,
+            }));
+            setBlogsContent(UpdatedBlog);    */}
           }else if(eventData.type==="product_information"){
               console.log("product_Information",eventData.data);
               setProductInfo(eventData.data);
@@ -339,7 +426,6 @@ export default function Page({ params }: { params: Params }) {
       const token = localStorage.getItem("token");
       if (token) {
         authTokenRef.current = token;
-        console.log('token found', authTokenRef)
       } else {
         console.log("token not found");
       }
@@ -380,7 +466,11 @@ export default function Page({ params }: { params: Params }) {
   const handleWebSocketMessage = (isLoading: boolean) => {
     setIsLoadingResearch(isLoading);
   };
-
+  // useEffect(() => {
+  //   if (isLoading === false) {
+  //     setCuration(false);
+  //   }
+  // },[]);
   useEffect(() => {
     // Get conversation ID from sessionStorage
     const storedConversationId = localStorage.getItem("conversationId");
@@ -403,7 +493,6 @@ export default function Page({ params }: { params: Params }) {
   }, []); // Empty dependency array to run once on component mount
 
   const sendMessage = async (message: string) => {
-    console.log("send message called");
     setIsLoading(true);
     setFollowupSourcesVisible(false);
     setCheckedIndices(new Set());
@@ -426,12 +515,6 @@ export default function Page({ params }: { params: Params }) {
       }
     }
 
-    const token = localStorage.getItem('token'); // Get the token from localStorage
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-
     const newMessage: Message = { sender: "user", content: message };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage("");
@@ -444,7 +527,7 @@ export default function Page({ params }: { params: Params }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${authTokenRef.current}`,
           },
           body: JSON.stringify({
             userMessage: message,
@@ -576,12 +659,12 @@ export default function Page({ params }: { params: Params }) {
       setCheckedIndices(new Set());
       setUserMessage("");
     }
-
-    console.log("send message function")
   };
 
 
   useEffect(() => {
+    // Set options text in the input box when options change
+    // setUserMessage(currentOptions.join(', '));
     setSelectedOptions([]);
     setUserMessage("");
   }, [currentOptions]);
@@ -611,7 +694,7 @@ export default function Page({ params }: { params: Params }) {
 
   useEffect(() => {
     console.log("Checked indices changed:", checkedIndices);
-   
+    // Any other side effects related to checkedIndices changes can be handled here
   }, [checkedIndices]);
   //function to trigger send message on pressing enter button
   useEffect(() => {
@@ -630,6 +713,12 @@ export default function Page({ params }: { params: Params }) {
     };
   }, [userMessage]); // Include messageSent in the dependency array
 
+  // Call the custom hook to enable smooth auto-scrolling
+  //useSmoothScrollIntoView(messagesEndRef, [messages]);
+  // Trigger auto-scrolling whenever messages change
+
+  //set followupcomponent width
+  // Calculate input width
   useEffect(() => {
     if (inputRef.current) {
       setInputWidth(inputRef.current.offsetWidth);
@@ -667,72 +756,120 @@ export default function Page({ params }: { params: Params }) {
     };
   }, []);
 
-
-  useEffect(() => {
+{/*}  useEffect(() => {
+    const perfEntries = performance.getEntriesByType("navigation");
+    const perfEntry =
+      perfEntries.length && (perfEntries[0] as PerformanceNavigationTiming);
+    const isPageRefreshed = perfEntry && perfEntry.type === "reload";
     const params = new URLSearchParams(window.location.search);
     const urlConversationId = params.get("convid");
     console.log("urlconvid: ", urlConversationId);
-  
-    // Check if conversationId exists in sessionStorage or URL
-    let conversationIdToUse = urlConversationId || sessionStorage.getItem("conversationId");
-    const token = localStorage.getItem('token'); // Get the token from localStorage
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-  
-    if (conversationIdToUse && token) {
-      // Store the conversationId in sessionStorage if not already stored
-      sessionStorage.setItem("conversationId", conversationIdToUse);
-  
+
+    // Check if conversationId exists in sessionStorage
+    let storedConversationId: string;
+    if (isPageRefreshed) {
+      storedConversationId = sessionStorage.getItem("conversationId") || "";
       const savedTheme = localStorage.getItem("darkmode");
       if (savedTheme) {
         setIsDarkMode(savedTheme === "dark");
       }
-  
-      const fetchConversationData = async () => {
+    } else {
+      storedConversationId = localStorage.getItem("conversationId") || "";
+      const savedTheme = localStorage.getItem("darkmode");
+      if (savedTheme) {
+        setIsDarkMode(savedTheme === "dark");
+      }
+    }
+
+    console.log("stored convid: ", storedConversationId);
+
+    const conversationIdToUse = urlConversationId || storedConversationId;
+
+    if (
+      conversationIdToUse
+    ) {
+      // Use data from sessionStorage if conversationId matches
+      sessionStorage.setItem("conversationId", conversationIdToUse);
+      const getrefreshedChat = async () => {
         try {
           const response = await fetch(
-            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${conversationIdToUse}`,
+            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${storedConversationId}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                 "Authorization": `Bearer ${token}`,
+                Authorization: `Bearer ${authTokenRef.current}`,
               },
             }
           );
           if (!response.ok) {
-            throw new Error(`Error fetching conversation data: ${response.status}`);
+            throw new Error(`Error fetching product reviews: ${response.status}`);
           }
           const data = await response.json();
           const { conversationHistory } = data;
-          console.log("conversationHistory: ", conversationHistory);
-          setIsLoading(false);
-          if (conversationHistory.length > 0) {
+          console.log("history: ", data);
+          if(conversationHistory.length > 0){
+            console.log('conversation history length > 0')
             setIsChatStarted(true);
-            setIsLoading(false);
           }
           setConversationHistorydata(conversationHistory);
-      
-          // Ensure conversationIdToUse is not null before setting it
-          if (conversationIdToUse) {
-            setConversationId(conversationIdToUse);
-          }
+          //setProductsHistory(products[0]);
+          setConversationId(storedConversationId);
+          // console.log("products:",products[0][0]);
+          console.log("response: ", response);
+          console.log("conversationHistory: ", conversationHistorydata);
+          //console.log("producthistory: ", productsHistory);
+          setConversationId(storedConversationId);
         } catch (error) {
           console.error("Error fetching conversation data:", error);
         }
+        
       };
-      
-      const getRefreshedBuyingGuide = async () =>{
+
+  {/*}    const getRefreshedContentData = async () =>{
         try {
           const response = await fetch(
-            `https://${API_ENDPOINT}/api/buying-guide/${conversationIdToUse}`,
+            `https://${API_ENDPOINT}/api/content/${storedConversationId}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
+                Authorization: `Bearer ${authTokenRef.current}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching content data: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Content history: ", data);
+
+          const { article_links, youtube_links } = JSON.parse(data.Body);
+      
+          // Log the separate content
+          console.log("Article Links: ", article_links);
+          console.log("YouTube Links: ", youtube_links);
+       
+
+
+          setContentVideosHistory(youtube_links);
+          setContentBlogsHistory(article_links);
+
+          setContentPageHistory(data);
+        } catch (error) {
+          console.error("Error fetching content data:", error);
+        }        
+      };   
+
+      const getRefreshedBuyingGuide = async () =>{
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/buying-guide/${storedConversationId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokenRef.current}`,
               },
             }
           );
@@ -752,7 +889,7 @@ export default function Page({ params }: { params: Params }) {
 
           const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
             console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
-            setIsLoading(false);
+            
 
 
           setGuideVideosHistory(buying_guide_youtube_links);
@@ -762,9 +899,160 @@ export default function Page({ params }: { params: Params }) {
           console.error("Error fetching buying guide data:", error);
         }        
       };
+
+
+      getrefreshedChat(); // Call the async function
+      //getRefreshedContentData();
+      getRefreshedBuyingGuide();
+    } else {
+      router.push("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    // Check if messageId is available
+    if (messageId) {
+      const getRefreshedDiscoverData = async () => {
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/discover-content/${messageId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching discover content: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          console.log("discover content history: ", data);
+      
+          // Parse the Body
+          const { article_links, youtube_links } = JSON.parse(data.Body);
+      
+          // Log the separate content
+          console.log("Article Links: ", article_links);
+          console.log("YouTube Links: ", youtube_links);
+      
+          // Send the parsed data to the respective components
+          setDiscoverContentHistory(data);
+          setDiscoverVideosHistory(youtube_links);
+          setDiscoverBlogsHistory(article_links);
+      
+        } catch (error) {
+          console.error("Error fetching discover content data:", error);
+        }
+      };
+      
+      
+      const getRefreshedFiltersData = async () => {
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/suggestion/${messageId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching Filters: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          console.log("Filters history: ", data);
+      
+          // Check if Body exists and parse it
+          if (data.Body) {
+            const parsedData = JSON.parse(data.Body);
+            console.log("Parsed filters history:", parsedData);
+      
+            // Access follow_up_list
+            const followUpList = parsedData.follow_up_list;
+            console.log("Follow-up list:", followUpList);
+      
+            // You can now update your state or handle the follow-up list as needed
+            setFiltersHistory(followUpList);
+          } else {
+            console.error("Body field is missing from the response data");
+          }
+      
+        } catch (error) {
+          console.error("Error fetching Filters data:", error);
+        }
+      };
+      
+      
+  
+      getRefreshedDiscoverData();
+      getRefreshedFiltersData();
+    }
+  }, [messageId]); // Add messageId as a dependency
+  
+
+  useEffect(() => {
+    console.log('Updated messadge id :', messageId);  // Debugging
+  }, [messageId]);
+  */}
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlConversationId = params.get("convid");
+    console.log("urlconvid: ", urlConversationId);
+  
+    // Check if conversationId exists in sessionStorage or URL
+    let conversationIdToUse = urlConversationId || sessionStorage.getItem("conversationId");
+  
+    if (conversationIdToUse) {
+      // Store the conversationId in sessionStorage if not already stored
+      sessionStorage.setItem("conversationId", conversationIdToUse);
+  
+      const savedTheme = localStorage.getItem("darkmode");
+      if (savedTheme) {
+        setIsDarkMode(savedTheme === "dark");
+      }
+  
+      const fetchConversationData = async () => {
+        try {
+          const response = await fetch(
+            `https://${API_ENDPOINT}/api/WebChatbot/conversation/${conversationIdToUse}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `Bearer ${authTokenRef.current}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error(`Error fetching conversation data: ${response.status}`);
+          }
+          const data = await response.json();
+          const { conversationHistory } = data;
+          console.log("conversationHistory: ", conversationHistory);
+      
+          if (conversationHistory.length > 0) {
+            setIsChatStarted(true);
+          }
+          setConversationHistorydata(conversationHistory);
+      
+          // Ensure conversationIdToUse is not null before setting it
+          if (conversationIdToUse) {
+            setConversationId(conversationIdToUse);
+          }
+        } catch (error) {
+          console.error("Error fetching conversation data:", error);
+        }
+      };
+      
   
       fetchConversationData();
-      getRefreshedBuyingGuide();    
+      // Add your other data fetching functions here, like getRefreshedBuyingGuide();
     } else {
       // Handle case where no conversation ID is found
       router.push("/");
@@ -831,19 +1119,273 @@ export default function Page({ params }: { params: Params }) {
   
 
   
+  const fetchGuestAuthSignup = async () => {
+    try {
+      const response = await fetch(
+        `https://${API_ENDPOINT}/api/guest-auth/signup`
+      );
+      if (!response.ok) {
+        throw new Error("auth- Network response was not ok");
+      }
+      const data = await response.json();
+      //.guest ---> .User
+      //.guestId ---> UserId
+      // setGuestID(data.guest.GuestId);
+      // setToken(data.token);
+      setGuestID(data.User.UserId);
+      setToken(data.token);
+      // Store guestID and token in local storage
+      // localStorage.setItem('guestID', data.guest.GuestId);
+      localStorage.setItem("UserID", data.User.UserId);
+
+      localStorage.setItem("token", data.token);
+      authTokenRef.current = data.token;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
 
+  useEffect(() => {
+    const storedGuestID = localStorage.getItem("UserID");
+    const storedToken = localStorage.getItem("token");
+  
+    if (storedGuestID && storedToken) {
+      setGuestID(storedGuestID);
+      setToken(storedToken);
+    } else {
+      fetchGuestAuthSignup();
+    }
+  }, []);
+
+{/*}  useEffect(() => {
+    const storedGuestID = localStorage.getItem("UserID");
+    const storedToken = localStorage.getItem("token");
+
+    if (storedGuestID && storedToken) {
+      setGuestID(storedGuestID);
+      setToken(storedToken);
+    } else {
+      // Fetch API only if guestID and token are not stored in local storage
+      fetchGuestAuthSignup();
+    }
+  }, []);  */}
+ {/* const handleOptionClick = (option: string) => {
+    setSelectedOptions((prevOptions) => {
+      if (prevOptions.includes(option)) {
+        // Deselect the option
+        const updatedOptions = prevOptions.filter((item) => item !== option);
+        setUserMessage(updatedOptions.join(" ").trim());
+        return updatedOptions;
+      } else {
+        // Select the option
+        const updatedOptions = [...prevOptions, option];
+        setUserMessage(updatedOptions.join(" ").trim());
+        return updatedOptions;
+      }
+    });
+  };*/}
+
+  // useEffect(() => {
+  //   console.log("Best Products Ref Updated:", bestProductsRef.current);
+  // }, [bestProductsRef.current]);
+
+{/*  useEffect(() => {
+    // Logic to handle the clicked options
+    console.log("Selected Options:", selectedOptions);
+
+    // Update the currentOptions based on selectedOptions or any other logic
+    // setCurrentOptions(selectedOptions);
+  }, [selectedOptions]); */}
+
+ {/* const [showHeroAndFollowup, setShowHeroAndFollowup] = useState(false);
+
+  useEffect(() => {
+    const hasFollowups = Array.isArray(followup) && followup.length > 0;
+    if (hasFollowups) {
+      setShowHeroAndFollowup(true);
+    } else {
+      setShowHeroAndFollowup(false);
+    }
+  }, [followup]);*/}
   return (
     <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} `}>
+     {/* <Navbar mode={isDarkMode ? "dark" : "light"} />
+     
+        <div className=" fixed top-[25px] right-4 z-[500]">
+          <label className="switch">
+            <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+            <span className="slider round"></span>
+          </label>
+        </div> 
+     */}
+     
       <div className=" w-full flex items-center justify-end   z-10">
         <section className="w-[100%]">
           
-          <div className={`flex w-full  ${isContentLoading ? 'mb-0' : 'mb-16'}  h-screent`}>          
-            <Layout sendMessage={sendMessage}> 
-            </Layout>
+          <div className={`flex w-full  ${isContentLoading ? 'mb-0' : 'mb-16'}  h-screent`}>
+             {/*<div className="fixed right-0 top-0 w-[370px] overflow-y-scroll order-2  products-height">
+            
+            attempt 1 
+            <Chat />
+
+          {/*  {isLoading && !curation && (
+              <div className="flex items-center space-x-4 mx-1 md:mx-6">
+                <GeneralLoader mode={isDarkMode ? "dark" : "light"} />
+              </div>
+            )}
+
+            <footer
+          className={`fixed right-3 bottom-8 lg:bottom-0 w-96 flex justify-center overflow-hidden mt-6 p-5 z-[9999] ${
+            isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
+          } z-10`}
+        >
+          <div
+            className={`flex flex-col w-full lg:w-[100%] ${
+              isDarkMode ? "bg-[#2e2f2f]" : "bg-white"
+            } px-2 rounded-xl z-1200 relative`}
+          >
+            <div className="flex w-[100%]">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                onClick={() => sendMessage(userMessage)}
+                disabled={!userMessage.trim() || isLoading}
+              >
+                <div className="flex items-center justify-center mb-1 font-bold text-lg">
+                  &gt;
+                </div>
+              </button>
+            </div>
+
+            <div
+              className="flex mt-2 overflow-x-scroll whitespace-nowrap"
+              style={{
+                overflowY: "hidden",
+                scrollbarWidth: "thin",
+                width: "100%",
+              }}
+            >
+              {currentoptionvisible &&
+                currentOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${
+                      selectedOptions.includes(option)
+                        ? "bg-[#444545]"
+                        : "bg-[#202222]"
+                    }`}
+                    onClick={() => handleOptionClick(option)}
+                    // style={{ flex: "0 0 calc(31.5% - 10px)" }}
+                  >
+                    {option && option.length > 30
+                      ? option.slice(0, 30) + "..."
+                      : option}
+                  </div>
+                ))}
+            </div>
+          </div>
+            </footer>
+
+            </div>*/}
+         <Layout sendMessage={sendMessage}> 
+
+           {/* <Discover sendMessage={sendMessage}/>*/}
+            {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
+            
+              <HeroResult />
+              <div ref={messagesEndRef} />
+              {followupSourcesVisible && followup && followup.length > 0 && (
+                <div>
+                  <Followup
+                    containerWidth={containerWidth}
+                    followup={followupques}
+                    isOpen={isOpen}
+                    setUserMessage={setUserMessage}
+                    sendMessage={sendMessage}
+                    setIsOpen={setIsOpen}
+                    mode={isDarkMode ? "dark" : "light"}
+                  />
+                </div>
+              )}
+            </div>*/}
+          </Layout>
           </div>
         </section>
-      </div>      
+        
+
+        {/*   <footer
+          className={`fixed bottom-8 lg:bottom-0 w-full flex justify-center  mt-6 p-5 z-[9999] ${
+            isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"
+          } z-10`}
+        >
+          <div
+            className={`flex flex-col w-full lg:w-[52%] ${
+              isDarkMode ? "bg-[#2e2f2f]" : "bg-white"
+            } px-2 rounded-xl z-1200 relative`}
+          >
+            <div className="flex w-[100%]">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                className="bg-[#242424] text-white transition border-none outline-none focus:outline-none focus:border-none rounded-xl font-semibold mt-2 mr-2 p-2 w-[100%]"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="bg-[#2196F3] text-white px-4 py-2 mt-2 rounded-xl cursor-pointer hover:bg-[#568bf6]"
+                onClick={() => sendMessage(userMessage)}
+                disabled={!userMessage.trim() || isLoading}
+              >
+                <div className="flex items-center justify-center mb-1 font-bold text-lg">
+                  &gt;
+                </div>
+              </button>
+            </div>
+
+            <div
+              className="flex mt-2 overflow-x-auto whitespace-nowrap"
+              style={{
+                overflowY: "hidden",
+                scrollbarWidth: "thin",
+                width: "100%",
+              }}
+            >
+              {currentoptionvisible &&
+                currentOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-xl cursor-pointer mr-2 mb-2 text-white text-[12px] ${
+                      selectedOptions.includes(option)
+                        ? "bg-[#444545]"
+                        : "bg-[#202222]"
+                    }`}
+                    onClick={() => handleOptionClick(option)}
+                    // style={{ flex: "0 0 calc(31.5% - 10px)" }}
+                  >
+                    {option && option.length > 30
+                      ? option.slice(0, 30) + "..."
+                      : option}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </footer>*/}
+      </div>
+      
+      
+      {/*<FooterNav />*/}
+      
     </main>
   );
 }
