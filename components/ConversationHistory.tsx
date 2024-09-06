@@ -73,7 +73,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
     const firstMessage = conversation.firstMessage.MessageBody.replace(/\s+/g, "%20"); // Encode spaces as %20 for the URL
 
     // Construct the URL
-    const url = `http://localhost:3000/search/${userId}/${firstMessage}?convid=${conversationId}`;
+    const url = `http://${API_ENDPOINT}/search/${userId}/${firstMessage}?convid=${conversationId}`;
 
     // Navigate to the URL
     window.location.href = url;
