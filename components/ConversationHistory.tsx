@@ -67,19 +67,31 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
     }
   };
 
+  const handleConversationClick = (conversation: Conversation) => {
+    const userId = localStorage.getItem("UserID"); // Retrieve the UserId from localStorage
+    const conversationId = conversation.conversation.ConversationId;
+    const firstMessage = conversation.firstMessage.MessageBody.replace(/\s+/g, "%20"); // Encode spaces as %20 for the URL
+
+    // Construct the URL
+    const url = `http://localhost:3000/search/${userId}/${firstMessage}?convid=${conversationId}`;
+
+    // Navigate to the URL
+    window.location.href = url;
+  }
+
   return (
     <div
-      className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform ${
+      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[80%] w-[100%] lg:w-64 bg-[#202222] shadow-lg transform transition-transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
-      } z-40`}
+      } z-50`}
     >
-      <div className="flex justify-between p-4 bg-gray-800 text-white">
-        <h2 className="text-lg font-bold">Conversations</h2>
+      <div className="flex justify-between p-4 border-b bg-[#2e2f2f] rounded-t-lg text-white">
+        <h2 className="text-lg font-bold"></h2>
         <button onClick={() => setIsOpen(false)}>
           <FaTimes />
         </button>
       </div>
-      <div className="p-4 overflow-y-auto">
+      <div className="p-4 overflow-y-auto text-white">
         {loading ? (
           <p>Loading conversations...</p>
         ) : conversations.length > 0 ? (
@@ -87,11 +99,10 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
             {conversations.map((conversation) => (
               <li
                 key={conversation.conversation.ConversationId}
-                className="mb-4 border-b pb-2"
+                onClick={() => handleConversationClick(conversation)}
+                className="mb-4 border-b pb-2 cursor-pointer"
               >
-                <p className="font-semibold">Message: {conversation.firstMessage?.MessageBody}</p>
-                <p>Platform: {conversation.conversation.platform}</p>
-                <p>Created at: {new Date(conversation.conversation.createdAt).toLocaleString()}</p>
+                <p className="font-semibold">{conversation.firstMessage?.MessageBody}</p>
               </li>
             ))}
           </ul>

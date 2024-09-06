@@ -53,9 +53,10 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
         mode === "dark" ? "bg-[#2e2f2f]" : "bg-white"
       }`}
     >
-      <div className="px-[4%] lg:px-[6%] flex justify-center">
+      <div className="px-5 lg:px-[2%] flex justify-center">
         <div className="w-full flex h-max justify-between items-center">
           {/* Toggle Button */}
+          <div className="flex gap-3">
           <button onClick={toggleSidePanel} className="p-2 text-lg cursor-pointer">
             <FaBars className={`text-${mode === "dark" ? "white" : "black"} text-xl`} />
           </button>
@@ -82,6 +83,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
               Togethr
             </span>
           </Link>
+          </div>
 
           {/* Other Navbar Elements */}
           {isChatStarted && (isContentAvailable || productsHistory.length > 0) && (

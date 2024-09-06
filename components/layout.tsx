@@ -14,12 +14,12 @@ interface LayoutProps {
 
 export default function Layout({ sendMessage }: LayoutProps) {
   const [activeContent, setActiveContent] = useState<string>("discover");
-
+  const [visibleFactors, setVisibleFactors] = useState<number[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
 
-  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen } =
+  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen , initalbuyingGuide} =
     useContentContext();
 
   useEffect(() => {
@@ -44,14 +44,55 @@ export default function Layout({ sendMessage }: LayoutProps) {
     setIsChatOpen(!isChatOpen);
   };
 
+  const toggleDetails = (index: number) => {
+    if (visibleFactors.includes(index)) {
+      setVisibleFactors(visibleFactors.filter((i) => i !== index));
+    } else {
+      setVisibleFactors([...visibleFactors, index]);
+    }
+  };
+
   const renderContent = () => {
-  {/*}  if (isContentLoading) {
+    if (isContentLoading) {
       return (
-        <div className="">
-          <BuyingGuide />
+        <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10 max-md:p-0">
+                  <div className="max-w-2xl w-[700px] max-md:w-[100%] max-md:p-4">
+          <div className="text-2xl w-full font-bold text-white my-4">
+            <h4>Important factors</h4>
+          </div>
+          <div className="relative bg-[#3c3b3b] text-white py-2 px-4 rounded-t-lg z-10 w-full transition mb-5">
+        {initalbuyingGuide.options.length > 0 ? (
+          initalbuyingGuide.options.map((option, index) => (
+            <div key={index}>
+              <div
+                className="flex justify-between items-center w-full cursor-pointer"
+                onClick={() => toggleDetails(index)}
+              >
+                <div className="p-1 cursor-pointer">
+                  <h4>{option}</h4>
+                </div>
+                <div className="font-semibold">
+                  <h4>{visibleFactors.includes(index) ? "-" : "+"}</h4>
+                </div>
+                
+              </div>
+              {visibleFactors.includes(index) && (
+                <p className="mt-2 whitespace-pre-wrap text-sm pl-4">
+                  {initalbuyingGuide.explainations[index] || "No explanation provided."}
+                </p>
+              )}
+              {index !== initalbuyingGuide.options.length &&
+                                  <hr className="my-2 border-b-2 border-[#222222]" />}
+            </div>
+          ))
+        ) : (
+          <p>No options available.</p>
+        )}
         </div>
+        </div>
+      </div>
       );
-    }*/}
+    }
 
     switch (activeContent) {
       case "discover":
@@ -76,9 +117,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
       />
       <div className="flex flex-col">
         <main
-          className={` ${
-            isContentLoading ? "flex pt-0 h-[90vh] overflow-hidden" : "pt-10"
-          } ${isLargerScreen ? "w-[70%]" : "w-[100%] p-4"}`}
+          className={` pt-10 ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'} `}
         >
           {renderContent()}
         </main>
@@ -109,7 +148,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
                 </div>
               </div>
             ) : (
-              <div className="fixed bottom-[66px] w-full flex justify-center z-50">
+              <div className="fixed bottom-[66px] w-full flex justify-center z-30">
                 <button
                   className="p-3 bg-blue-600 text-white rounded-full shadow-lg"
                   onClick={toggleChat}

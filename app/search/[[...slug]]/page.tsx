@@ -206,6 +206,7 @@ export default function Page({ params }: { params: Params }) {
     setGuideBlogsHistory,
     setContentBlogsHistory,
     setContentVideosHistory,
+    setInitialbuyingGuide,
   } = useContentContext();
 
 
@@ -343,6 +344,13 @@ export default function Page({ params }: { params: Params }) {
             console.log('parsedBuyingGuide' , parsedBuyingGuide);
             
             setBuyingGuide(parsedBuyingGuide);
+          } else if (eventData.type === "initial_buying_guide_segments") {
+
+            console.log("initial buying guide", eventData.data);
+            const parsedBuyingGuide = eventData.data;
+            console.log('parsedBuyingGuide' , parsedBuyingGuide);
+            
+            setInitialbuyingGuide(parsedBuyingGuide);
           }else if (eventData.type === "buying_guide_content") {
             console.log("buying_guide_blogs", eventData.articel_url);
             console.log("buying_guide_videos", eventData.youtube_url);

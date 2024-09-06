@@ -19,6 +19,11 @@ interface BuyingGuide {
   buying_guide_ending_text: string;
 }
 
+interface InitialGuide{
+  options: string[];
+  explainations: string[];
+}
+
 interface ContentContextData {
   videoContent: any[];
   blogsContent: any[];
@@ -100,6 +105,8 @@ interface ContentContextData {
   setContentBlogsHistory: (blogs: any[]) => void;
   isContentLoading:boolean;
   setIsContentLoading: (started: boolean) => void;
+  initalbuyingGuide: InitialGuide;
+  setInitialbuyingGuide: React.Dispatch<React.SetStateAction<InitialGuide>>;
 }
 
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
@@ -120,6 +127,11 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     buying_guide_factors_options: [],
     buying_guide_specs_text: "",
     buying_guide_ending_text: "",
+  };
+
+  const initialBuyingGuide: InitialGuide = {
+   options: [],
+   explainations: [],
   };
 
   const [guideVideos, setGuideVideos] = useState<any[]>([]);
@@ -162,6 +174,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [contentBlogsHistory, setContentBlogsHistory] = useState<any[]>([]);
   const [bestProductsHistory, setBestProductsHistory] = useState<any[]>([]);
   const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
+  const [initalbuyingGuide, setInitialbuyingGuide] = useState<InitialGuide>(initialBuyingGuide);
   
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
@@ -243,9 +256,10 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     guideTextHistory, setGuideTextHistory,
     contentBlogsHistory, setContentBlogsHistory,
     contentVideosHistory, setContentVideosHistory,
-    isContentLoading, setIsContentLoading
+    isContentLoading, setIsContentLoading,
+    initalbuyingGuide, setInitialbuyingGuide,
   }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, bestProductsHistory, setBestProductsHistory, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
-    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory]);
+    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory, initalbuyingGuide, setInitialbuyingGuide]);
 
   return (
     <ContentContext.Provider value={contextValue}>
