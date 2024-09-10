@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useContentContext } from "@/ContentContext";
-import { FaUser, FaSignOutAlt, FaBars } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaHistory } from "react-icons/fa";
 import SidePanel from "../ConversationHistory"; // Use SidePanel instead of ConvHistory
 
 interface NavbarProps {
@@ -57,9 +57,14 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
         <div className="w-full flex h-max justify-between items-center">
           {/* Toggle Button */}
           <div className="flex gap-3">
-          <button onClick={toggleSidePanel} className="p-2 text-lg cursor-pointer">
-            <FaBars className={`text-${mode === "dark" ? "white" : "black"} text-xl`} />
-          </button>
+          <button
+              onClick={toggleSidePanel}
+              className="p-2 text-lg cursor-pointer"
+            >
+              <FaHistory
+                className={`text-${mode === "dark" ? "white" : "black"} text-xl`}
+              />
+            </button>
 
           {/* Togethr Logo */}
           <Link
@@ -122,7 +127,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
                 Wishlist
               </div>
 
-              {/* Profile Icon */}
+              {/* Profile Icon 
               <div className="relative">
                 <button
                   onClick={() => setIsProfileBoxVisible(!isProfileBoxVisible)}
@@ -147,7 +152,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
                     </button>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           )}
         </div>
@@ -155,7 +160,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
 
       {/* Side Panel */}
       {isSidePanelOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
+        <div className="">
           <SidePanel isOpen={isSidePanelOpen} setIsOpen={setIsSidePanelOpen} />
         </div>
       )}

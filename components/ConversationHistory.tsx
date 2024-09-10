@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { config } from "../constants";
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
@@ -81,17 +81,11 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
 
   return (
     <div
-      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[80%] w-[100%] lg:w-64 bg-[#202222] shadow-lg transform transition-transform ${
+      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[87%] w-[100%] lg:w-64 bg-[#202222]  transform transition-transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } z-50`}
     >
-      <div className="flex justify-between p-4 border-b bg-[#2e2f2f] rounded-t-lg text-white">
-        <h2 className="text-lg font-bold"></h2>
-        <button onClick={() => setIsOpen(false)}>
-          <FaTimes />
-        </button>
-      </div>
-      <div className="p-4 overflow-y-auto text-white">
+      <div className="p-4 overflow-y-auto  text-white border-white border bg-[#2e2f2f] ">
         {loading ? (
           <p>Loading conversations...</p>
         ) : conversations.length > 0 ? (

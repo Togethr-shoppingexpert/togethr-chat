@@ -19,7 +19,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
 
-  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen , initalbuyingGuide} =
+  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen , initalbuyingGuide, productsHistory} =
     useContentContext();
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
-    if (isContentLoading) {
+    if (isContentLoading && initalbuyingGuide.options.length > 0) {
       return (
         <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10 max-md:p-0">
                   <div className="max-w-2xl w-[700px] max-md:w-[100%] max-md:p-4">
