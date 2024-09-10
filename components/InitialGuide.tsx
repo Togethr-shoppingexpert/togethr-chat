@@ -78,8 +78,9 @@ export default function Page() {
                                   ))}
                                 </ul>
                                 )}
-                                {index !== buyingGuide.buying_guide_factors_options.length &&
-                                  <hr className="my-2 border-b-2 border-[#222222]" />}
+                                  {index !== buyingGuide.buying_guide_factors_options.length - 1 && (
+    <hr className="my-2 border-b-2 border-[#222222]" />
+  )}
                               </div>
                             ))
             
