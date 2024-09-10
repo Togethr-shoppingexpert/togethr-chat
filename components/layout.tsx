@@ -54,7 +54,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
-    if (isContentLoading && initalbuyingGuide?.options?.length > 0) {
+    if (isContentLoading ) {
       return <InitialGuide />
     }
 
