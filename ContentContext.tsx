@@ -107,6 +107,8 @@ interface ContentContextData {
   setIsContentLoading: (started: boolean) => void;
   initalbuyingGuide: InitialGuide;
   setInitialbuyingGuide: React.Dispatch<React.SetStateAction<InitialGuide>>;
+  initialGuideText: BuyingGuide;
+  setInitialGuideText: React.Dispatch<React.SetStateAction<BuyingGuide>>;
 }
 
 const ContentContext = createContext<ContentContextData | undefined>(undefined);
@@ -175,6 +177,7 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [bestProductsHistory, setBestProductsHistory] = useState<any[]>([]);
   const [isContentLoading, setIsContentLoading] = useState<boolean>(true);
   const [initalbuyingGuide, setInitialbuyingGuide] = useState<InitialGuide>(initialBuyingGuide);
+  const [initialGuideText, setInitialGuideText] = useState<BuyingGuide>(defaultBuyingGuide);
   
 
   const updateFilledHearts = (productId: string, isFilled: boolean) => {
@@ -258,8 +261,9 @@ export const ContentProvider: FC<{ children: ReactNode }> = ({ children }) => {
     contentVideosHistory, setContentVideosHistory,
     isContentLoading, setIsContentLoading,
     initalbuyingGuide, setInitialbuyingGuide,
+    initialGuideText, setInitialGuideText
   }), [videoContent, blogsContent, buyingGuide, discoverVideos, discoverBlogs, guideBlogs, guideVideos, isChatStarted, isChatOpen, bestProducts, bestProductsHistory, setBestProductsHistory, productInfo, conversationHistorydata, messages, productsHistory, isLoading, userMessage, currentoptionvisible, curation, currentOptions, followupSourcesVisible, followup, filters, isOpen, followupQues, isContentAvailable, filledHearts, messageId, setMessageId,discoverContentHistory, setDiscoverContentHistory,buyingGuideHistory, setBuyingGuideHistory,contentPageHistory, setContentPageHistory,filtersHistory, setFiltersHistory,discoverBlogsHistory, discoverVideosHistory, setDiscoverBlogsHistory, setDiscoverVideosHistory,     guideBlogsHistory, setGuideBlogsHistory, guideVideosHistory, setGuideVideosHistory,
-    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory, initalbuyingGuide, setInitialbuyingGuide]);
+    guideTextHistory, setGuideTextHistory, contentBlogsHistory, setContentBlogsHistory, contentVideosHistory, setContentVideosHistory, initalbuyingGuide, setInitialbuyingGuide, initialGuideText, setInitialGuideText]);
 
   return (
     <ContentContext.Provider value={contextValue}>

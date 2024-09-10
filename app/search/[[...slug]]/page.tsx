@@ -207,6 +207,7 @@ export default function Page({ params }: { params: Params }) {
     setContentBlogsHistory,
     setContentVideosHistory,
     setInitialbuyingGuide,
+    setInitialGuideText,
   } = useContentContext();
 
 
@@ -328,22 +329,17 @@ export default function Page({ params }: { params: Params }) {
             console.log('data',UpdatedBlog)
             setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
-            //console.log("buying_guide", eventData.text);
-            //setBuyingGuide(eventData.text);
             console.log("buying_guide", eventData.text);
-           {/*} const FormattedBuyingGuide: BuyingGuide[] = eventData.text.map((guide: any) => ({
-              buying_guide_text: guide.buying_guide_text,
-              buying_guide_starting_text: guide.buying_guide_starting_text, 
-              buying_guide_factors_options: guide.buying_guide_factors_options, 
-              buying_guide_specs_text: guide.buying_guide_specs_text,
-              buying_guide_ending_text: guide.buying_guide_ending_text,
-            })); 
-            console.log('fetched formatted guide', FormattedBuyingGuide);
-            setBuyingGuide(FormattedBuyingGuide);*/}
             const parsedBuyingGuide = JSON.parse(eventData.text);
             console.log('parsedBuyingGuide' , parsedBuyingGuide);
             
             setBuyingGuide(parsedBuyingGuide);
+          } else if (eventData.type === "initial_buying_guide") {
+            console.log("buying_guide intial buying text ", eventData.text);
+            const parsedBuyingGuide = JSON.parse(eventData.text);
+            console.log('initial buying guide text' , parsedBuyingGuide);
+            
+            setInitialGuideText(parsedBuyingGuide);
           } else if (eventData.type === "initial_buying_guide_segments") {
 
             console.log("initial buying guide", eventData.data);

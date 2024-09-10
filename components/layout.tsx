@@ -6,6 +6,7 @@ import Content from "@/app/content/page";
 import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
 import FooterNav from "./FooterNav";
+import InitialGuide from "./InitialGuide";
 import { useContentContext } from "@/ContentContext";
 
 interface LayoutProps {
@@ -53,45 +54,8 @@ export default function Layout({ sendMessage }: LayoutProps) {
   };
 
   const renderContent = () => {
-    if (isContentLoading && initalbuyingGuide.options.length > 0) {
-      return (
-        <div className="bg-[#202222] px-6 lg:px-[6%] flex flex-col items-center p-10 max-md:p-0">
-                  <div className="max-w-2xl w-[700px] max-md:w-[100%] max-md:p-4">
-          <div className="text-2xl w-full font-bold text-white my-4">
-            <h4>Important factors</h4>
-          </div>
-          <div className="relative bg-[#3c3b3b] text-white py-2 px-4 rounded-t-lg z-10 w-full transition mb-5">
-        {initalbuyingGuide.options.length > 0 ? (
-          initalbuyingGuide.options.map((option, index) => (
-            <div key={index}>
-              <div
-                className="flex justify-between items-center w-full cursor-pointer"
-                onClick={() => toggleDetails(index)}
-              >
-                <div className="p-1 cursor-pointer">
-                  <h4>{option}</h4>
-                </div>
-                <div className="font-semibold">
-                  <h4>{visibleFactors.includes(index) ? "-" : "+"}</h4>
-                </div>
-                
-              </div>
-              {visibleFactors.includes(index) && (
-                <p className="mt-2 whitespace-pre-wrap text-sm pl-4">
-                  {initalbuyingGuide.explainations[index] || "No explanation provided."}
-                </p>
-              )}
-              {index !== initalbuyingGuide.options.length &&
-                                  <hr className="my-2 border-b-2 border-[#222222]" />}
-            </div>
-          ))
-        ) : (
-          <p>No options available.</p>
-        )}
-        </div>
-        </div>
-      </div>
-      );
+    if (isContentLoading && initalbuyingGuide?.options?.length > 0) {
+      return <InitialGuide />
     }
 
     switch (activeContent) {
