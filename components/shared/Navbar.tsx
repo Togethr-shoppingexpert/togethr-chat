@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useContentContext } from "@/ContentContext";
-import { FaUser, FaSignOutAlt, FaHistory } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaBars } from "react-icons/fa";
 import SidePanel from "../ConversationHistory"; // Use SidePanel instead of ConvHistory
 
 interface NavbarProps {
@@ -61,7 +61,7 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
               onClick={toggleSidePanel}
               className="p-2 text-lg cursor-pointer"
             >
-              <FaHistory
+              <FaBars
                 className={`text-${mode === "dark" ? "white" : "black"} text-xl`}
               />
             </button>

@@ -195,7 +195,7 @@ export default function Home() {
 
   return (
     <>
-      <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
+      <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} overflow-hidden`}>
         <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange} activeContent=""/>
 {/* 
       <div className="fixed top-[25px] right-4 z-[500]">

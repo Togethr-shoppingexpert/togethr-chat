@@ -73,7 +73,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
     const firstMessage = conversation.firstMessage.MessageBody.replace(/\s+/g, "%20"); // Encode spaces as %20 for the URL
 
     // Construct the URL
-    const url = `http://${API_ENDPOINT}/search/${userId}/${firstMessage}?convid=${conversationId}`;
+    const url = `http://togethr-chat-testing.vercel.app/search/${userId}/${firstMessage}?convid=${conversationId}`;
 
     // Navigate to the URL
     window.location.href = url;
@@ -81,11 +81,11 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
 
   return (
     <div
-      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[87%] w-[100%] lg:w-64 bg-[#202222]  transform transition-transform ${
+      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[87%] w-[100%] lg:w-64 bg-[#202222]  transform transition-transform rounded-lg  ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } z-50`}
     >
-      <div className="p-4 overflow-y-auto  text-white border-white border bg-[#2e2f2f] ">
+      <div className="p-4 overflow-y-auto h-full lg:max-h-[87vh] text-white border-[10px] rounded-xl border-[#2e2f2f] bg-[#252626] ">
         {loading ? (
           <p>Loading conversations...</p>
         ) : conversations.length > 0 ? (
