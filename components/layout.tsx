@@ -6,6 +6,7 @@ import Content from "@/app/content/page";
 import Discover from "@/app/discover/discover";
 import Chat from "./Chat";
 import FooterNav from "./FooterNav";
+import FeedbackPopup from "./Feedback";
 import InitialGuide from "./InitialGuide";
 import { useContentContext } from "@/ContentContext";
 
@@ -20,7 +21,7 @@ export default function Layout({ sendMessage }: LayoutProps) {
   const [isTabletScreen, setIsTabletScreen] = useState(false);
   const [isLargerScreen, setIsLargerScreen] = useState(false);
 
-  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen , initalbuyingGuide, productsHistory} =
+  const { isContentAvailable, isContentLoading, isChatOpen, setIsChatOpen , showFeedbackPopup, setShowFeedbackPopup } =
     useContentContext();
 
   useEffect(() => {
@@ -58,6 +59,12 @@ export default function Layout({ sendMessage }: LayoutProps) {
       return <InitialGuide />
     }
 
+    {showFeedbackPopup && (
+      <FeedbackPopup
+        setShowFeedbackPopup={setShowFeedbackPopup}
+      />
+    )}
+
     switch (activeContent) {
       case "discover":
         return <Discover sendMessage={sendMessage} />;
@@ -79,6 +86,11 @@ export default function Layout({ sendMessage }: LayoutProps) {
         activeContent={activeContent}
         onContentChange={handleContentChange}
       />
+      {showFeedbackPopup && (
+        <FeedbackPopup
+          setShowFeedbackPopup={setShowFeedbackPopup}
+        />
+      )}
       <div className="flex flex-col">
         <main
           className={` pt-10 ${isLargerScreen ? 'w-[70%]' : 'w-[100%] p-4'} `}

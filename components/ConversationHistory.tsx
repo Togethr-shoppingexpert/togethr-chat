@@ -1,6 +1,8 @@
-import React, { useEffect,useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import FeedbackPopup from "./Feedback";
 import { config } from "../constants";
+import { useContentContext } from "@/ContentContext";
+
 const API_ENDPOINT = config.url;
 console.log("API_ENDPOINT: ", API_ENDPOINT);
 
@@ -34,6 +36,9 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
   const [loading, setLoading] = useState(false);
   const jwtToken = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
 
+  const { showFeedbackPopup, setShowFeedbackPopup } =
+  useContentContext();
+
   useEffect(() => {
     if (isOpen) {
       fetchConversations();
@@ -55,11 +60,11 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
       }
 
       const data: Conversation[] = await response.json();
-    // Filter out conversations where `firstMessage` is null
-    const filteredConversations = data.filter(conversation => conversation.firstMessage !== null);
+      // Filter out conversations where `firstMessage` is null
+      const filteredConversations = data.filter(conversation => conversation.firstMessage !== null);
 
-    setConversations(filteredConversations);
-      console.log("history button history", filteredConversations)
+      setConversations(filteredConversations);
+      console.log("history button history", filteredConversations);
     } catch (error) {
       console.error("Error fetching conversations:", error);
     } finally {
@@ -77,11 +82,11 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
 
     // Navigate to the URL
     window.location.href = url;
-  }
+  };
 
   return (
     <div
-      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[87%] w-[100%] lg:w-64 bg-[#202222]  transform transition-transform rounded-lg  ${
+      className={`fixed lg:bottom-0 bottom-[65px] left-0 h-[87%] w-[100%] lg:w-64 bg-[#202222] transform transition-transform rounded-lg ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } z-50`}
     >
@@ -104,6 +109,18 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, setIsOpen }) => {
           <p>No conversations available.</p>
         )}
       </div>
+
+      {/* Feedback button */}
+      <div className="absolute bottom-0 left-0 w-full">
+        <button
+          className="w-full py-2 text-center bg-blue-600 text-white font-semibold"
+          onClick={() => setShowFeedbackPopup(true)}
+        >
+          Feedback
+        </button>
+      </div>
+
+
     </div>
   );
 };
