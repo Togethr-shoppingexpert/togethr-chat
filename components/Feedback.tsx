@@ -8,7 +8,9 @@ interface FeedbackPopupProps {
 const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) => {
   const [rating, setRating] = useState<string>("");
   const [feedbackMessage, setFeedbackMessage] = useState<string>("");
-  const [optionalConversationId, setOptionalConversationId] = useState<string>(""); // Optional conversation ID
+  const [optionalConversationId, setOptionalConversationId] = useState<string>("");
+  const [email, setEmail] = useState<string>(""); // Optional email field
+  const [phoneNumber, setPhoneNumber] = useState<string>(""); // Optional phone number field
   const jwtToken = localStorage.getItem("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +31,9 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) =
         body: JSON.stringify({
           feedbackMessage: feedbackMessage || "", // Ensure it's a string
           rating: rating.toString(), // Ensure rating is sent as a string
-          conversationId: optionalConversationId ? optionalConversationId.toString() : "", // Convert to string or empty string
+          conversationId: optionalConversationId ? optionalConversationId.toString() : "", // Optional field
+          email: email || "", // Optional field
+          phoneNumber: phoneNumber || "", // Optional field
         }),
       });
 
@@ -50,11 +54,35 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) =
   const handleRatingChange = (newRating: string) => {
     setRating(newRating);
   };
+
   return (
-<div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="bg-[#202222] text-white p-6 rounded-lg border-[5px] border-[#2e2f2f] shadow-lg w-full max-w-sm">
         <h2 className="text-xl font-semibold mb-4 border-b border-[#2e2f2f] pb-2">Submit Feedback</h2>
+        {/* Email Field */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Email (Optional)</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border border-[#2e2f2f] bg-[#2e2e2e] text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+            placeholder="Enter your email"
+          />
+        </div>
 
+        {/* Phone Number Field */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Phone Number (Optional)</label>
+          <input
+            type="text"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="border border-[#2e2f2f] bg-[#2e2e2e] text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+            placeholder="Enter your phone number"
+          />
+        </div>
+        
         {/* Rating Field */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Rating (Required)</label>
@@ -83,6 +111,8 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) =
             placeholder="Enter Conversation ID"
           />
         </div>
+
+
 
         <div className="flex justify-between items-center mt-6">
           <button
