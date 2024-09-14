@@ -51,6 +51,8 @@ const Filters: React.FC<FilterProps> = ({ sendMessage }) => {
     setIsChatOpen(true);
   };
 
+  console.log('filter history', filtersHistory);
+
   return (
     <div className="relative w-[95%] mx-auto dark py-2 px-4  rounded-md overflow-hidden">
       {/* Left Arrow Button */}

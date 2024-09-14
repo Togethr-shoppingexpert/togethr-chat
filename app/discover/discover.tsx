@@ -17,6 +17,8 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         followup, 
         isOpen, 
         setIsOpen, 
+        setIsContentLoading,
+        setIsChatOpen,
         followupQues, 
         setUserMessage,
         isContentAvailable,
@@ -30,6 +32,7 @@ export default function page({ sendMessage }: { sendMessage: (message: string) =
         if ((followup && followup.length > 0)) {
           setIsContentAvailable(true);
           console.log('content available true');
+          setIsChatOpen(false);
         } else {
           setIsContentAvailable(false);
         }
@@ -39,7 +42,7 @@ useEffect(()=>{
   console.log("content available", isContentAvailable)
 },[isContentAvailable])
 
-  console.log("wishlist");
+  
   return (
     <>
       <div className="w-[100%]  h-full  pt-0 p-4 order-1 flex flex-col items-center justify-end">

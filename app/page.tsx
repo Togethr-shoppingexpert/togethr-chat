@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/shared/Navbar";
 import { ChatInput } from "@/components/shared/ChatInput";
+import FeedbackPopup from "@/components/Feedback";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { FaSun, FaMoon } from "react-icons/fa"; 
@@ -39,6 +40,8 @@ export default function Home() {
     setBuyingGuide,
     setIsChatStarted,
     setBestProducts,
+    setShowFeedbackPopup,
+    showFeedbackPopup
   } = useContentContext();
 
 
@@ -195,16 +198,13 @@ export default function Home() {
 
   return (
     <>
-      <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"}`}>
-        <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange}/>
-{/* 
-      <div className="fixed top-[25px] right-4 z-[500]">
-        <label className="switch">
-          <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
-          <span className="slider round"></span>
-        </label>
-      </div>
-       */}
+      <main className={`${isDarkMode ? "bg-[#202222]" : "bg-[#dde7eb]"} overflow-hidden`}>
+        <Navbar mode={isDarkMode? "dark" : "light"} onContentChange={handleContentChange} activeContent=""/>
+        {showFeedbackPopup && (
+      <FeedbackPopup
+        setShowFeedbackPopup={setShowFeedbackPopup}
+      />
+    )}
         <div className="flex flex-col w-[70%] items-center mt-28 h-screen mx-auto">
           <div className="w-full flex flex-col items-center mb-4 px-4 text-center ">
             <h1 className={`font-semibold text-xl md:text-4xl sm:text-2xl lg:text-4xl mb-2 ${isDarkMode ? "text-white" : "text-[#080808]"}`}>

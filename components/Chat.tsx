@@ -243,7 +243,7 @@ export default function Chat({ sendMessage }: { sendMessage: (message: string) =
                                 return (
                                   <button
                                     key={i}
-                                    className={`block px-3 py-1 mt-1 mb-2 rounded-lg text-sm cursor-pointer transition ${
+                                    className={`block text-left px-3 py-1 mt-1 mb-2 rounded-lg text-sm cursor-pointer transition ${
                                       selectedOptions.includes(item.value)
                                         ? "bg-blue-500 text-white"
                                         : "bg-gray-200 text-black"

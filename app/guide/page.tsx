@@ -69,7 +69,7 @@ export default function Page() {
                               </div>
                             ))
 
-            ) : (
+              ) : (
               
               guideTextHistory.buying_guide_factors_options.map((factorOption, index) => (
                 <div key={index} className="guide-item mb-4">
@@ -93,7 +93,8 @@ export default function Page() {
                     <hr className="my-2 border-b-2 border-[#222222]" />}
                 </div>
               ))
-            )}
+            )
+          }
 
             {/* Key Specifications */}
             {buyingGuide ? (

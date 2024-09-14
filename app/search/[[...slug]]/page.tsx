@@ -192,6 +192,8 @@ export default function Page({ params }: { params: Params }) {
     conversationHistorydata,
     setIsContentAvailable,
     setFilters,
+    setIsContentLoading,
+    isContentLoading,
     messageId,
     setBuyingGuideHistory,
     setContentPageHistory,
@@ -204,6 +206,8 @@ export default function Page({ params }: { params: Params }) {
     setGuideBlogsHistory,
     setContentBlogsHistory,
     setContentVideosHistory,
+    setInitialbuyingGuide,
+    setInitialGuideText,
   } = useContentContext();
 
 
@@ -318,25 +322,31 @@ export default function Page({ params }: { params: Params }) {
               favicon: blog.favicon,
               source: blog.source,
             }));
+            if(UpdatedBlog.length >0){
+              setIsContentLoading(false);
+              console.log('content loaing set to false');
+            }
             console.log('data',UpdatedBlog)
             setDiscoverBlogs(UpdatedBlog);
           } else if (eventData.type === "buying_guide") {
-            //console.log("buying_guide", eventData.text);
-            //setBuyingGuide(eventData.text);
             console.log("buying_guide", eventData.text);
-           {/*} const FormattedBuyingGuide: BuyingGuide[] = eventData.text.map((guide: any) => ({
-              buying_guide_text: guide.buying_guide_text,
-              buying_guide_starting_text: guide.buying_guide_starting_text, 
-              buying_guide_factors_options: guide.buying_guide_factors_options, 
-              buying_guide_specs_text: guide.buying_guide_specs_text,
-              buying_guide_ending_text: guide.buying_guide_ending_text,
-            })); 
-            console.log('fetched formatted guide', FormattedBuyingGuide);
-            setBuyingGuide(FormattedBuyingGuide);*/}
             const parsedBuyingGuide = JSON.parse(eventData.text);
             console.log('parsedBuyingGuide' , parsedBuyingGuide);
             
             setBuyingGuide(parsedBuyingGuide);
+          } else if (eventData.type === "initial_buying_guide") {
+            console.log("buying_guide intial buying text ", eventData.text);
+            const parsedBuyingGuide = JSON.parse(eventData.text);
+            console.log('initial buying guide text' , parsedBuyingGuide);
+            
+            setInitialGuideText(parsedBuyingGuide);
+          } else if (eventData.type === "initial_buying_guide_segments") {
+
+            console.log("initial buying guide", eventData.data);
+            const parsedBuyingGuide = eventData.data;
+            console.log('parsedBuyingGuide' , parsedBuyingGuide);
+            
+            setInitialbuyingGuide(parsedBuyingGuide);
           }else if (eventData.type === "buying_guide_content") {
             console.log("buying_guide_blogs", eventData.articel_url);
             console.log("buying_guide_videos", eventData.youtube_url);
@@ -750,64 +760,61 @@ export default function Page({ params }: { params: Params }) {
     };
   }, []);
 
+
   useEffect(() => {
-    // Check if the page was refreshed
-    const perfEntries = performance.getEntriesByType("navigation");
-    const perfEntry =
-      perfEntries.length && (perfEntries[0] as PerformanceNavigationTiming);
-    const isPageRefreshed = perfEntry && perfEntry.type === "reload";
-  
-    // Retrieve URL parameters and theme
     const params = new URLSearchParams(window.location.search);
     const urlConversationId = params.get("convid");
     console.log("urlconvid: ", urlConversationId);
   
-    const savedTheme = localStorage.getItem("darkmode");
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === "dark");
-    }
+    // Check if conversationId exists in sessionStorage or URL
+    let conversationIdToUse = urlConversationId || sessionStorage.getItem("conversationId");
   
-    // Determine the stored conversation ID (check sessionStorage or localStorage)
-    let storedConversationId = isPageRefreshed
-      ? sessionStorage.getItem("conversationId") || ""
-      : localStorage.getItem("conversationId") || "";
-  
-    console.log("stored convid: ", storedConversationId);
-  
-    const conversationIdToUse = urlConversationId || storedConversationId;
-  
-    // Fetch data if we have a valid conversation ID
     if (conversationIdToUse) {
+      // Store the conversationId in sessionStorage if not already stored
       sessionStorage.setItem("conversationId", conversationIdToUse);
   
-      const fetchData = async () => {
+      const savedTheme = localStorage.getItem("darkmode");
+      if (savedTheme) {
+        setIsDarkMode(savedTheme === "dark");
+      }
+  
+      const fetchConversationData = async () => {
         try {
-          // Fetch conversation history
-          const chatResponse = await fetch(
+          const response = await fetch(
             `https://${API_ENDPOINT}/api/WebChatbot/conversation/${conversationIdToUse}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokenRef.current}`,
+                // Authorization: `Bearer ${authTokenRef.current}`,
               },
             }
           );
-          if (!chatResponse.ok) {
-            throw new Error(`Error fetching conversation history: ${chatResponse.status}`);
+          if (!response.ok) {
+            throw new Error(`Error fetching conversation data: ${response.status}`);
           }
-          const chatData = await chatResponse.json();
-          console.log("history: ", chatData);
-  
-          const { conversationHistory } = chatData;
+          const data = await response.json();
+          const { conversationHistory } = data;
+          console.log("conversationHistory: ", conversationHistory);
+      
           if (conversationHistory.length > 0) {
             setIsChatStarted(true);
           }
           setConversationHistorydata(conversationHistory);
-          setConversationId(conversationIdToUse);
+      
+          // Ensure conversationIdToUse is not null before setting it
+          if (conversationIdToUse) {
+            setConversationId(conversationIdToUse);
+          }
+        } catch (error) {
+          console.error("Error fetching conversation data:", error);
+        }
+      };
+      
   
-          // Fetch buying guide
-          const guideResponse = await fetch(
+      const getRefreshedBuyingGuide = async () =>{
+        try {
+          const response = await fetch(
             `https://${API_ENDPOINT}/api/buying-guide/${conversationIdToUse}`,
             {
               method: "GET",
@@ -817,42 +824,46 @@ export default function Page({ params }: { params: Params }) {
               },
             }
           );
-          if (!guideResponse.ok) {
-            throw new Error(`Error fetching buying guide data: ${guideResponse.status}`);
+          if (!response.ok) {
+            throw new Error(`Error fetching buying Guide data: ${response.status}`);
           }
-          const guideData = await guideResponse.json();
-          console.log("Buying Guide history: ", guideData);
-  
-          const {
-            buying_guide_text,
-            buying_guide_article_links,
-            buying_guide_youtube_links,
-          } = JSON.parse(guideData[0].Body);
-  
-          setBuyingGuide(guideData);
-  
-          const parsedBuyingGuideText = JSON.parse(buying_guide_text);
-          setGuideTextHistory(parsedBuyingGuideText);
+          const data = await response.json();
+          console.log("Buying Guide history: ", data);
+
+          const {buying_guide_text ,  buying_guide_article_links, buying_guide_youtube_links } = JSON.parse(data[0].Body);
+      
+          // Log the separate content
+          console.log("buying guide text", buying_guide_text);
+          console.log("buying guide Article Links: ", buying_guide_article_links);
+          console.log("buying guide YouTube Links: ", buying_guide_youtube_links);
+          setBuyingGuide(data)
+
+          const parsedBuyingGuideHistory = JSON.parse(buying_guide_text);
+            console.log('parsedBuyingGuide' , parsedBuyingGuideHistory);
+            
+
+
           setGuideVideosHistory(buying_guide_youtube_links);
           setGuideBlogsHistory(buying_guide_article_links);
-  
+          setGuideTextHistory(parsedBuyingGuideHistory);
         } catch (error) {
-          console.error("Error fetching data:", error);
-        }
+          console.error("Error fetching buying guide data:", error);
+        }        
       };
-  
-      fetchData();
+
+
+      fetchConversationData(); 
+      getRefreshedBuyingGuide();
+      
     } else {
-      // Redirect to home page if no conversation ID is found
+      // Handle case where no conversation ID is found
       router.push("/");
     }
   }, []);
   
-
   useEffect(() => {
-    // Check if messageId is available
     if (messageId) {
-      const getRefreshedDiscoverData = async () => {
+      const fetchDiscoverData = async () => {
         try {
           const response = await fetch(
             `https://${API_ENDPOINT}/api/discover-content/${messageId}`,
@@ -866,29 +877,20 @@ export default function Page({ params }: { params: Params }) {
           if (!response.ok) {
             throw new Error(`Error fetching discover content: ${response.status}`);
           }
-      
+  
           const data = await response.json();
-          console.log("discover content history: ", data);
-      
-          // Parse the Body
           const { article_links, youtube_links } = JSON.parse(data.Body);
-      
-          // Log the separate content
-          console.log("Article Links: ", article_links);
-          console.log("YouTube Links: ", youtube_links);
-      
-          // Send the parsed data to the respective components
+  
           setDiscoverContentHistory(data);
+          setIsContentLoading(false);
           setDiscoverVideosHistory(youtube_links);
           setDiscoverBlogsHistory(article_links);
-      
         } catch (error) {
           console.error("Error fetching discover content data:", error);
         }
       };
-      
-      
-      const getRefreshedFiltersData = async () => {
+  
+      const fetchFiltersData = async () => {
         try {
           const response = await fetch(
             `https://${API_ENDPOINT}/api/suggestion/${messageId}`,
@@ -902,41 +904,23 @@ export default function Page({ params }: { params: Params }) {
           if (!response.ok) {
             throw new Error(`Error fetching Filters: ${response.status}`);
           }
-      
+  
           const data = await response.json();
-          console.log("Filters history: ", data);
-      
-          // Check if Body exists and parse it
           if (data.Body) {
             const parsedData = JSON.parse(data.Body);
-            console.log("Parsed filters history:", parsedData);
-      
-            // Access follow_up_list
-            const followUpList = parsedData.follow_up_list;
-            console.log("Follow-up list:", followUpList);
-      
-            // You can now update your state or handle the follow-up list as needed
-            setFiltersHistory(followUpList);
-          } else {
-            console.error("Body field is missing from the response data");
+            setFiltersHistory(parsedData.follow_up_list);
           }
-      
         } catch (error) {
           console.error("Error fetching Filters data:", error);
         }
       };
-      
-      
   
-      getRefreshedDiscoverData();
-      getRefreshedFiltersData();
+      fetchDiscoverData();
+      fetchFiltersData();
     }
-  }, [messageId]); // Add messageId as a dependency
+  }, [messageId]);
   
 
-  useEffect(() => {
-    console.log('Updated messadge id :', messageId);  // Debugging
-  }, [messageId]);
   
   const fetchGuestAuthSignup = async () => {
     try {
@@ -947,39 +931,40 @@ export default function Page({ params }: { params: Params }) {
         throw new Error("auth- Network response was not ok");
       }
       const data = await response.json();
-      
+      //.guest ---> .User
+      //.guestId ---> UserId
+      // setGuestID(data.guest.GuestId);
+      // setToken(data.token);
       setGuestID(data.User.UserId);
       setToken(data.token);
-  
-      // Store guestID, token, and expiration in local storage
+      // Store guestID and token in local storage
+      // localStorage.setItem('guestID', data.guest.GuestId);
       localStorage.setItem("UserID", data.User.UserId);
+
       localStorage.setItem("token", data.token);
-  
-      // If the token has an expiration time, store it
-      if (data.tokenExpiration) {
-        const expirationTime = Date.now() + data.tokenExpiration * 1000; // Convert to ms
-        localStorage.setItem("tokenExpiration", expirationTime.toString());
-      }
-  
       authTokenRef.current = data.token;
     } catch (error) {
-      console.error("Error fetching guest authentication:", error);
-      // Optionally display a user notification or retry logic
+      console.error("Error fetching data:", error);
     }
   };
-  
+
+
   useEffect(() => {
     const storedGuestID = localStorage.getItem("UserID");
     const storedToken = localStorage.getItem("token");
-    const tokenExpiration = localStorage.getItem("tokenExpiration");
   
-    // Check if the token is still valid
-    if (storedToken && tokenExpiration && Date.now() > Number(tokenExpiration)) {
-      console.log("Token expired. Fetching new token.");
+    if (storedGuestID && storedToken) {
+      setGuestID(storedGuestID);
+      setToken(storedToken);
+    } else {
       fetchGuestAuthSignup();
-      return;
     }
-  
+  }, []);
+
+{/*}  useEffect(() => {
+    const storedGuestID = localStorage.getItem("UserID");
+    const storedToken = localStorage.getItem("token");
+
     if (storedGuestID && storedToken) {
       setGuestID(storedGuestID);
       setToken(storedToken);
@@ -987,9 +972,7 @@ export default function Page({ params }: { params: Params }) {
       // Fetch API only if guestID and token are not stored in local storage
       fetchGuestAuthSignup();
     }
-  }, []);
-  
-
+  }, []);  */}
  {/* const handleOptionClick = (option: string) => {
     setSelectedOptions((prevOptions) => {
       if (prevOptions.includes(option)) {
@@ -1043,7 +1026,7 @@ export default function Page({ params }: { params: Params }) {
       <div className=" w-full flex items-center justify-end   z-10">
         <section className="w-[100%]">
           
-          <div className="flex w-full mb-16  h-screent">
+          <div className={`flex w-full  ${isContentLoading ? 'mb-0' : 'mb-16'}  h-screent`}>
              {/*<div className="fixed right-0 top-0 w-[370px] overflow-y-scroll order-2  products-height">
             
             attempt 1 
@@ -1117,6 +1100,7 @@ export default function Page({ params }: { params: Params }) {
 
             </div>*/}
          <Layout sendMessage={sendMessage}> 
+
            {/* <Discover sendMessage={sendMessage}/>*/}
             {/*<div className="w-[65%] h-full overflow-y-scroll p-4 order-1 flex flex-col items-center justify-end">
             
