@@ -12,11 +12,12 @@ interface ChatInputProps {
     onInputChange: (newValue: string) => void; // Define onInputChange prop
     searchQuery : string;
     convnId:string;
+    handleName:string;
     mode:"light"|"dark"
 }
 
 
-export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mode }: ChatInputProps) {
+export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mode, handleName }: ChatInputProps) {
     // Define a state to manage the input value
     const [inputValue, setInputValue] = useState(initialText);
     const router = useRouter();
@@ -35,7 +36,7 @@ export function ChatInput({ initialText, onInputChange , searchQuery,convnId, mo
     
     const handleClick = () => {
         console.log("Button clicked");
-        router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}`);
+        router.push(`/search/${searchQuery}/${initialText}?convid=${convnId}/${handleName}`);
         setIsChatOpen(true);
     }
 

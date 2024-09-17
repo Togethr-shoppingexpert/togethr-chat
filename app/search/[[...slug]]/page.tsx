@@ -503,6 +503,7 @@ export default function Page({ params }: { params: Params }) {
     setCurrentoptionvisible(false);
     // Check if conversationId exists in session storage
     let conversationId = sessionStorage.getItem("conversationId");
+    let handleName = localStorage.getItem("handle_name");
 
     // If conversationId doesn't exist, wait for 500ms to retry fetching
     if (!conversationId) {
@@ -536,6 +537,7 @@ export default function Page({ params }: { params: Params }) {
           body: JSON.stringify({
             userMessage: message,
             id: conversationId,
+            handle_name: handleName,
           }),
         }
       );

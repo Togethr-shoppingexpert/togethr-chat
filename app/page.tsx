@@ -18,6 +18,7 @@ export default function Home() {
   const [token, setToken] = useState("");
   const [sessionID, setSessionID] = useState(""); // State to hold session ID
   const [convnId, setConversationId] = useState("");
+  const [handleName, setHandleName] = useState("");
   // const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return getThemeFromLocalStorage();
@@ -83,6 +84,7 @@ export default function Home() {
       authTokenRef.current = data.token;
       localStorage.setItem("UserID", data.User.UserId);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("handle_name", "@tech_wiser");
       getSessionId(data.token);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -116,6 +118,7 @@ export default function Home() {
         sessionStorage.removeItem("currentPageUrl");
         localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         localStorage.removeItem("chatstarted");
+        setHandleName("@tech_wiser");
         setConversationId(newConversationId);
       } else {
         console.error("Failed to fetch conversation ID:", response.statusText);
@@ -218,7 +221,7 @@ export default function Home() {
               onInputChange={handleInputChange}
               searchQuery={userId}
               convnId={convnId}
-             
+              handleName={handleName}
               mode={isDarkMode? "dark" : "light"}
             />
           </div>

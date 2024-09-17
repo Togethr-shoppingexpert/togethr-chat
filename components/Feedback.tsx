@@ -32,8 +32,8 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) =
           feedbackMessage: feedbackMessage || "", // Ensure it's a string
           rating: rating.toString(), // Ensure rating is sent as a string
           conversationId: optionalConversationId ? optionalConversationId.toString() : "", // Optional field
-          email: email || "", // Optional field
-          mobileNumber: mobileNumber || "", // Optional field
+          email: email.toString() || "", // Optional field
+          mobileNumber: mobileNumber.toString || "", // Optional field
         }),
       });
 
@@ -115,19 +115,19 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setShowFeedbackPopup }) =
 
 
         <div className="flex justify-between items-center mt-6">
+        <button
+            type="button"
+            onClick={() => setShowFeedbackPopup(false)}
+            className="bg-gray-600 text-white py-2 px-4 rounded border border-gray-700 hover:bg-gray-700 focus:outline-none"
+          >
+            Cancel
+          </button>
           <button
             type="submit"
             onClick={handleSubmit}
             className="bg-blue-600 text-white py-2 px-4 rounded border border-blue-700 hover:bg-blue-700 focus:outline-none"
           >
             Submit
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowFeedbackPopup(false)}
-            className="bg-gray-600 text-white py-2 px-4 rounded border border-gray-700 hover:bg-gray-700 focus:outline-none"
-          >
-            Cancel
           </button>
         </div>
       </div>
