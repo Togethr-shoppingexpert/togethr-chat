@@ -764,8 +764,13 @@ export default function Page({ params }: { params: Params }) {
 
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlConversationId = params.get("convid");
+    // const params = new URLSearchParams(window.location.search);
+    // const urlConversationId = params.get("convid");
+    // console.log("urlconvid: ", urlConversationId);
+    const url = window.location.href;
+
+    const convidMatch = url.match(/convid=([^/]+)(?=\/@tech)/);
+    const urlConversationId = convidMatch ? convidMatch[1] : null;
     console.log("urlconvid: ", urlConversationId);
   
     // Check if conversationId exists in sessionStorage or URL

@@ -118,6 +118,7 @@ export default function Home() {
         sessionStorage.removeItem("currentPageUrl");
         localStorage.setItem("conversationId", newConversationId); // Store conversation ID in local storage
         localStorage.removeItem("chatstarted");
+        localStorage.setItem("handle_name", "@tech_wiser");
         setHandleName("@tech_wiser");
         setConversationId(newConversationId);
       } else {
