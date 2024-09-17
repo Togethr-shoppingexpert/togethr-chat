@@ -17,11 +17,13 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
     useContentContext();
 
   const { isContentAvailable } = useContentContext();
+
   const router = useRouter();
   const pathname = usePathname();
 
   const [isProfileBoxVisible, setIsProfileBoxVisible] = useState(false);
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); // State to control the side panel visibility
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); 
+  const [buttonClicked, setButtonClicked] = useState(false);// State to control the side panel visibility
 
   const handleInputChange = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -41,6 +43,19 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("conversationId");
     router.push("/login"); // Redirect to the login page
+  };
+
+  const handleCreatorClick = () => {
+    if (buttonClicked) {
+      // Stop chat and remove handle_name from localStorage
+      alert("Chat with the creator stopped!");
+      localStorage.removeItem("handle_name");
+    } else {
+      // Start chat and set handle_name in localStorage
+      alert("Chat with the creator started!");
+      localStorage.setItem("handle_name", "@tech_wiser");
+    }
+    setButtonClicked(!buttonClicked);
   };
 
   const toggleSidePanel = () => {
@@ -91,70 +106,44 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
           </div>
 
           {/* Other Navbar Elements */}
-          {isChatStarted && (isContentAvailable || productsHistory.length > 0) && (
-            <div className="items-center gap-x-4 hidden md:flex">
-              <div
-                className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
-                  ${isActive("discover") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
-                `}
-                onClick={() =>
-                  (isContentAvailable || productsHistory.length > 0) &&
-                  onContentChange("discover")
-                }
-              >
-                Discover
-              </div>
-              <div
-                className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
-                 ${isActive("guide") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
-                 `}
-                onClick={() =>
-                  (isContentAvailable || productsHistory.length > 0) &&
-                  onContentChange("guide")
-                }
-              >
-                Buying Guide
-              </div>
-              <div
-                className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
-                  ${isActive("wishlist") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}
-                `}
-                onClick={() =>
-                  (isContentAvailable || productsHistory.length > 0) &&
-                  onContentChange("wishlist")
-                }
-              >
-                Wishlist
-              </div>
-
-              {/* Profile Icon 
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileBoxVisible(!isProfileBoxVisible)}
-                  className="flex items-center p-2 text-lg cursor-pointer"
-                >
-                  <FaUser className={`text-${mode === "dark" ? "white" : "black"} text-xl`} />
-                </button>
-                {isProfileBoxVisible && (
-                  <div
-                    className={`absolute top-full right-0 mt-2 bg-${
-                      mode === "dark" ? "gray-700" : "white"
-                    } p-4 rounded-lg shadow-lg border border-${
-                      mode === "dark" ? "gray-600" : "gray-300"
-                    }`}
-                  >
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center text-red-500 hover:text-red-700"
-                    >
-                      <FaSignOutAlt className="mr-2" />
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div> */}
-            </div>
-          )}
+          {isChatStarted ? (
+  (isContentAvailable || productsHistory.length > 0) && (
+    <div className="items-center gap-x-4 hidden md:flex">
+      <div
+        className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
+          ${isActive("discover") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}`}
+        onClick={() => (isContentAvailable || productsHistory.length > 0) && onContentChange("discover")}
+      >
+        Discover
+      </div>
+      <div
+        className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
+          ${isActive("guide") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}`}
+        onClick={() => (isContentAvailable || productsHistory.length > 0) && onContentChange("guide")}
+      >
+        Buying Guide
+      </div>
+      <div
+        className={`w-max text-lg font-semibold px-4 p-1 rounded-lg cursor-pointer
+          ${isActive("wishlist") ? "bg-[#f5f5f58a] text-black" : "hover:bg-[#f5f5f58a] text-white transition-all duration-500"}`}
+        onClick={() => (isContentAvailable || productsHistory.length > 0) && onContentChange("wishlist")}
+      >
+        Wishlist
+      </div>
+    </div>
+  )
+) : (
+  <div className="flex justify-center mt-4">
+  <button
+    className={`px-4 py-2 font-semibold rounded ${
+      buttonClicked ? "bg-[#f5f5f58a] text-black" : "bg-[#2196F3] text-white"
+    } hover:bg-[#1e7cd0] hover:text-white transition ease-in-out`}
+    onClick={handleCreatorClick}
+  >
+    {buttonClicked ? "Stop Chatting with Creator" : "Chat with Creator"}
+  </button>
+</div>
+)}
         </div>
       </div>
 
