@@ -27,9 +27,10 @@ export default function Layout({ sendMessage }: LayoutProps) {
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
       setIsSmallScreen(screenWidth <= 768);
-      setIsTabletScreen(screenWidth > 768 && screenWidth <= 1024);
-      setIsLargerScreen(screenWidth > 1024);
+      setIsTabletScreen(screenWidth > 768 && screenWidth < 1024 && screenHeight > 900);
+      setIsLargerScreen(screenWidth >= 1024 && screenHeight < 900);
     };
     handleResize(); // Check on mount
     window.addEventListener("resize", handleResize);
@@ -101,8 +102,8 @@ export default function Layout({ sendMessage }: LayoutProps) {
           <FooterNav onContentChange={handleContentChange} />
         ) : null}
 
-        {!isSmallScreen && !isTabletScreen ? (
-          <div className="fixed right-0 top-0 w-[400px] z-10 bg-[#202222] overflow-y-scroll products-height border-l-8 border-[#2e2f2f]">
+        {isLargerScreen? (
+          <div className="fixed right-0 top-0 w-[30%] z-10 bg-[#202222] overflow-y-scroll products-height border-l-8 border-[#2e2f2f]">
             <Chat sendMessage={sendMessage} />
           </div>
         ) : (

@@ -526,6 +526,16 @@ export default function Page({ params }: { params: Params }) {
     setCheckedIndices(new Set());
 
     try {
+      const requestBody: any = {
+        userMessage: message,
+        id: conversationId,
+      };
+  
+      // Include handle_name if it exists
+      if (handleName) {
+        requestBody.handle_name = handleName;
+      }
+  
       const response = await fetch(
         `https://${API_ENDPOINT}/api/WebChatbot/message`,
         {
@@ -534,11 +544,7 @@ export default function Page({ params }: { params: Params }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authTokenRef.current}`,
           },
-          body: JSON.stringify({
-            userMessage: message,
-            id: conversationId,
-            handle_name: handleName,
-          }),
+          body: JSON.stringify(requestBody),
         }
       );
 
