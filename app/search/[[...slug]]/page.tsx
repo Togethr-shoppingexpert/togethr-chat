@@ -247,6 +247,9 @@ export default function Page({ params }: { params: Params }) {
             setFollowupSourcesVisible(true);
             const followUpQuestions = eventData.data;
             setFollowup(followUpQuestions);
+            if(followUpQuestions.length > 0){
+              setIsContentLoading(false);
+            }
             
             setFollowupQues(followUpQuestions);
             console.log('followUpQuestions', followUpQuestions);
