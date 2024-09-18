@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState,useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,6 +24,13 @@ const Navbar: FC<NavbarProps> = ({ mode, onContentChange, activeContent }) => {
   const [isProfileBoxVisible, setIsProfileBoxVisible] = useState(false);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); 
   const [buttonClicked, setButtonClicked] = useState(false);// State to control the side panel visibility
+
+  useEffect(() => {
+    const handleName = localStorage.getItem("handle_name");
+    if (handleName) {
+      setButtonClicked(true); // Set buttonClicked to true if handle_name is present in localStorage
+    }
+  }, []);
 
   const handleInputChange = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
